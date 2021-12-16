@@ -40,7 +40,10 @@ namespace Camera_Capture_demo.Models
         [XmlElement(ElementName = "Client_data")]
         public Client_data client_Data { get; set; }
         [XmlElement(ElementName = "TCP_data")]
-        public TCP_data tcp_Data { get; set; }
+        public List<TCP_data> tcp_Data { get; set; }
+
+        [XmlElement(ElementName = "ToolInfos")]
+        public ToolInfos ToolInfos { get; set; }
     }
     public class JobName
     {
@@ -48,6 +51,25 @@ namespace Camera_Capture_demo.Models
         public int JobNameNo { get; set; }
         [XmlElement(ElementName = "JobName")]
         public string Jobname { get; set; }
+
+    }
+
+    public class ToolInfos
+    {
+        [XmlElement(ElementName = "Xoffset1")]
+        public float Xoffset1 { get; set; }
+        [XmlElement(ElementName = "Yoffset1")]
+        public float Yoffset1 { get; set; }
+        [XmlElement(ElementName = "Xoffset2")]
+        public float Xoffset2 { get; set; }
+        [XmlElement(ElementName = "Yoffset2")]
+        public float Yoffset2 { get; set; }
+        [XmlElement(ElementName = "Xoffset3")]
+        public float Xoffset3 { get; set; }
+        [XmlElement(ElementName = "Yoffset3")]
+        public float Yoffset3 { get; set; }
+        [XmlElement(ElementName = "CamPositionOnCalib")]
+        public float CamPositionOnCalib { get; set; }//标定时的相机坐标
 
     }
     public class Client_data 
@@ -59,10 +81,13 @@ namespace Camera_Capture_demo.Models
     }
     public class TCP_data
     {
-        [XmlAttribute("IP_Socket")]
+        [XmlAttribute("Cam_Number")]
+        public int Cam_Number { get; set; }
+        [XmlElement("IP_Socket")]
         public string IP_Socket { get; set; }
         [XmlElement(ElementName = "Port_Socket")]
         public int Port_Socket { get; set; }
+
     }
     public class DefectTypes
     {

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BatteryFeederDemo.Helpers
+namespace Camera_Capture_demo.Helpers
 {
     public static class TransExpV2<TIn, TOut>
     {

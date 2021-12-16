@@ -39,13 +39,13 @@ namespace WindowsFormsApp1.Models
         [XmlIgnore]
         public long maxExposureTime = 0;    // 最大曝光时间
         [XmlElement(ElementName = "ExposureTime")]
-        public long currentExposureTime = 0;    // 当前曝光时间
+        public float currentExposureTime = 0;    // 当前曝光时间
         [XmlIgnore]
         public long minGain = 0;            // 最小增益
         [XmlIgnore]
         public long maxGain = 0;            // 最大增益
         [XmlElement(ElementName = "currentGain")]
-        public long currentGain = 0;            // 当前增益
+        public float currentGain = 0;            // 当前增益
 
         private long grabTime = 0;          // 采集图像时间
         [XmlIgnore]
@@ -97,16 +97,18 @@ namespace WindowsFormsApp1.Models
                     }
 
                     m_stFrameInfo = pFrameInfo;
-                    pTemp = m_BufForDriver;
+                    CopyMemory(m_BufForDriver, pData, pFrameInfo.nFrameLen);
+                    
                 }
-                HOperatorSet.GenImage1Extern(out hMvImage, "byte", (HTuple)pFrameInfo.nWidth, (HTuple)pFrameInfo.nHeight, pTemp, IntPtr.Zero);
+                HOperatorSet.GenImage1Extern(out hMvImage, "byte", (HTuple)pFrameInfo.nWidth, (HTuple)pFrameInfo.nHeight, m_BufForDriver, IntPtr.Zero);
+                //HOperatorSet.WriteImage(hMvImage, "jpg", 0, "D:/11.jpg");
                 // 抛出图像处理事件
                 eventProcessImage(hMvImage);
 
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                System.Windows.MessageBox.Show(ex.ToString());
 
             }
         }
@@ -122,14 +124,26 @@ namespace WindowsFormsApp1.Models
             {
                 //相机相关变量
                 MyCamera.MV_CC_DEVICE_INFO_LIST m_stDeviceList = new MyCamera.MV_CC_DEVICE_INFO_LIST();
+
                 strUserID = SerialNumber;
+                string TmpSerialNumber = null;
                 // 枚举相机列表
                 int nRet = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE | MyCamera.MV_USB_DEVICE, ref m_stDeviceList);
                 for (int i = 0; i < m_stDeviceList.nDeviceNum; i++)
                 {
                     MyCamera.MV_CC_DEVICE_INFO device = (MyCamera.MV_CC_DEVICE_INFO)Marshal.PtrToStructure(m_stDeviceList.pDeviceInfo[i], typeof(MyCamera.MV_CC_DEVICE_INFO));
-                    MyCamera.MV_USB3_DEVICE_INFO usbInfo = (MyCamera.MV_USB3_DEVICE_INFO)MyCamera.ByteToStruct(device.SpecialInfo.stUsb3VInfo, typeof(MyCamera.MV_USB3_DEVICE_INFO));
-                    if (strUserID == usbInfo.chSerialNumber)
+                    if (device.nTLayerType == MyCamera.MV_GIGE_DEVICE)
+                    {
+                        MyCamera.MV_GIGE_DEVICE_INFO gigeInfo = (MyCamera.MV_GIGE_DEVICE_INFO)MyCamera.ByteToStruct(device.SpecialInfo.stGigEInfo, typeof(MyCamera.MV_GIGE_DEVICE_INFO));
+                        TmpSerialNumber = gigeInfo.chSerialNumber;
+                    }
+                    else if (device.nTLayerType == MyCamera.MV_USB_DEVICE)
+                    {
+                        MyCamera.MV_USB3_DEVICE_INFO usbInfo = (MyCamera.MV_USB3_DEVICE_INFO)MyCamera.ByteToStruct(device.SpecialInfo.stUsb3VInfo, typeof(MyCamera.MV_USB3_DEVICE_INFO));
+                        TmpSerialNumber = usbInfo.chSerialNumber;
+                    }
+                   
+                    if (strUserID == TmpSerialNumber)
                     {
                         if (null == m_MyCamera)
                         {
@@ -148,10 +162,10 @@ namespace WindowsFormsApp1.Models
                         // ch:设置采集连续模式 | en:Set Continues Aquisition Mode
                         m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
                         m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
-                        //注册回调函数
-                        m_MyCamera.MV_CC_RegisterImageCallBackEx_NET(cbImage, (IntPtr)i);
+                       
                         //注册回调函数
                         cbImage = new MyCamera.cbOutputExdelegate(ImageCallBack);
+
                         currentExposureTime = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraId == strUserID).currentExposureTime;
                         currentGain = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraId == strUserID).currentGain;
                     }
@@ -161,7 +175,7 @@ namespace WindowsFormsApp1.Models
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                System.Windows.MessageBox.Show(ex.ToString());
                 throw;
             }
         }
@@ -171,7 +185,7 @@ namespace WindowsFormsApp1.Models
             if (MvList == null)
             {
                 MvList = new List<MvClass>();
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     MvList.Add(null);
                 }
@@ -182,8 +196,17 @@ namespace WindowsFormsApp1.Models
                 {
                     if (MvList[cameraNo] == null)
                     {
-                        string id = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraNo == cameraNo).CameraId;
-                        MvList[cameraNo] = new MvClass(id);
+                        
+                        if (ConfigVars.configInfo.Cameras.Count>0)
+                        {
+                            string id = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraNo == cameraNo).CameraId;
+                            if (id!=null)
+                            {
+                                MvList[cameraNo] = new MvClass(id);
+                            }
+                            
+                        }
+                       
                     }
                 }
             }
@@ -247,7 +270,27 @@ namespace WindowsFormsApp1.Models
             {
                 return false;
             }
+            //打开触发模式
+            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_ON);
+            
+            m_MyCamera.MV_CC_RegisterImageCallBackEx_NET(cbImage, (IntPtr)0);
+            //设置软触发
+            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_SOFTWARE);
+            //开始采集
+            m_stFrameInfo.nFrameLen = 0;//取流之前先清除帧长度
+            m_stFrameInfo.enPixelType = MyCamera.MvGvspPixelType.PixelType_Gvsp_Undefined;
+            // ch:开始采集 | en:Start Grabbing
+            nRet = m_MyCamera.MV_CC_StartGrabbing_NET();
+            
+            if (MyCamera.MV_OK != nRet)
+            {
+                ShowErrorMsg("Start Grabbing Fail!", nRet);
+                return false;
+            }
+
+            isOpen = true;
             return true;
+            
         }
         public void CloseCam() 
         {
@@ -274,10 +317,7 @@ namespace WindowsFormsApp1.Models
         {
             try
             {
-                if (m_MyCamera == null)
-                {
-                    return false;
-                }
+                
                 int nRet = m_MyCamera.MV_CC_SetCommandValue_NET("TriggerSoftware");
                 if (MyCamera.MV_OK != nRet)
                 {
@@ -296,7 +336,15 @@ namespace WindowsFormsApp1.Models
                 return false;
             }
         }
-
+        public void StopGrabbing()
+        {
+            // ch:停止采集 | en:Stop Grabbing
+            int nRet = m_MyCamera.MV_CC_StopGrabbing_NET();
+            if (nRet != MyCamera.MV_OK)
+            {
+                ShowErrorMsg("Stop Grabbing Fail!", nRet);
+            }
+        }
 
         private void ShowException(Exception exception)
         {
@@ -336,6 +384,24 @@ namespace WindowsFormsApp1.Models
             }
 
             System.Windows.MessageBox.Show(errorMsg, "PROMPT");
+        }
+        MyCamera.MVCC_FLOATVALUE stParam = new MyCamera.MVCC_FLOATVALUE();
+        public void GetExposureTime() 
+        {
+            
+            int nRet = m_MyCamera.MV_CC_GetFloatValue_NET("ExposureTime", ref stParam);
+            if (MyCamera.MV_OK == nRet)
+            {
+                currentExposureTime = (long)stParam.fCurValue;
+            }
+        }
+        public void GetGain() 
+        {
+            int nRet = m_MyCamera.MV_CC_GetFloatValue_NET("Gain", ref stParam);
+            if (MyCamera.MV_OK == nRet)
+            {
+                currentGain = (long)stParam.fCurValue;
+            }
         }
     }
 }

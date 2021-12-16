@@ -30,6 +30,9 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txt_CamNum = new System.Windows.Forms.TextBox();
+            this.btn_SaveTcpParameter = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -57,25 +60,30 @@
             this.bnListen = new System.Windows.Forms.Button();
             this.txtPoint = new System.Windows.Forms.TextBox();
             this.txtIP = new System.Windows.Forms.TextBox();
-            this.btn_SaveTcpParameter = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btn_SetTcpTarget = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Location = new System.Drawing.Point(0, 30);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(698, 478);
+            this.tabControl1.Size = new System.Drawing.Size(693, 477);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Gray;
+            this.tabPage2.Controls.Add(this.label9);
+            this.tabPage2.Controls.Add(this.txt_CamNum);
             this.tabPage2.Controls.Add(this.btn_SaveTcpParameter);
             this.tabPage2.Controls.Add(this.button5);
             this.tabPage2.Controls.Add(this.button4);
@@ -93,9 +101,36 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(690, 452);
+            this.tabPage2.Size = new System.Drawing.Size(685, 451);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "TCP-Client";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(421, 15);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(29, 12);
+            this.label9.TabIndex = 26;
+            this.label9.Text = "待定";
+            // 
+            // txt_CamNum
+            // 
+            this.txt_CamNum.Location = new System.Drawing.Point(423, 30);
+            this.txt_CamNum.Name = "txt_CamNum";
+            this.txt_CamNum.Size = new System.Drawing.Size(97, 21);
+            this.txt_CamNum.TabIndex = 25;
+            this.txt_CamNum.Text = "1";
+            // 
+            // btn_SaveTcpParameter
+            // 
+            this.btn_SaveTcpParameter.Location = new System.Drawing.Point(581, 339);
+            this.btn_SaveTcpParameter.Name = "btn_SaveTcpParameter";
+            this.btn_SaveTcpParameter.Size = new System.Drawing.Size(108, 77);
+            this.btn_SaveTcpParameter.TabIndex = 24;
+            this.btn_SaveTcpParameter.Text = "保存参数";
+            this.btn_SaveTcpParameter.UseVisualStyleBackColor = true;
+            this.btn_SaveTcpParameter.Click += new System.EventHandler(this.btn_SaveTcpParameter_Click);
             // 
             // button5
             // 
@@ -137,7 +172,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(575, 224);
+            this.button2.Location = new System.Drawing.Point(574, 224);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(115, 32);
             this.button2.TabIndex = 19;
@@ -147,10 +182,10 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(423, 84);
+            this.textBox1.Location = new System.Drawing.Point(424, 84);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(267, 131);
+            this.textBox1.Size = new System.Drawing.Size(264, 131);
             this.textBox1.TabIndex = 18;
             // 
             // label7
@@ -232,7 +267,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(690, 452);
+            this.tabPage1.Size = new System.Drawing.Size(685, 451);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "TCP-Server";
             this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
@@ -353,31 +388,54 @@
             this.txtIP.TabIndex = 0;
             this.txtIP.Text = "192.168.0.55";
             // 
-            // btn_SaveTcpParameter
+            // panel1
             // 
-            this.btn_SaveTcpParameter.Location = new System.Drawing.Point(582, 339);
-            this.btn_SaveTcpParameter.Name = "btn_SaveTcpParameter";
-            this.btn_SaveTcpParameter.Size = new System.Drawing.Size(108, 77);
-            this.btn_SaveTcpParameter.TabIndex = 24;
-            this.btn_SaveTcpParameter.Text = "保存参数";
-            this.btn_SaveTcpParameter.UseVisualStyleBackColor = true;
-            this.btn_SaveTcpParameter.Click += new System.EventHandler(this.btn_SaveTcpParameter_Click);
+            this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.btn_SetTcpTarget);
+            this.panel1.Controls.Add(this.comboBox1);
+            this.panel1.Location = new System.Drawing.Point(0, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(693, 31);
+            this.panel1.TabIndex = 1;
+            // 
+            // btn_SetTcpTarget
+            // 
+            this.btn_SetTcpTarget.Location = new System.Drawing.Point(187, 3);
+            this.btn_SetTcpTarget.Name = "btn_SetTcpTarget";
+            this.btn_SetTcpTarget.Size = new System.Drawing.Size(85, 21);
+            this.btn_SetTcpTarget.TabIndex = 27;
+            this.btn_SetTcpTarget.Text = "确定";
+            this.btn_SetTcpTarget.UseVisualStyleBackColor = true;
+            this.btn_SetTcpTarget.Click += new System.EventHandler(this.btn_SetTcpTarget_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "皮带上料PLC连接",
+            "电芯本地定位PLC连接"});
+            this.comboBox1.Location = new System.Drawing.Point(0, 3);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(181, 20);
+            this.comboBox1.TabIndex = 0;
             // 
             // TcpSocketForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.ClientSize = new System.Drawing.Size(693, 479);
+            this.ClientSize = new System.Drawing.Size(693, 507);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.tabControl1);
             this.Name = "TcpSocketForm";
-            this.Text = "TCP助手";
+            this.Text = "TCP/IP设置";
             this.Load += new System.EventHandler(this.TcpSocketForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -414,6 +472,11 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button btn_SaveTcpParameter;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txt_CamNum;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button btn_SetTcpTarget;
     }
 }
 

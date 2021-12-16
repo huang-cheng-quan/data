@@ -20,6 +20,7 @@ namespace TCP_助手
         {
             InitializeComponent();
         }
+        
 
         private void tabPage1_Click(object sender, EventArgs e)
         {
@@ -145,6 +146,12 @@ namespace TCP_助手
         private void TcpSocketForm_Load(object sender, EventArgs e)
         {
             Control.CheckForIllegalCrossThreadCalls = false;
+            tabControl1.Enabled = false;
+            for (int i = 0; i < 2; i++)
+            {
+                ConfigVars.configInfo.tcp_Data[i] = new Camera_Capture_demo.Models.TCP_data();
+            }
+           
         }
 
 
@@ -277,11 +284,9 @@ namespace TCP_助手
         {
             try
             {
-                ConfigVars.configInfo.tcp_Data = new Camera_Capture_demo.Models.TCP_data();
-                ConfigVars.configInfo.tcp_Data.IP_Socket = txt_Ip.Text;
-                ConfigVars.configInfo.tcp_Data.Port_Socket = int.Parse(txt_Port.Text);
-
-
+               
+                ConfigVars.configInfo.tcp_Data[comboBox1.SelectedIndex].IP_Socket = txt_Ip.Text;
+                ConfigVars.configInfo.tcp_Data[comboBox1.SelectedIndex].Port_Socket = int.Parse(txt_Port.Text);
                 XmlHelper.SerializeToXml(ConfigVars.configInfo);
                 MessageBox.Show("保存成功！");
             }
@@ -289,6 +294,16 @@ namespace TCP_助手
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void btn_SetTcpTarget_Click(object sender, EventArgs e)
+        {
+            /*ConfigVars.configInfo.tcp_Data[comboBox1.SelectedIndex] = new Camera_Capture_demo.Models.TCP_data();*/
+            ConfigVars.configInfo.tcp_Data[comboBox1.SelectedIndex].Cam_Number = comboBox1.SelectedIndex;
+            tabControl1.Enabled = true;
+            txt_CamNum.Text = comboBox1.SelectedIndex.ToString();
+            label9.Text = comboBox1.SelectedItem.ToString();
+
         }
     }
 }

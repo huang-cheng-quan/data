@@ -16,6 +16,9 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Camera_Capture_demo.GlobalVariable;
 using Camera_Capture_demo.Helpers;
+using WindowsFormsApp1.Models;
+using Camera_Capture_demo.HalconVision;
+using HalconDotNet;
 
 namespace BasicDemo
 {
@@ -29,6 +32,7 @@ namespace BasicDemo
         bool m_bGrabbing = false;
         Thread m_hReceiveThread = null;
         MyCamera.MV_FRAME_OUT_INFO_EX m_stFrameInfo = new MyCamera.MV_FRAME_OUT_INFO_EX();
+        private MvClass mvcamera;
 
         // ch:用于从驱动获取图像的缓存 | en:Buffer for getting image from driver
         UInt32 m_nBufSizeForDriver = 0;
@@ -142,10 +146,10 @@ namespace BasicDemo
         {
             DeviceListAcq();
             //初始化相机列表
-            for (int i = 0; i < m_stDeviceList.nDeviceNum; i++) 
-            {
-                ConfigVars.configInfo.Camera_information.CamPara[i] = new Camera_Capture_demo.Models.CamPara();
-            }
+            //for (int i = 0; i < m_stDeviceList.nDeviceNum; i++) 
+            //{
+            //    ConfigVars.configInfo.Camera_information.CamPara[i] = new Camera_Capture_demo.Models.CamPara();
+            //}
                
         }
 
@@ -184,11 +188,11 @@ namespace BasicDemo
                     MyCamera.MV_USB3_DEVICE_INFO usbInfo = (MyCamera.MV_USB3_DEVICE_INFO)MyCamera.ByteToStruct(device.SpecialInfo.stUsb3VInfo, typeof(MyCamera.MV_USB3_DEVICE_INFO));
                     if (usbInfo.chUserDefinedName != "")
                     {
-                        cbDeviceList.Items.Add("U3V: " + usbInfo.chUserDefinedName + " (" + usbInfo.chSerialNumber + ")");
+                        cbDeviceList.Items.Add(/*"U3V: " + usbInfo.chUserDefinedName + " (" + */usbInfo.chSerialNumber /*+ ")"*/);
                     }
                     else
                     {
-                        cbDeviceList.Items.Add("U3V: " + usbInfo.chManufacturerName + " " + usbInfo.chModelName + " (" + usbInfo.chSerialNumber + ")");
+                        cbDeviceList.Items.Add(/*"U3V: " + usbInfo.chManufacturerName + " " + usbInfo.chModelName + " (" + */usbInfo.chSerialNumber /*+ ")"*/);
                     }
                 }
             }
@@ -774,62 +778,123 @@ namespace BasicDemo
                 return false;
             }
         }
-        private void camerData2Xml(TextBox tb)
+        private void camerData2Xml(TextBox tb,Label lb)
         {
-            tb.Text = cbDeviceList.SelectedItem.ToString();
-            ConfigVars.configInfo.Camera_information.CamPara[cbDeviceList.SelectedIndex].SerialNumber = txt_CamFeedBelt.Text;
-            ConfigVars.configInfo.Camera_information.CamPara[cbDeviceList.SelectedIndex].CamNum = cbDeviceList.SelectedIndex;
-            XmlHelper.SerializeToXml(ConfigVars.configInfo);
-            MessageBox.Show("保存成功！");
+            if (cbDeviceList.SelectedIndex >= 0)
+            {
+
+                tb.Text = cbDeviceList.SelectedItem.ToString();
+                string[] tmp = tb.Text.Split(new[] { "("},StringSplitOptions.None);
+                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].CameraNo = int.Parse(lb.Text)-1;
+                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].CameraId = tmp[1].Substring(0,tmp[1].Length-1);
+                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].currentExposureTime = float.Parse(tbExposure.Text);
+                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].currentGain = float.Parse(tbGain.Text);
+                XmlHelper.SerializeToXml(ConfigVars.configInfo);
+                MessageBox.Show("保存成功！");
+            }
+            
+        }
+        /* private void Basler_eventProcessImage(HObject hImage)
+         {
+             HalconOperator.ShowImage(hSmartWindowControl1, hImage);
+         }*/
+
+        private void ShowException(Exception exception)
+        {
+            MessageBox.Show("Exception caught:\n" + exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         private void btn_SetCam_FeedBelt_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_CamFeedBelt);
+            camerData2Xml(txt_CamFeedBelt,label14);
         }
        
         private void btn_ConnectorNegative_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_ConnectorNegative);
+            camerData2Xml(txt_ConnectorNegative,label15);
         }
 
         private void btn_FeedPositive_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_FeedPositive);
+            camerData2Xml(txt_FeedPositive, label16);
         }
 
         private void btn_ConnectorPositive_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_ConnectorPositive);
+            camerData2Xml(txt_ConnectorPositive, label17);
         }
 
         private void btn_ShortSideA_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_ShortSideA);
+            camerData2Xml(txt_ShortSideA, label18);
         }
 
         private void btn_ShortSideB_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_ShortSideB);
+            camerData2Xml(txt_ShortSideB, label19);
         }
 
         private void btn_Negative_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_Negative);
+            camerData2Xml(txt_Negative, label20);
         }
 
         private void btn_LongSideA_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_LongSideA);
+            camerData2Xml(txt_LongSideA, label21);
         }
 
         private void btn_LongSideB_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_LongSideB);
+            camerData2Xml(txt_LongSideB, label22);
         }
 
         private void btn_Positive_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_Positive);
+            camerData2Xml(txt_Positive, label23);
         }
+
+        /*private void cbDeviceList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (mvcamera != null)
+                mvcamera.Clear_EventProcessImage_Event();
+            // Open the connection to the selected camera device.
+            if (cbDeviceList.SelectedItem!= null)
+            {
+                // Get the first selected item.
+                object item = cbDeviceList.SelectedItem;
+                // Get the attached device data.
+                //ICameraInfo selectedCamera = item.Tag as ICameraInfo;
+
+                mvcamera = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraId == item.ToString());
+                if (mvcamera == null)
+                {
+                    MessageBox.Show("未指定当前相机的序号");
+                    return;
+                }
+                cbDeviceList.SelectedIndex = mvcamera.CameraNo;
+                try
+                {
+                    // Create a new camera object.
+                    mvcamera = MvClass.GetInstance(mvcamera.CameraNo);
+                    if (!mvcamera.isOpen)
+                    {
+                        mvcamera.OpenCam();
+                    }
+
+                    #region 获取曝光时间和增益参数
+                    mvcamera.GetExposureTime();
+                    tbExposure.Text = mvcamera.currentExposureTime.ToString();
+                    mvcamera.GetGain();
+                    tbGain.Text = mvcamera.currentGain.ToString();
+                    #endregion
+                    mvcamera.Clear_EventProcessImage_Event();
+                    //mvcamera.eventProcessImage += mvcamera_eventProcessImage;
+                }
+                catch (Exception exception)
+                {
+                    ShowException(exception);
+                }
+            }
+        }*/
     }
 }
