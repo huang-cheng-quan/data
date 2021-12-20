@@ -30,24 +30,17 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.nudXoffset1 = new System.Windows.Forms.NumericUpDown();
             this.nudYoffset1 = new System.Windows.Forms.NumericUpDown();
             this.nudXoffset2 = new System.Windows.Forms.NumericUpDown();
             this.nudYoffset2 = new System.Windows.Forms.NumericUpDown();
-            this.nudXoffset3 = new System.Windows.Forms.NumericUpDown();
-            this.nudYoffset3 = new System.Windows.Forms.NumericUpDown();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudXoffset1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudYoffset1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXoffset2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudYoffset2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudXoffset3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudYoffset3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -71,17 +64,6 @@
             this.label2.Size = new System.Drawing.Size(59, 19);
             this.label2.TabIndex = 0;
             this.label2.Text = "吸盘2";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("楷体", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(9, 190);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 19);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "吸盘3";
             // 
             // label4
             // 
@@ -161,45 +143,6 @@
             this.nudYoffset2.Size = new System.Drawing.Size(90, 26);
             this.nudYoffset2.TabIndex = 2;
             // 
-            // nudXoffset3
-            // 
-            this.nudXoffset3.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.nudXoffset3.Location = new System.Drawing.Point(96, 187);
-            this.nudXoffset3.Margin = new System.Windows.Forms.Padding(2);
-            this.nudXoffset3.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this.nudXoffset3.Name = "nudXoffset3";
-            this.nudXoffset3.Size = new System.Drawing.Size(90, 26);
-            this.nudXoffset3.TabIndex = 2;
-            // 
-            // nudYoffset3
-            // 
-            this.nudYoffset3.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.nudYoffset3.Location = new System.Drawing.Point(220, 187);
-            this.nudYoffset3.Margin = new System.Windows.Forms.Padding(2);
-            this.nudYoffset3.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this.nudYoffset3.Name = "nudYoffset3";
-            this.nudYoffset3.Size = new System.Drawing.Size(90, 26);
-            this.nudYoffset3.TabIndex = 2;
-            // 
-            // pictureBox1
-            // 
-            //this.pictureBox1.Image = global::BatteryFeederDemo.Properties.Resources.fixture;
-            this.pictureBox1.Location = new System.Drawing.Point(345, 3);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(196, 302);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
             // btnSave
             // 
             this.btnSave.Font = new System.Drawing.Font("楷体", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -216,16 +159,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(543, 309);
+            this.ClientSize = new System.Drawing.Size(319, 309);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.nudYoffset1);
-            this.Controls.Add(this.nudYoffset3);
             this.Controls.Add(this.nudYoffset2);
-            this.Controls.Add(this.nudXoffset3);
             this.Controls.Add(this.nudXoffset2);
             this.Controls.Add(this.nudXoffset1);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -240,9 +179,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudYoffset1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXoffset2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudYoffset2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudXoffset3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudYoffset3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,16 +188,12 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.NumericUpDown nudXoffset1;
         private System.Windows.Forms.NumericUpDown nudYoffset1;
         private System.Windows.Forms.NumericUpDown nudXoffset2;
         private System.Windows.Forms.NumericUpDown nudYoffset2;
-        private System.Windows.Forms.NumericUpDown nudXoffset3;
-        private System.Windows.Forms.NumericUpDown nudYoffset3;
         private System.Windows.Forms.Button btnSave;
     }
 }

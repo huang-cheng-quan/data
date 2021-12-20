@@ -34,12 +34,14 @@ namespace WindowsFormsApp1
             this.设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.相机设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pLC设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.plc设置上料ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pLC设置本体定位ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.标定设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.坐标标定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.坐标标定本体定位ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.模板建立ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.模板建立本体定位ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.生成标定图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_OpenPlc = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.hWindowControl2 = new HalconDotNet.HWindowControl();
             this.hWindowControl3 = new HalconDotNet.HWindowControl();
@@ -55,15 +57,24 @@ namespace WindowsFormsApp1
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.rtxLog = new System.Windows.Forms.RichTextBox();
             this.btn_FeedBelt = new System.Windows.Forms.Button();
             this.btn_ResetFeedBelt = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btn_Exit = new System.Windows.Forms.Button();
+            this.lblToolNo = new System.Windows.Forms.Label();
+            this.lblPosition = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // hWindowControl1
@@ -100,16 +111,33 @@ namespace WindowsFormsApp1
             // 相机设置ToolStripMenuItem
             // 
             this.相机设置ToolStripMenuItem.Name = "相机设置ToolStripMenuItem";
-            this.相机设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.相机设置ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.相机设置ToolStripMenuItem.Text = "相机设置";
             this.相机设置ToolStripMenuItem.Click += new System.EventHandler(this.相机设置ToolStripMenuItem_Click);
             // 
             // pLC设置ToolStripMenuItem
             // 
+            this.pLC设置ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.plc设置上料ToolStripMenuItem,
+            this.pLC设置本体定位ToolStripMenuItem});
             this.pLC设置ToolStripMenuItem.Name = "pLC设置ToolStripMenuItem";
-            this.pLC设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pLC设置ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.pLC设置ToolStripMenuItem.Text = "PLC设置";
-            this.pLC设置ToolStripMenuItem.Click += new System.EventHandler(this.pLC设置ToolStripMenuItem_Click);
+          
+            // 
+            // plc设置上料ToolStripMenuItem
+            // 
+            this.plc设置上料ToolStripMenuItem.Name = "plc设置上料ToolStripMenuItem";
+            this.plc设置上料ToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.plc设置上料ToolStripMenuItem.Text = "PLC设置(上料)";
+            this.plc设置上料ToolStripMenuItem.Click += new System.EventHandler(this.plc设置上料ToolStripMenuItem_Click);
+            // 
+            // pLC设置本体定位ToolStripMenuItem
+            // 
+            this.pLC设置本体定位ToolStripMenuItem.Name = "pLC设置本体定位ToolStripMenuItem";
+            this.pLC设置本体定位ToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.pLC设置本体定位ToolStripMenuItem.Text = "PLC设置(本体定位)";
+            this.pLC设置本体定位ToolStripMenuItem.Click += new System.EventHandler(this.pLC设置本体定位ToolStripMenuItem_Click);
             // 
             // 标定设置ToolStripMenuItem
             // 
@@ -117,9 +145,10 @@ namespace WindowsFormsApp1
             this.坐标标定ToolStripMenuItem,
             this.坐标标定本体定位ToolStripMenuItem,
             this.模板建立ToolStripMenuItem,
+            this.模板建立本体定位ToolStripMenuItem,
             this.生成标定图ToolStripMenuItem});
             this.标定设置ToolStripMenuItem.Name = "标定设置ToolStripMenuItem";
-            this.标定设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.标定设置ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.标定设置ToolStripMenuItem.Text = "标定设置";
             this.标定设置ToolStripMenuItem.Click += new System.EventHandler(this.标定设置ToolStripMenuItem_Click);
             // 
@@ -141,24 +170,21 @@ namespace WindowsFormsApp1
             // 
             this.模板建立ToolStripMenuItem.Name = "模板建立ToolStripMenuItem";
             this.模板建立ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.模板建立ToolStripMenuItem.Text = "模板建立";
+            this.模板建立ToolStripMenuItem.Text = "模板建立(上料)";
             this.模板建立ToolStripMenuItem.Click += new System.EventHandler(this.模板建立ToolStripMenuItem_Click);
+            // 
+            // 模板建立本体定位ToolStripMenuItem
+            // 
+            this.模板建立本体定位ToolStripMenuItem.Name = "模板建立本体定位ToolStripMenuItem";
+            this.模板建立本体定位ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.模板建立本体定位ToolStripMenuItem.Text = "模板建立(本体定位)";
+            this.模板建立本体定位ToolStripMenuItem.Click += new System.EventHandler(this.模板建立本体定位ToolStripMenuItem_Click);
             // 
             // 生成标定图ToolStripMenuItem
             // 
             this.生成标定图ToolStripMenuItem.Name = "生成标定图ToolStripMenuItem";
             this.生成标定图ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.生成标定图ToolStripMenuItem.Text = "生成标定图";
-            // 
-            // btn_OpenPlc
-            // 
-            this.btn_OpenPlc.Location = new System.Drawing.Point(461, 0);
-            this.btn_OpenPlc.Name = "btn_OpenPlc";
-            this.btn_OpenPlc.Size = new System.Drawing.Size(77, 25);
-            this.btn_OpenPlc.TabIndex = 2;
-            this.btn_OpenPlc.Text = "开启PLC";
-            this.btn_OpenPlc.UseVisualStyleBackColor = true;
-            this.btn_OpenPlc.Click += new System.EventHandler(this.btn_OpenPlc_Click);
             // 
             // label1
             // 
@@ -317,19 +343,19 @@ namespace WindowsFormsApp1
             this.label8.TabIndex = 20;
             this.label8.Text = "正面";
             // 
-            // richTextBox1
+            // rtxLog
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(0, 619);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(506, 176);
-            this.richTextBox1.TabIndex = 21;
-            this.richTextBox1.Text = "";
+            this.rtxLog.Location = new System.Drawing.Point(0, 619);
+            this.rtxLog.Name = "rtxLog";
+            this.rtxLog.Size = new System.Drawing.Size(506, 176);
+            this.rtxLog.TabIndex = 21;
+            this.rtxLog.Text = "";
             // 
             // btn_FeedBelt
             // 
-            this.btn_FeedBelt.Location = new System.Drawing.Point(234, 28);
+            this.btn_FeedBelt.Location = new System.Drawing.Point(1197, 731);
             this.btn_FeedBelt.Name = "btn_FeedBelt";
-            this.btn_FeedBelt.Size = new System.Drawing.Size(45, 30);
+            this.btn_FeedBelt.Size = new System.Drawing.Size(88, 64);
             this.btn_FeedBelt.TabIndex = 22;
             this.btn_FeedBelt.Text = "启动";
             this.btn_FeedBelt.UseVisualStyleBackColor = true;
@@ -337,31 +363,106 @@ namespace WindowsFormsApp1
             // 
             // btn_ResetFeedBelt
             // 
-            this.btn_ResetFeedBelt.Location = new System.Drawing.Point(280, 28);
+            this.btn_ResetFeedBelt.Location = new System.Drawing.Point(1298, 731);
             this.btn_ResetFeedBelt.Name = "btn_ResetFeedBelt";
-            this.btn_ResetFeedBelt.Size = new System.Drawing.Size(45, 30);
+            this.btn_ResetFeedBelt.Size = new System.Drawing.Size(88, 64);
             this.btn_ResetFeedBelt.TabIndex = 23;
             this.btn_ResetFeedBelt.Text = "复位";
             this.btn_ResetFeedBelt.UseVisualStyleBackColor = true;
+            this.btn_ResetFeedBelt.Click += new System.EventHandler(this.btn_ResetFeedBelt_Click);
             // 
-            // button1
+            // btn_Exit
             // 
-            this.button1.Location = new System.Drawing.Point(326, 28);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(45, 30);
-            this.button1.TabIndex = 24;
-            this.button1.Text = "清料";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btn_Exit.Location = new System.Drawing.Point(1399, 731);
+            this.btn_Exit.Name = "btn_Exit";
+            this.btn_Exit.Size = new System.Drawing.Size(88, 64);
+            this.btn_Exit.TabIndex = 24;
+            this.btn_Exit.Text = "退出";
+            this.btn_Exit.UseVisualStyleBackColor = true;
+            this.btn_Exit.Click += new System.EventHandler(this.btn_Exit_Click);
+            // 
+            // lblToolNo
+            // 
+            this.lblToolNo.AutoSize = true;
+            this.lblToolNo.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblToolNo.Location = new System.Drawing.Point(1345, 619);
+            this.lblToolNo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblToolNo.Name = "lblToolNo";
+            this.lblToolNo.Size = new System.Drawing.Size(34, 21);
+            this.lblToolNo.TabIndex = 25;
+            this.lblToolNo.Text = "01";
+            // 
+            // lblPosition
+            // 
+            this.lblPosition.AutoSize = true;
+            this.lblPosition.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblPosition.ForeColor = System.Drawing.Color.Blue;
+            this.lblPosition.Location = new System.Drawing.Point(1193, 643);
+            this.lblPosition.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPosition.Name = "lblPosition";
+            this.lblPosition.Size = new System.Drawing.Size(75, 72);
+            this.lblPosition.TabIndex = 26;
+            this.lblPosition.Text = "X:xxx\r\nY:xxx\r\nR:xxx";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.Location = new System.Drawing.Point(1193, 619);
+            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(132, 21);
+            this.label9.TabIndex = 27;
+            this.label9.Text = "机械手序号:";
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4});
+            this.dataGridView1.Location = new System.Drawing.Point(518, 624);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 23;
+            this.dataGridView1.Size = new System.Drawing.Size(655, 170);
+            this.dataGridView1.TabIndex = 28;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "电池序号";
+            this.Column1.Name = "Column1";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "连接器检测结果";
+            this.Column2.Name = "Column2";
+            this.Column2.Width = 150;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "本体检测";
+            this.Column3.Name = "Column3";
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "检测结果";
+            this.Column4.Name = "Column4";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1489, 801);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.lblToolNo);
+            this.Controls.Add(this.lblPosition);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.btn_Exit);
             this.Controls.Add(this.btn_ResetFeedBelt);
             this.Controls.Add(this.btn_FeedBelt);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.rtxLog);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -377,7 +478,6 @@ namespace WindowsFormsApp1
             this.Controls.Add(this.hWindowControl3);
             this.Controls.Add(this.hWindowControl2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.btn_OpenPlc);
             this.Controls.Add(this.hWindowControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -390,6 +490,7 @@ namespace WindowsFormsApp1
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -406,7 +507,6 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.ToolStripMenuItem 坐标标定ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 模板建立ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 生成标定图ToolStripMenuItem;
-        private System.Windows.Forms.Button btn_OpenPlc;
         private System.Windows.Forms.Label label1;
         private HalconDotNet.HWindowControl hWindowControl2;
         private HalconDotNet.HWindowControl hWindowControl3;
@@ -422,11 +522,22 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox rtxLog;
         private System.Windows.Forms.Button btn_FeedBelt;
         private System.Windows.Forms.Button btn_ResetFeedBelt;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btn_Exit;
         private System.Windows.Forms.ToolStripMenuItem 坐标标定本体定位ToolStripMenuItem;
+        private System.Windows.Forms.Label lblToolNo;
+        private System.Windows.Forms.Label lblPosition;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ToolStripMenuItem 模板建立本体定位ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem plc设置上料ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pLC设置本体定位ToolStripMenuItem;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
     }
 }
 

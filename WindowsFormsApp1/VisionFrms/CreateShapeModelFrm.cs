@@ -1,5 +1,6 @@
 ﻿#define NCC
 using BaseForm;
+using Camera_Capture_demo.GlobalVariable;
 using Camera_Capture_demo.HalconVision;
 using Camera_Capture_demo.Helpers;
 using Camera_Capture_demo.Models;
@@ -30,11 +31,13 @@ namespace Camera_Capture_demo.VisionFrms
         int modelCenterRow, modelCenterCol;//模板中心点坐标
         string modelParams_Path, modelID_Path;
         HalconOperator halconOperator;
-
-        public CreateShapeModelFrm()
+        int camNo;
+        public CreateShapeModelFrm(int camNo)
         {
             InitializeComponent();
-            
+            this.camNo = camNo;
+            this.Name += camNo;
+            this.Text = $"相机{camNo + 1}模板设置";
         }
 
         private void CreateShapeModelFrm_Load(object sender, EventArgs e)
@@ -44,15 +47,39 @@ namespace Camera_Capture_demo.VisionFrms
             trbEraserSize.Minimum = 1;
             trbEraserSize.Maximum = 50;
             rdoRect.Checked = true;
-            cboCameraNo.SelectedIndex = 0;
-            cboTemplateNo.SelectedIndex = 0;
+           
             hWindow = hWindowControl1.HalconWindow;
             hWindow.SetColor("blue");
             hWindow.SetDraw("margin");
             hWindow.SetLineWidth(2);
             HOperatorSet.SetSystem("border_shape_models", "false");
-            halconOperator = new HalconOperator();
-            HalconOperator.ReUpdateParams();
+
+            string dir_path = Application.StartupPath + "\\Project\\" + ConfigVars.configInfo.ProductInfos.SelectProject + $"\\Model{camNo + 1}";
+            if (!Directory.Exists(dir_path))
+            {
+                Directory.CreateDirectory(dir_path);
+            }
+            modelParams_Path = dir_path + "\\model_cell.tup";
+            if (File.Exists(modelParams_Path))
+            {
+                HOperatorSet.ReadTuple(modelParams_Path, out hv_ModelParams);
+                nudMinScore.Value = Convert.ToDecimal(hv_ModelParams[2].F);
+                nudThreshold.Value = Convert.ToDecimal(hv_ModelParams[3].I);
+                cboPolarity.SelectedIndex = hv_ModelParams[6].I;
+            }
+#if NCC
+            modelID_Path = dir_path + "\\model_cell.ncm";
+            HOperatorSet.ReadNccModel(modelID_Path, out hv_ModelID);
+#else
+            modelID_Path = dir_path+"\\model_cell.sbm";
+            HOperatorSet.ReadShapeModel(modelID_Path, out hv_ModelID);
+#endif
+
+            halconOperator = HalconOperator.GetInstance(camNo);
+            halconOperator.ReUpdateParams();
+            mvclass = MvClass.GetInstance(camNo);
+            mvclass.Clear_EventProcessImage_Event();
+            mvclass.eventProcessImage += mvclass_eventProcessImage;
         }
 
         private void mvclass_eventProcessImage(HObject hImage)
@@ -67,9 +94,13 @@ namespace Camera_Capture_demo.VisionFrms
         {
             if (mvclass != null)
             {
-                mvclass.StopGrabbing();
-                //mvclass.CloseCam();
-                mvclass.Clear_EventProcessImage_Event();
+                if (mvclass.isOpen)
+                {
+                    mvclass.StopGrabbing();
+                    //mvclass.CloseCam();
+                    mvclass.Clear_EventProcessImage_Event();
+                }
+               
             }
             if (hWindow != null)
             {
@@ -117,7 +148,7 @@ namespace Camera_Capture_demo.VisionFrms
             try
             {
                 hWindow.DispObj(ho_Image);
-                halconOperator.DispMessage(hWindow, "鼠标左键按下开始ROI选取,\n松开鼠标结束,\n鼠标右键退出", "window", 12, 12, "yellow", "false");
+                HalconOperator.DispMessage(hWindow, "鼠标左键按下开始ROI选取,\n松开鼠标结束,\n鼠标右键退出", "window", 12, 12, "yellow", "false");
                 hWindow.SetDraw("margin");
                 hWindow.DrawRectangle1(out double row1, out double column1, out double row2, out double column2);
                 HOperatorSet.GenRectangle1(out HObject ho_Rect, row1, column1, row2, column2);
@@ -152,7 +183,7 @@ namespace Camera_Capture_demo.VisionFrms
                         }
                         hWindow.DispObj(ho_Image);
                         hWindow.DispObj(ho_Rect);
-                        halconOperator.DispMessage(hWindow, "鼠标左键按下更改中心点位置,\n鼠标右键确定", "window", 12, 12, "yellow", "false");
+                        HalconOperator.DispMessage(hWindow, "鼠标左键按下更改中心点位置,\n鼠标右键确定", "window", 12, 12, "yellow", "false");
                         hWindow.DispObj(ho_ContCircle);
                         hWindow.DispObj(ho_Cross);
                         HOperatorSet.SetSystem("flush_graphic", "true");
@@ -196,8 +227,8 @@ namespace Camera_Capture_demo.VisionFrms
             hWindow.SetColor("red");
             hWindow.SetDraw("fill");
             //橡皮擦路过的坐标集
-            halconOperator.DispMessage(hWindow, "鼠标左键按下生成擦除区域,\n中键按下清除擦除区域,\n鼠标右键退出",
-    "window", 12, 12, "yellow", "false");
+            HalconOperator.DispMessage(hWindow, "鼠标左键按下生成擦除区域,\n中键按下清除擦除区域,\n鼠标右键退出",
+     "window", 12, 12, "yellow", "false");
             //擦除工作
             while (hv_Button == 0)
             {
@@ -288,7 +319,7 @@ namespace Camera_Capture_demo.VisionFrms
                 }
                 HOperatorSet.WriteTuple(hv_ModelParams, modelParams_Path);
                 MessageBox.Show("模板保存成功");
-                HalconOperator.ReUpdateParams();
+                halconOperator.ReUpdateParams();
             }
             catch (Exception ex)
             {
@@ -306,7 +337,7 @@ namespace Camera_Capture_demo.VisionFrms
             {
                 HObject hImage = ho_Image.Clone();
                 HalconOperator.ShowImage(hWindowControl1, hImage);
-                halconOperator.FindShapeModel(hWindow, ho_Image, cboCameraNo.SelectedIndex+1 , out _ , out _);
+                halconOperator.FindShapeModel(hWindow, ho_Image, out _, out _);
             }
         }
 
@@ -353,7 +384,7 @@ namespace Camera_Capture_demo.VisionFrms
                 return;
             }
             hWindow.DispObj(ho_Image);
-            halconOperator.DispMessage(hWindow, "鼠标左键按下开始ROI选取,\n松开鼠标结束,\n鼠标右键退出", "window", 12, 12, "blue", "false");
+            HalconOperator.DispMessage(hWindow, "鼠标左键按下开始ROI选取,\n松开鼠标结束,\n鼠标右键退出", "window", 12, 12, "yellow", "false");
             hWindow.SetDraw("margin");
             hWindow.DrawRectangle1(out double row1, out double column1, out double row2, out double column2);
             HOperatorSet.GenRectangle1(out HObject ho_Rect, row1, column1, row2, column2);
@@ -361,76 +392,18 @@ namespace Camera_Capture_demo.VisionFrms
             this.ControlBox = true;
             try
             {
-                HOperatorSet.WriteObject(ho_Rect, Application.StartupPath + $"\\Model\\ROI{cboCameraNo.SelectedIndex+1}");
-                MessageBox.Show($"ROI{cboCameraNo.SelectedIndex+1}区域保存成功!");
+                HOperatorSet.WriteObject(ho_Rect, Application.StartupPath + "\\Project\\" + ConfigVars.configInfo.ProductInfos.SelectProject + $"\\Model{camNo + 1}\\model_roi{cboRoiNo.SelectedIndex + 1}");
+                MessageBox.Show("ROI区域保存成功!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);    
             }
 
 
         }
 
-        private void btnDelTemplate_Click(object sender, EventArgs e)
-        {
-            if (!File.Exists(modelID_Path))
-            {
-                MessageBox.Show("当前模板不存在");
-                return;
-            }
-            if(MessageBox.Show("是否删除当前模板","?",MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                File.Delete(modelID_Path);
-                HalconOperator.ReUpdateParams();
-                MessageBox.Show("模板已删除");
-            }
-        }
 
-        private void cboTemplateNo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                nudMinScore.Enabled = nudThreshold.Enabled = cboPolarity.Enabled = (cboTemplateNo.SelectedIndex == 0);
-                modelParams_Path = Application.StartupPath + $"\\Model\\model_cell{cboTemplateNo.SelectedIndex + 1}.tup";
-                if (File.Exists(modelParams_Path))
-                {
-                    HOperatorSet.ReadTuple(modelParams_Path, out hv_ModelParams);
-                    if (cboTemplateNo.SelectedIndex == 0)
-                    {
-                        nudMinScore.Value = Convert.ToDecimal(hv_ModelParams[2].F);
-                        nudThreshold.Value = Convert.ToDecimal(hv_ModelParams[3].I);
-                        cboPolarity.SelectedIndex = hv_ModelParams[6].I;
-                    }
-                    else
-                    {
-                        cboPolarity.SelectedIndex = 0;
-                    }
-                }
-#if NCC
-                modelID_Path = Application.StartupPath + $"\\Model\\model_cell{cboTemplateNo.SelectedIndex + 1}.ncm";//shapemodel:sbm,nccmodel:ncm
-                HOperatorSet.ReadNccModel(modelID_Path,out hv_ModelID);
-#else
-                modelID_Path = Application.StartupPath + $"\\Model\\model_cell{cboTemplateNo.SelectedIndex + 1}.sbm";
-                HOperatorSet.ReadShapeModel(modelID_Path, out hv_ModelID);
-#endif
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void cboCameraNo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (mvclass != null)
-            {
-                mvclass.Clear_EventProcessImage_Event();             
-            }
-            mvclass = MvClass.GetInstance(cboCameraNo.SelectedIndex);
-            mvclass.eventProcessImage += mvclass_eventProcessImage;
-
-        }
 
         private void btnTakePic_Click(object sender, EventArgs e)
         {

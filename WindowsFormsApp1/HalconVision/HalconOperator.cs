@@ -1,5 +1,6 @@
 ﻿#define NCC
-
+using Camera_Capture_demo.GlobalVariable;
+using Camera_Capture_demo.Helpers;
 using Camera_Capture_demo.Models;
 using HalconDotNet;
 using System;
@@ -18,182 +19,79 @@ namespace Camera_Capture_demo.HalconVision
     class HalconOperator
     {
         HObject hImage;
-        static HTuple hv_ModelID,hv_homMat2D;
-        static List<HTuple> hv_ModelParams_List;
-        static List<int> modelNoList;
-        public static void ReUpdateParams()
+        HTuple hv_ModelID, hv_ModelParams, hv_homMat2D;
+        string modelID_Path, modelParams_Path, calibration_Path;
+        string[] modelROI_Path = new string[4];
+
+        int camNo;
+        private static List<HalconOperator> halconOperatorList;
+        private static readonly object locker = new object();
+
+        private HalconOperator(int camNo)
         {
-            hv_ModelID = new HTuple();
-            hv_ModelParams_List = new List<HTuple>();
-            modelNoList = new List<int>();
-            for (int i = 1; i <= 10; i++)
+            this.camNo = camNo;
+            calibration_Path = Application.StartupPath + $"\\Calibration\\Cam_homMat2D{camNo + 1}";
+            ReUpdateParams();
+        }
+
+        public static HalconOperator GetInstance(int camNo)
+        {
+            if (halconOperatorList == null)
+            {
+                halconOperatorList = new List<HalconOperator>();
+                for (int i = 0; i < 2; i++)
+                {
+                    halconOperatorList.Add(null);
+                }
+            }
+            if (halconOperatorList[camNo] == null)
+            {
+                lock (locker)
+                {
+                    if (halconOperatorList[camNo] == null)
+                    {
+                        halconOperatorList[camNo] = new HalconOperator(camNo);
+                    }
+                }
+            }
+            return halconOperatorList[camNo];
+        }
+
+        public void ReUpdateParams()
+        {
+            #region 项目路径
+            string parent = Application.StartupPath + "\\Project\\" + ConfigVars.configInfo.ProductInfos.SelectProject;
+#if NCC
+            modelID_Path = parent + $"\\Model{camNo + 1}\\model_cell.ncm";
+#else
+            modelID_Path = parent + $"\\Model{camNo+1}\\model_cell.sbm";
+#endif
+            if (File.Exists(modelID_Path))
             {
 #if NCC
-                string modelID_Path = Application.StartupPath + $"\\Model\\model_cell{i}.ncm";//shapmodel:sbm,nccmodel:ncm
-                if (File.Exists(modelID_Path))
-                {
-                    modelNoList.Add(i);
-                    HOperatorSet.ReadNccModel(modelID_Path, out HTuple hv_SubModelID);
-                    hv_ModelID = hv_ModelID.TupleConcat(hv_SubModelID);
-                }
+                if (hv_ModelID != null)
+                    HOperatorSet.ClearNccModel(hv_ModelID);
+                HOperatorSet.ReadNccModel(modelID_Path, out hv_ModelID);
 #else
-                string modelID_Path = Application.StartupPath + $"\\Model\\model_cell{i}.sbm";
-                if (File.Exists(modelID_Path))
-                {
-                    HOperatorSet.ReadShapeModel(modelID_Path, out HTuple hv_SubModelID);
-                    hv_ModelID = hv_ModelID.TupleConcat(hv_SubModelID);
-                }
+                if (hv_ModelID != null)
+                    HOperatorSet.ClearShapeModel(hv_ModelID);
+                HOperatorSet.ReadShapeModel(modelID_Path, out hv_ModelID);
 #endif
-                string modelParams_Path = Application.StartupPath + $"\\Model\\model_cell{i}.tup";
-                if (File.Exists(modelParams_Path))
-                {
-                    HOperatorSet.ReadTuple(modelParams_Path, out HTuple hv_ModelParams);
-                    hv_ModelParams_List.Add(hv_ModelParams);
-                }
             }
-
-        }
-
-        /// <summary>
-        /// 将多个图像拼接成一个
-        /// </summary>
-        /// <param name="images">图像元组</param>
-        /// <param name="rows">拼接子图列数</param>
-        /// <param name="columns">拼接子图行数</param>
-        /// <param name="imageWidth">图像宽度</param>
-        /// <param name="imageHeight">图像高度</param>
-        public HObject MosaicImages2One(HObject images, int rows, int columns)
-        {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            HTuple ProjMatrices = new HTuple();//射影变换矩阵的数组
-            HTuple Rows1 = new HTuple();//源图像中对应点的行坐标
-            HTuple Cols1 = new HTuple();//源图像中对应点的列坐标
-            HTuple Rows2 = new HTuple();//目标图像中对应点的行坐标
-            HTuple Cols2 = new HTuple();//目标图像中对应点的列坐标
-            HTuple NumMatches = new HTuple();//图像对中对应点的数量
-            GetMosaicImgPairs(rows, columns, out int[] from, out int[] to);
-            HOperatorSet.GetImageSize(images.SelectObj(0),out HTuple imageWidth,out HTuple imageHeight);
-            for (int i = 0; i < from.Length; i++)
+            modelParams_Path = parent + $"\\Model{camNo + 1}\\model_cell.tup";
+            for (int i = 0; i < 4; i++)
             {
-                HOperatorSet.SelectObj(images, out HObject ImageF, from[i]);
-                HOperatorSet.SelectObj(images, out HObject ImageT, to[i]);
-                //提取两个图像中的点
-                HOperatorSet.PointsFoerstner(ImageF,
-                                             1,
-                                             2,
-                                             3,
-                                             40,
-                                             0.2,
-                                             "gauss",
-                                             "true",
-                                             out HTuple RowJunctionsF,
-                                             out HTuple ColJunctionsF,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _);
-                HOperatorSet.PointsFoerstner(ImageT,
-                                             1,
-                                             2,
-                                             3,
-                                             40,
-                                             0.2,
-                                             "gauss",
-                                             "true",
-                                             out HTuple RowJunctionsT,
-                                             out HTuple ColJunctionsT,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _,
-                                             out _);
-                Debug.WriteLine(watch.ElapsedMilliseconds.ToString());
-                //通过查找点之间的对应关系，计算两个图像之间的投影变换矩阵
-                HOperatorSet.ProjMatchPointsRansac(ImageF,
-                                                   ImageT,
-                                                   RowJunctionsF,
-                                                   ColJunctionsF,
-                                                   RowJunctionsT,
-                                                   ColJunctionsT,
-                                                   "ncc",
-                                                   10,
-                                                   0,
-                                                   0,
-                                                   imageHeight,
-                                                   imageWidth,
-                                                   0,
-                                                   0.5,
-                                                   "gold_standard",
-                                                   2,
-                                                   42,
-                                                   out HTuple ProjMatrix,
-                                                   out HTuple Points1,
-                                                   out HTuple Points2);
-                Debug.WriteLine(watch.ElapsedMilliseconds.ToString());
-                ProjMatrices = ProjMatrices.TupleConcat(ProjMatrix);
-                Rows1 = Rows1.TupleConcat(RowJunctionsF.TupleSelect(Points1));
-                Cols1 = Cols1.TupleConcat(ColJunctionsF.TupleSelect(Points1));
-                Rows2 = Rows2.TupleConcat(RowJunctionsT.TupleSelect(Points2));
-                Cols2 = Cols2.TupleConcat(ColJunctionsT.TupleSelect(Points2));
-                NumMatches = NumMatches.TupleConcat(Points1.Length);
+                modelROI_Path[i] = parent + $"\\Model{camNo + 1}\\model_roi{i + 1}.hobj";
             }
-
-            //将多个图像合并成一个镶嵌图像
-            //HObject MosaicImage;
-            //HOperatorSet.GenProjectiveMosaic(images, out MosaicImage, 2, from, to, ProjMatrices, "default", "false", out MosaicMatrices2D);
-            //对图像马赛克进行捆绑调整
-            HOperatorSet.BundleAdjustMosaic(rows * columns, 1, from, to, ProjMatrices, Rows1, Cols1, Rows2, Cols2, NumMatches, "rigid", out HTuple MosaicMatrices2D, out HTuple Rows, out HTuple Cols, out HTuple Error);
-            //输出修正后的图像
-            HOperatorSet.GenBundleAdjustedMosaic(images, out HObject MosaicImageRigid, MosaicMatrices2D, "default", "false", out HTuple TransMatrix2D);
-            //HOperatorSet.WriteImage(MosaicImageRigid, "jpg", 0, ".\\拼接图像");
-            watch.Stop();
-            Debug.WriteLine(watch.ElapsedMilliseconds.ToString());
-            return MosaicImageRigid;
-        }
-
-        /// <summary>
-        /// 获取两两拼接的图像对数组
-        /// </summary>
-        /// <param name="rows"></param>
-        /// <param name="columns"></param>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        private void GetMosaicImgPairs(int rows, int columns, out int[] from, out int[] to)
-        {
-            if (rows <= 0 || columns <= 0 || rows + columns < 3)
+            #endregion
+            if (File.Exists(modelParams_Path))
             {
-                from = to = null;
-                return;
+                HOperatorSet.ReadTuple(modelParams_Path, out hv_ModelParams);
             }
-            List<int> fromList = new List<int>();
-            List<int> toList = new List<int>();
-            //int combinationNum = (rows + columns) * 3 - 8;
-
-            for (int i = 1; i <= rows * columns; i++)
+            if (File.Exists(calibration_Path))
             {
-                int i_row = (int)Math.Ceiling(i / (float)columns);
-                int i_column = i - (i_row - 1) * columns;
-                if (i_column < columns)
-                {
-                    fromList.Add(i);
-                    toList.Add(i + 1);
-                }
-                if (i_row < rows)
-                {
-                    fromList.Add(i);
-                    toList.Add(i + columns);
-                }
+                HOperatorSet.ReadTuple(calibration_Path, out hv_homMat2D);
             }
-            from = fromList.ToArray();
-            to = toList.ToArray();
         }
 
         /// <summary>
@@ -202,123 +100,192 @@ namespace Camera_Capture_demo.HalconVision
         /// <param name="hWindow"></param>
         /// <param name="ho_Image"></param>
         /// <param name="pointXYU"></param>
-        public void FindShapeModel(HWindow hWindow, HObject ho_Image, int camNo, out List<PointXYU> pixelPointXYUs, out List<PointXYU> worldPointXYUs)
+        public void FindShapeModel(HWindow hWindow, HObject ho_Image, out List<PointXYU> pixelPointXYUs, out List<PointXYU> worldPointXYUs)
         {
-            HTuple angleStart = new HTuple(), angleExtent = new HTuple(), scaleMin = new HTuple(), scaleMax = new HTuple(),minScore = new HTuple();
-            List<HObject> ho_Rect_List = new List<HObject>();
             pixelPointXYUs = new List<PointXYU>();
             worldPointXYUs = new List<PointXYU>();
-            //HOperatorSet.GenEmptyObj(out HObject ho_SelectedContours);
-            
-            string roi_path = Application.StartupPath + $"\\Model\\ROI{camNo}.hobj";
-            if (File.Exists(roi_path))
+            for (int index = 0; index < modelROI_Path.Length; index++)
             {
-                HOperatorSet.ReadObject(out HObject ho_region, Application.StartupPath + $"\\Model\\ROI{camNo}");
-                hWindow.SetDraw("margin");
-                hWindow.DispObj(ho_region);
-                HOperatorSet.ReduceDomain(ho_Image, ho_region, out ho_Image);
-            }
-            for (int i = 0; i < hv_ModelID.Length; i++)
-            {
-                HTuple hv_ModelParams = hv_ModelParams_List[i];
-                angleStart = angleStart.TupleConcat(-0.39);
-                angleExtent = angleExtent.TupleConcat(0.79);
-                scaleMin = scaleMin.TupleConcat(0.6);
-                scaleMax = scaleMax.TupleConcat(1.4);
-                minScore = minScore.TupleConcat(hv_ModelParams[2].F);
-                HOperatorSet.GenRectangle2ContourXld(out HObject ho_SubRect, 0, 0, 0, hv_ModelParams[0].F / 2, hv_ModelParams[1].F / 2);
-                ho_Rect_List.Add(ho_SubRect);
-            }
-#if NCC
-            HOperatorSet.FindNccModels(ho_Image, hv_ModelID, angleStart, angleExtent, minScore, 0, 0.2, "true", 0, out HTuple hv_RowCheck, out HTuple hv_ColumnCheck, out HTuple hv_AngleCheck, out HTuple hv_Score,out HTuple modelIndex);
-#else
-            HOperatorSet.FindScaledShapeModels(ho_Image, hv_ModelID, angleStart, angleExtent, scaleMin, scaleMax, minScore, 0, 0.5, "interpolation",
-            6, 0.8, out HTuple hv_RowCheck, out HTuple hv_ColumnCheck, out HTuple hv_AngleCheck, out HTuple hv_Scale,
-            out HTuple hv_Score,out HTuple modelIndex);
-#endif
-            hWindow.SetColor("blue");
-            for (int i = 0; i < hv_Score.Length; i++)
-            {
-                int model = modelIndex[i];
-                HTuple hv_ModelParams = hv_ModelParams_List[model];
-                HOperatorSet.VectorAngleToRigid(0, 0, 0, hv_RowCheck[i], hv_ColumnCheck[i], hv_AngleCheck[i], out HTuple hv_MovementOfObject);
-                HOperatorSet.AffineTransContourXld(ho_Rect_List[model], out HObject ho_ModelAtNewPosition,
-                    hv_MovementOfObject);
-                HOperatorSet.GenRegionContourXld(ho_ModelAtNewPosition, out HObject ho_Region, "filled");
-                HOperatorSet.AffineTransPixel(hv_MovementOfObject, hv_ModelParams[4], hv_ModelParams[5], out HTuple hv_RowTrans, out HTuple hv_ColTrans);
-                HOperatorSet.GenCrossContourXld(out HObject ho_Cross, hv_RowTrans, hv_ColTrans, 10, 0.785398);
-                HOperatorSet.GenCircleContourXld(out HObject ho_ContCircle, hv_RowTrans, hv_ColTrans, 10, 0, 6.28318, "positive", 1);
-                HOperatorSet.Intensity(ho_Region, ho_Image, out HTuple hv_Mean, out _);
-                #region 寻找区域内频率最高的灰度值
-                //HOperatorSet.GrayHisto(ho_Region, ho_Image, out HTuple absoluteHisto,out _);
-                //HOperatorSet.TupleSortIndex(absoluteHisto, out HTuple indices);
-                //int maxFreqGray = indices[255];
-                #endregion
-                bool flag;
-                if (hv_ModelParams[6] == 0)
+                if (File.Exists(modelROI_Path[index]))
                 {
-                    flag = hv_Mean >= hv_ModelParams[3];
+                    HOperatorSet.ReadObject(out HObject ho_region, modelROI_Path[index]);
+                    hWindow.SetDraw("margin");
+                    hWindow.SetLineWidth(1);
+                    hWindow.SetColor("yellow");
+                    hWindow.DispObj(ho_region);
+                    HOperatorSet.ReduceDomain(ho_Image, ho_region, out HObject ho_reduced);
+                    //HOperatorSet.GenEmptyObj(out HObject ho_SelectedContours);
+                    HOperatorSet.GenRectangle2ContourXld(out HObject ho_Rect, 0, 0, 0, hv_ModelParams[0].F / 2, hv_ModelParams[1].F / 2);
+#if NCC
+                    HOperatorSet.FindNccModel(ho_reduced, hv_ModelID, -0.8, 1.6, hv_ModelParams[2].F, 1, 0, "true", 0, out HTuple hv_RowCheck, out HTuple hv_ColumnCheck, out HTuple hv_AngleCheck, out HTuple hv_Score);
+#else
+            HOperatorSet.FindScaledShapeModel(ho_Image, hv_ModelID, -0.8, 1.6, 0.6, 1.4, hv_ModelParams[2].F, 1, 0.5, "interpolation",
+    5, 0.8, out HTuple hv_RowCheck, out HTuple hv_ColumnCheck, out HTuple hv_AngleCheck, out HTuple hv_Scale,
+    out HTuple hv_Score);
+#endif
+                    hWindow.SetColor("blue");
+                    if (hv_Score.Length == 0)
+                    {
+                        pixelPointXYUs.Add(null);
+                        worldPointXYUs.Add(null);
+                    }
+                    for (int i = 0; i < hv_Score.Length; i++)
+                    {
+                        HOperatorSet.VectorAngleToRigid(0, 0, 0, hv_RowCheck[i], hv_ColumnCheck[i], hv_AngleCheck[i], out HTuple hv_MovementOfObject);
+                        HOperatorSet.AffineTransContourXld(ho_Rect, out HObject ho_ModelAtNewPosition,
+                            hv_MovementOfObject);
+                        HOperatorSet.GenRegionContourXld(ho_ModelAtNewPosition, out HObject ho_Region, "filled");
+                        HOperatorSet.AffineTransPixel(hv_MovementOfObject, hv_ModelParams[4], hv_ModelParams[5], out HTuple hv_RowTrans, out HTuple hv_ColTrans);
+                        HOperatorSet.GenCrossContourXld(out HObject ho_Cross, hv_RowTrans, hv_ColTrans, 20, 0.785398);
+                        HOperatorSet.GenCircleContourXld(out HObject ho_ContCircle, hv_RowTrans, hv_ColTrans, 20, 0, 6.28318, "positive", 1);
+                        HOperatorSet.Intensity(ho_Region, ho_reduced, out HTuple hv_Mean, out _);
+
+                        bool flag;
+                        if (hv_ModelParams[6] == 0)
+                            flag = hv_Mean >= hv_ModelParams[3];
+                        else
+                            flag = hv_Mean <= hv_ModelParams[3];
+                        if (flag)
+                        {
+                            hWindow.DispObj(ho_ModelAtNewPosition);
+                            hWindow.DispObj(ho_Cross);
+                            hWindow.DispObj(ho_ContCircle);
+                            HTuple hv_text;
+                            pixelPointXYUs.Add(new PointXYU() { X = hv_RowTrans[0].F, Y = hv_ColTrans[0].F, U = hv_AngleCheck[i].F });
+                            if (hv_homMat2D != null)
+                            {
+                                HOperatorSet.AffineTransPoint2d(hv_homMat2D, hv_RowTrans, hv_ColTrans, out HTuple hv_WorldRow, out HTuple hv_WorldCol);
+                                worldPointXYUs.Add(new PointXYU() { X = hv_WorldRow[0].F, Y = hv_WorldCol[0].F, U = hv_AngleCheck[i].F });
+                                hv_text = $"({hv_WorldRow.TupleString(".2f")},\n{hv_WorldCol.TupleString(".2f")},\n{hv_AngleCheck.TupleSelect(i).TupleString(".2f")})";
+                            }
+                            else
+                            {
+                                worldPointXYUs.Add(new PointXYU() { X = hv_RowTrans[0].F, Y = hv_ColTrans[0].F, U = hv_AngleCheck[i].F });
+                                hv_text = $"({hv_RowTrans.TupleString(".2f")},\n{hv_ColTrans.TupleString(".2f")},\n{hv_AngleCheck.TupleSelect(i).TupleString(".2f")})";
+                            }
+                            hWindow.DispText(hv_text, "image", hv_RowTrans, hv_ColTrans, new HTuple("black"), "box", "true");
+                        }
+                        else
+                        {
+                            pixelPointXYUs.Add(null);
+                            worldPointXYUs.Add(null);
+                        }
+                    }
+                    ho_reduced.Dispose();
                 }
                 else
                 {
-                    flag = hv_Mean <= hv_ModelParams[3];
-                }
-                if (flag)
-                {
-                    hWindow.DispObj(ho_ModelAtNewPosition);
-                    hWindow.DispObj(ho_Cross);
-                    hWindow.DispObj(ho_ContCircle);
-                    HTuple hv_text;
-                    pixelPointXYUs.Add(new PointXYU() { X = hv_RowTrans[0].F, Y = hv_ColTrans[0].F, U = hv_AngleCheck[i].F });
-
-                    string calibration_Path = Application.StartupPath + $"\\Calibration\\Cam{camNo}_homMat2D";
-                    if (File.Exists(calibration_Path))
-                    {
-                        HOperatorSet.ReadTuple(calibration_Path, out hv_homMat2D);
-                    }
-                    if (hv_homMat2D != null)
-                    {
-                        HOperatorSet.AffineTransPoint2d(hv_homMat2D, hv_RowTrans, hv_ColTrans, out HTuple hv_WorldRow, out HTuple hv_WorldCol);
-                        worldPointXYUs.Add(new PointXYU() { X = hv_WorldRow[0].F, Y = hv_WorldCol[0].F, U = hv_AngleCheck[i].F });
-                        hv_text = $"(M:{modelNoList[model]},\n,{hv_WorldRow.TupleString(".2f")},\n{hv_WorldCol.TupleString(".2f")},\n{hv_AngleCheck.TupleSelect(i).TupleString(".2f")})";
-                    }
-                    else
-                    {
-                        worldPointXYUs.Add(new PointXYU() { X = hv_RowTrans[0].F, Y = hv_ColTrans[0].F, U = hv_AngleCheck[i].F });
-                        hv_text = $"(M:{modelNoList[model]},\n,{hv_RowTrans.TupleString(".2f")},\n{hv_ColTrans.TupleString(".2f")},\n{hv_AngleCheck.TupleSelect(i).TupleString(".2f")})";
-                    }
-                    hWindow.DispText(hv_text, "image", hv_RowTrans+80, hv_ColTrans-80, new HTuple("black"), "box", "true");
+                    pixelPointXYUs.Add(null);
+                    worldPointXYUs.Add(null);
                 }
             }
-            #region 去除中心点小于电池距离的点位
-            //List<PointXYU> inspectPoints = pixelPointXYUs;
-            //List<int> removeIndex = new List<int>();
-            //for (int i = 0; i < inspectPoints.Count-1; i++)
-            //{
-            //    for (int j = i+1; j < inspectPoints.Count; j++)
-            //    {
-            //        HOperatorSet.DistancePp(inspectPoints[i].X, inspectPoints[i].Y, inspectPoints[j].X, inspectPoints[j].Y, out HTuple distance);
-            //        if(distance < 50)
-            //        {
-            //            removeIndex.Add(i-removeIndex.Count);
-            //            break;
-            //        }
-            //    }
-            //}
-            
-            //foreach (int i in removeIndex)
-            //{
-            //    pixelPointXYUs.RemoveAt(i);
-            //    worldPointXYUs.RemoveAt(i);
-            //}
-            #endregion
-            worldPointXYUs.Sort();
-            pixelPointXYUs.Sort();
         }
 
+        /// <summary>
+        /// 转换工具中心点坐标为Tool0坐标
+        /// </summary>
+        /// <param name="posTool1">当前Tcp坐标</param>
+        /// <param name="tcpTrans">工具坐标系相对于法兰盘中心的偏移和旋转</param>
+        /// <returns></returns>
+        public static PointXYU ConvertTcpToTool0(PointXYU posTool1, PointXYU tcpTrans)
+        {
+            HOperatorSet.VectorAngleToRigid(tcpTrans.X, tcpTrans.Y, tcpTrans.U, posTool1.X, posTool1.Y, posTool1.U, out HTuple homMat2D);
+            HOperatorSet.AffineTransPoint2d(homMat2D, 0, 0, out HTuple qx, out HTuple qy);
+            PointXYU posTool0 = new PointXYU() { X = qx[0].F, Y = qy[0].F, U = posTool1.U - tcpTrans.U };
+            return posTool0;
+        }
+
+        /// <summary>
+        /// 转化Tool0坐标为工具中心点坐标
+        /// </summary>
+        /// <param name="posTool0"></param>
+        /// <param name="tcpTrans"></param>
+        /// <returns></returns>
+        public static PointXYU ConvertTool0ToTcp(PointXYU posTool0, PointXYU tcpTrans)
+        {
+            HOperatorSet.VectorAngleToRigid(0, 0, 0, posTool0.X, posTool0.Y, posTool0.U, out HTuple homMat2D);
+            HOperatorSet.AffineTransPoint2d(homMat2D, tcpTrans.X, tcpTrans.Y, out HTuple qx, out HTuple qy);
+            PointXYU posTool1 = new PointXYU() { X = qx[0].F, Y = qy[0].F, U = posTool0.U + tcpTrans.U };
+            return posTool1;
+        }
+
+        /// <summary>
+        /// 根据下相机拍照结果动态Mask工具点
+        /// </summary>
+        /// <param name="photoPos">拍照点的机器人坐标</param>
+        /// <param name="featurePoint">相机捕捉的Tcp特征点坐标</param>
+        /// <returns></returns>
+        public static PointXYU CalTcpTrans(PointXYU photoPos, PointXYU featurePoint)
+        {
+            HOperatorSet.VectorAngleToRigid(0, 0, 0, photoPos.X, photoPos.Y, photoPos.U, out HTuple homMat2D);
+            HOperatorSet.HomMat2dInvert(homMat2D, out HTuple homMat2DInvert);
+            HOperatorSet.AffineTransPoint2d(homMat2DInvert, featurePoint.X, featurePoint.Y, out HTuple qx, out HTuple qy);
+            PointXYU tcpTrans = new PointXYU() { X = qx[0].F, Y = qy[0].F, U = -featurePoint.U };
+            return tcpTrans;
+        }
+
+        public static PointXYU CalActualFeaturePoint(PointXYU calibPhotoPoint, PointXYU currentPhotoPoint, PointXYU featurePoint)
+        {
+            HOperatorSet.VectorAngleToRigid(calibPhotoPoint.X, calibPhotoPoint.Y, calibPhotoPoint.U, currentPhotoPoint.X, currentPhotoPoint.Y, currentPhotoPoint.U, out HTuple homMat2D);
+            HOperatorSet.AffineTransPoint2d(homMat2D, featurePoint.X, featurePoint.Y, out HTuple qx, out HTuple qy);
+            return new PointXYU() { X = qx, Y = qy, U = featurePoint.U };
+        }
+
+        public static float Rad(double deg)
+        {
+            HOperatorSet.TupleRad(deg, out HTuple rad);
+            return (float)rad.D;
+        }
+
+        public static float Deg(double rad)
+        {
+            HOperatorSet.TupleDeg(rad, out HTuple reg);
+            return (float)reg.D;
+        }
+
+        /// <summary>
+        /// 多点拟合求圆心
+        /// </summary>
+        /// <param name="X">点的X坐标元组</param>
+        /// <param name="Y">点的Y坐标元组</param>
+        /// <param name="RcX">圆心X</param>
+        /// <param name="RcY">圆心Y</param>
+        /// <param name="R">半径</param>
+        /// <returns></returns>
+        public static bool FitCircle(List<PointF> points, out double RcX, out double RcY, out double R)
+        {
+            try
+            {
+                HTuple hTupleR = new HTuple();
+                HTuple hTupleC = new HTuple();
+                for (int i = 0; i < points.Count; i++)
+                {
+                    if (points[i].X > 0.0 & points[i].Y > 0.0)
+                    {
+                        hTupleR = hTupleR.TupleConcat(points[i].X);
+                        hTupleC = hTupleC.TupleConcat(points[i].Y);
+                    }
+                }
+                HObject contour;
+                HOperatorSet.GenContourPolygonXld(out contour, hTupleR, hTupleC);//使用模板中心生成多边形XLD轮廓
+                HOperatorSet.FitCircleContourXld(contour, "geotukey", -1, 0, 0, 3, 2, out HTuple row, out HTuple column, out HTuple radius, out HTuple StartPhi, out HTuple EndPhi, out HTuple pointOrder);//拟合圆形                                                                                                                                               //得出结果
+                RcX = row;
+                RcY = column;
+                R = radius;
+                contour.Dispose();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RcX = -1.0;
+                RcY = -1.0;
+                R = -1.0;
+                return false;
+            }
+        }
         // Chapter: Graphics / Text
         // Short Description: This procedure writes a text message. 
-        public void DispMessage(HTuple hv_WindowHandle, HTuple hv_String, HTuple hv_CoordSystem,
+        public static void DispMessage(HTuple hv_WindowHandle, HTuple hv_String, HTuple hv_CoordSystem,
             HTuple hv_Row, HTuple hv_Column, HTuple hv_Color, HTuple hv_Box)
         {
             // Local iconic variables 
@@ -412,6 +379,7 @@ namespace Camera_Capture_demo.HalconVision
         /// <param name="hWindowControl"></param>
         /// <param name="hImage"></param>
         public delegate void ShowImageDelegate(UserControl hWindowControl, HObject hImage);
+
         public static void ShowImage(UserControl hWindowControl, HObject hImage)
         {
             try
@@ -449,98 +417,6 @@ namespace Camera_Capture_demo.HalconVision
 
             }
 
-        }
-
-        private void ProjMatchPointsRansacPyramid(HObject ho_ImageF, HObject ho_ImageT,
-      HTuple hv_NumLevels, out HTuple hv_RowsF, out HTuple hv_ColsF, out HTuple hv_RowsT,
-      out HTuple hv_ColsT, out HTuple hv_ProjMatrix, out HTuple hv_Points1, out HTuple hv_Points2)
-        {
-            hv_ColsF = new HTuple();
-            hv_ColsT = new HTuple();
-            hv_Points1 = new HTuple();
-            hv_Points2 = new HTuple();
-            hv_ProjMatrix = new HTuple();
-            hv_RowsF = new HTuple();
-            hv_RowsT = new HTuple();
-            try
-            {
-                //This procedure uses an image pyramid to calculate
-                //the projective transformation between two images.
-                //
-                //If UseRigidTransformation is set to true,
-                //the results are restricted to rigid transformations
-                //(instead of projective transformations)
-                HTuple hv_UseRigidTransformation = 1;
-                // Local control variables 
-                //Parameters for the Harris point detector
-                HTuple hv_SigmaGrad = 0.7;
-                HTuple hv_SigmaSmooth = 2;
-                HTuple hv_Alpha = 0.04;
-                HTuple hv_Threshold = 50;
-                //
-                //Generate image pyramids for both input images
-                HOperatorSet.GenGaussPyramid(ho_ImageF, out HObject ho_ImageFPyramid, "constant", 0.5);
-                HOperatorSet.GenGaussPyramid(ho_ImageT, out HObject ho_ImageTPyramid, "constant", 0.5);
-                //At the beginning, no approximated projection is known
-                HTuple hv_HomMat2DGuide = new HTuple();
-                //
-                //Calculate projective transformation on each pyramid level
-                for (int level= hv_NumLevels;level>0;level--)
-                {
-                    //Select images from image pyramid
-                    HOperatorSet.SelectObj(ho_ImageFPyramid, out HObject ho_ImageFLevel, level);
-                    HOperatorSet.SelectObj(ho_ImageTPyramid, out HObject ho_ImageTLevel, level);
-                    //Extract interest points in both images
-                    HOperatorSet.PointsHarris(ho_ImageFLevel, hv_SigmaGrad, hv_SigmaSmooth, hv_Alpha,
-                        hv_Threshold, out hv_RowsF, out hv_ColsF);
-                    HOperatorSet.PointsHarris(ho_ImageTLevel, hv_SigmaGrad, hv_SigmaSmooth, hv_Alpha,
-                        hv_Threshold, out hv_RowsT, out hv_ColsT);
-                    //Calculate projection from point correspondences
-                    if (hv_HomMat2DGuide.Length == 0)
-                    {
-                        //On the highest pyramid level, use proj_mathc_points_ransac
-                        HOperatorSet.GetImageSize(ho_ImageFLevel, out HTuple hv_Width, out HTuple hv_Height);
-                        HOperatorSet.ProjMatchPointsRansac(ho_ImageFLevel, ho_ImageTLevel, hv_RowsF,
-                            hv_ColsF, hv_RowsT, hv_ColsT, "ncc", 10, 0, 0, hv_Height, new HTuple(),
-                            new HTuple(-40).TupleRad().TupleConcat(new HTuple(40).TupleRad()
-                            ), 0.5, "gold_standard", 2.5 * new HTuple(2).TuplePow(4 - level),
-                            42, out hv_ProjMatrix, out hv_Points1, out hv_Points2);
-                    }
-                    else
-                    {
-                        //On lower levels, use approximation from upper level as
-                        //input for proj_match_points_ransac_guided
-                        HOperatorSet.ProjMatchPointsRansacGuided(ho_ImageFLevel, ho_ImageTLevel,
-                            hv_RowsF, hv_ColsF, hv_RowsT, hv_ColsT, "ncc", 10, hv_HomMat2DGuide,
-                            10 * new HTuple(2.0).TuplePow(4.0 - level), 0.5, "gold_standard",
-                            2.5 * new HTuple(2.0).TuplePow(4.0 - level), 42, out hv_ProjMatrix,
-                            out hv_Points1, out hv_Points2);
-                    }
-                    if (hv_UseRigidTransformation != 0)
-                    {
-                        //Use found point correspondences to calculate rigid transformation
-                        //with vector_to_rigid
-                        //Note, that the resulting transformation of proj_match_points_ransac_guided
-                        //is ignored in this case.
-                        HTuple hv_RowF = hv_RowsF.TupleSelect(hv_Points1);
-                        HTuple hv_ColF = hv_ColsF.TupleSelect(hv_Points1);
-                        HTuple hv_RowT = hv_RowsT.TupleSelect(hv_Points2);
-                        HTuple hv_ColT = hv_ColsT.TupleSelect(hv_Points2);
-                        HOperatorSet.VectorToRigid(hv_RowF + 0.5, hv_ColF + 0.5, hv_RowT + 0.5, hv_ColT + 0.5,
-                            out hv_ProjMatrix);
-                        hv_ProjMatrix = hv_ProjMatrix.TupleConcat(new HTuple(0).TupleConcat(
-                            0)).TupleConcat(1);
-                    }
-                    //To be used on the next lower pyramid level, the projection has
-                    //to be adjusted to the new scale.
-                    HOperatorSet.HomMat2dScaleLocal(hv_ProjMatrix, 0.5, 0.5, out hv_HomMat2DGuide);
-                    HOperatorSet.HomMat2dScale(hv_HomMat2DGuide, 2, 2, 0, 0, out hv_HomMat2DGuide);
-                }
-            }
-            catch (HalconException HDevExpDefaultException)
-            {
-                throw HDevExpDefaultException;
-            }
         }
     }
 }

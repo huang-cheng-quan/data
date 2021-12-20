@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using Camera_Capture_demo.GlobalVariable;
+using HslCommunication.Profinet.Omron;
 using WindowsFormsApp1.Models;
 
 namespace Camera_Capture_demo.Models
@@ -11,6 +12,8 @@ namespace Camera_Capture_demo.Models
     [XmlRoot(ElementName = "ConfigInfo")]
     public class ConfigInfo
     {
+        [XmlArray("OmronPlcs")]
+        public List<OmronPlcFactory> OmronPlcs { get; set; }
 
         [XmlElement(ElementName = "UserInfos")]
         public UserInfos UserInfos { get; set; }
@@ -31,6 +34,9 @@ namespace Camera_Capture_demo.Models
 
         [XmlElement(ElementName = "Camera_information")]
         public Mv_Camera_parameter Camera_information { get; set; }
+
+        [XmlElement(ElementName = "ProductInfos")]
+        public ProductInfos ProductInfos { get; set; }
         [XmlArray("Cameras")]
         public List<MvClass> Cameras { get; set; }
 
@@ -53,7 +59,11 @@ namespace Camera_Capture_demo.Models
         public string Jobname { get; set; }
 
     }
-
+    public class ProductInfos
+    {
+        [XmlElement(ElementName = "SelectProject")]
+        public string SelectProject { get; set; }//当前选择的项目名称
+    }
     public class ToolInfos
     {
         [XmlElement(ElementName = "Xoffset1")]
@@ -72,7 +82,7 @@ namespace Camera_Capture_demo.Models
         public float CamPositionOnCalib { get; set; }//标定时的相机坐标
 
     }
-    public class Client_data 
+    public class Client_data
     {
         [XmlAttribute("IP_Client")]
         public string IP_Client { get; set; }
@@ -148,17 +158,73 @@ namespace Camera_Capture_demo.Models
         [XmlElement(ElementName = "CamPara")]
         public List<CamPara> CamPara { get; set; }            // 当前相机的参数
     }
-
-    public class Frame_parameter
+    public class OmronPlcFactory
     {
-        [XmlElement(ElementName = "Frame_Total")]
-        public int Frame_Total = 0;    // 当前曝光时间
-       
-    }
-    public class CamPara 
-    {
-        public string SerialNumber;
-        public int CamNum;
+        [XmlAttribute("PlcNo")]
+        public int PlcNo { get; set; }//PLC序号
+        [XmlElement(ElementName = "IpAddress")]
+        public string IpAddr { get; set; }//IP地址
+        [XmlElement(ElementName = "Port")]
+        public int Port { get; set; }//端口号
+        [XmlElement(ElementName = "DA1")]
+        public byte DA1 { get; set; }//PLC节点号
+        [XmlElement(ElementName = "SA1")]
+        public byte SA1 { get; set; }//PC节点号
 
+
+        private static List<OmronFinsNet> omronPlcList;
+        private static readonly object locker = new object();
+        public OmronPlcFactory()
+        {
+        }
+
+        public static OmronFinsNet GetInstance(int plcNo)
+        {
+            if (omronPlcList == null)
+            {
+                omronPlcList = new List<OmronFinsNet>();
+                for (int i = 0; i < 2; i++)
+                {
+                    omronPlcList.Add(null);
+                }
+            }
+            OmronPlcFactory omronPlcConfig = ConfigVars.configInfo.OmronPlcs[plcNo];
+            if (omronPlcConfig != null && (omronPlcList[plcNo] == null || TcpParamsChanged(plcNo, omronPlcConfig)))
+            {
+                lock (locker)
+                {
+                    if (omronPlcList[plcNo] == null || TcpParamsChanged(plcNo, omronPlcConfig))
+                    {
+                        omronPlcList[plcNo] = new OmronFinsNet(omronPlcConfig.IpAddr, omronPlcConfig.Port);
+                        omronPlcList[plcNo].SA1 = omronPlcConfig.SA1;
+                        omronPlcList[plcNo].DA1 = omronPlcConfig.DA1;
+                    }
+                }
+            }
+            return omronPlcList[plcNo];
+        }
+
+        private static bool TcpParamsChanged(int plcNo, OmronPlcFactory config)
+        {
+            if (omronPlcList != null)
+            {
+                return (omronPlcList[plcNo].IpAddress != config.IpAddr) || (omronPlcList[plcNo].Port != config.Port) ||
+                    (omronPlcList[plcNo].SA1 != config.SA1);
+            }
+            return false;
+        }
     }
 }
+public class Frame_parameter
+{
+    [XmlElement(ElementName = "Frame_Total")]
+    public int Frame_Total = 0;    // 当前曝光时间
+
+}
+public class CamPara
+{
+    public string SerialNumber;
+    public int CamNum;
+
+}
+

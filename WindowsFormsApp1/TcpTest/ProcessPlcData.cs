@@ -34,6 +34,14 @@ namespace WindowsFormsApp1.TcpTest
         /// </summary>
         public string SendCoordinate2 = "Sdcd2";
         /// <summary>
+        /// 上料相机处理完毕
+        /// </summary>
+        public string CamComplete1 = "Cmcp1#";
+        /// <summary>
+        /// 定位相机处理完毕
+        /// </summary>
+        public string CamComplete2 = "Cmcp2#";
+        /// <summary>
         /// PLC接受到的标志
         /// </summary>
         public string PlcReceiveCoordinateFlag = "PLRC";

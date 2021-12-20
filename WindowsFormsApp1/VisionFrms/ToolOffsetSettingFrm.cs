@@ -36,8 +36,7 @@ namespace Camera_Capture_demo.VisionFrms
             nudYoffset1.Value = Convert.ToDecimal(toolInfos.Yoffset1);
             nudXoffset2.Value = Convert.ToDecimal(toolInfos.Xoffset2);
             nudYoffset2.Value = Convert.ToDecimal(toolInfos.Yoffset2);
-            nudXoffset3.Value = Convert.ToDecimal(toolInfos.Xoffset3);
-            nudYoffset3.Value = Convert.ToDecimal(toolInfos.Yoffset3);
+           
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -46,8 +45,7 @@ namespace Camera_Capture_demo.VisionFrms
             toolInfos.Yoffset1 = Convert.ToSingle(nudYoffset1.Value);
             toolInfos.Xoffset2 = Convert.ToSingle(nudXoffset2.Value);
             toolInfos.Yoffset2 = Convert.ToSingle(nudYoffset2.Value);
-            toolInfos.Xoffset3 = Convert.ToSingle(nudXoffset3.Value);
-            toolInfos.Yoffset3 = Convert.ToSingle(nudYoffset3.Value);
+            
             XmlHelper.SerializeToXml<ConfigInfo>(ConfigVars.configInfo);
             MessageBox.Show("参数保存成功");
         }

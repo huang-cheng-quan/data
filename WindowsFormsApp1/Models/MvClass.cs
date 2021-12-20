@@ -252,7 +252,6 @@ namespace WindowsFormsApp1.Models
                 return false;
             }
 
-          
             // ch:设置采集连续模式 | en:Set Continues Aquisition Mode
             m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
             m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
@@ -312,7 +311,6 @@ namespace WindowsFormsApp1.Models
             }
             
         }
-
         public bool OneShot() 
         {
             try
@@ -345,12 +343,10 @@ namespace WindowsFormsApp1.Models
                 ShowErrorMsg("Stop Grabbing Fail!", nRet);
             }
         }
-
         private void ShowException(Exception exception)
         {
             System.Windows.MessageBox.Show("Exception caught:\n" + exception.Message, "Error", (MessageBoxButton)MessageBoxButtons.OK, (MessageBoxImage)MessageBoxIcon.Error);
         }
-
         private void ShowErrorMsg(string csMessage, int nErrorNum)
         {
             string errorMsg;

@@ -47,14 +47,10 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnTakePic = new System.Windows.Forms.Button();
             this.btnDrawROI1 = new System.Windows.Forms.Button();
-            this.cboCameraNo = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.cboTemplateNo = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.btnDelTemplate = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.cboPolarity = new System.Windows.Forms.ComboBox();
             this.hWindowControl1 = new HalconDotNet.HWindowControl();
+            this.cboRoiNo = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinScore)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbEraserSize)).BeginInit();
@@ -132,7 +128,7 @@
             // 
             this.btnOpenImg.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnOpenImg.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnOpenImg.Location = new System.Drawing.Point(688, 114);
+            this.btnOpenImg.Location = new System.Drawing.Point(688, 12);
             this.btnOpenImg.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnOpenImg.Name = "btnOpenImg";
             this.btnOpenImg.Size = new System.Drawing.Size(94, 38);
@@ -145,7 +141,7 @@
             // 
             this.btnSetEraser.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnSetEraser.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnSetEraser.Location = new System.Drawing.Point(833, 201);
+            this.btnSetEraser.Location = new System.Drawing.Point(835, 133);
             this.btnSetEraser.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnSetEraser.Name = "btnSetEraser";
             this.btnSetEraser.Size = new System.Drawing.Size(94, 38);
@@ -158,7 +154,7 @@
             // 
             this.btnDrawRect.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnDrawRect.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnDrawRect.Location = new System.Drawing.Point(688, 202);
+            this.btnDrawRect.Location = new System.Drawing.Point(688, 133);
             this.btnDrawRect.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnDrawRect.Name = "btnDrawRect";
             this.btnDrawRect.Size = new System.Drawing.Size(94, 38);
@@ -269,7 +265,7 @@
             this.groupBox1.Controls.Add(this.btnClrEraser);
             this.groupBox1.Controls.Add(this.trbEraserSize);
             this.groupBox1.Font = new System.Drawing.Font("楷体", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox1.Location = new System.Drawing.Point(685, 268);
+            this.groupBox1.Location = new System.Drawing.Point(684, 242);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -282,7 +278,7 @@
             // 
             this.btnTakePic.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnTakePic.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnTakePic.Location = new System.Drawing.Point(834, 157);
+            this.btnTakePic.Location = new System.Drawing.Point(832, 12);
             this.btnTakePic.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnTakePic.Name = "btnTakePic";
             this.btnTakePic.Size = new System.Drawing.Size(94, 38);
@@ -295,7 +291,7 @@
             // 
             this.btnDrawROI1.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnDrawROI1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnDrawROI1.Location = new System.Drawing.Point(688, 158);
+            this.btnDrawROI1.Location = new System.Drawing.Point(832, 66);
             this.btnDrawROI1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnDrawROI1.Name = "btnDrawROI1";
             this.btnDrawROI1.Size = new System.Drawing.Size(94, 38);
@@ -303,75 +299,6 @@
             this.btnDrawROI1.Text = "设置ROI";
             this.btnDrawROI1.UseVisualStyleBackColor = true;
             this.btnDrawROI1.Click += new System.EventHandler(this.btnDrawROI_Click);
-            // 
-            // cboCameraNo
-            // 
-            this.cboCameraNo.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.cboCameraNo.FormattingEnabled = true;
-            this.cboCameraNo.Items.AddRange(new object[] {
-            "相机1",
-            "相机2"});
-            this.cboCameraNo.Location = new System.Drawing.Point(688, 19);
-            this.cboCameraNo.Margin = new System.Windows.Forms.Padding(2);
-            this.cboCameraNo.Name = "cboCameraNo";
-            this.cboCameraNo.Size = new System.Drawing.Size(92, 22);
-            this.cboCameraNo.TabIndex = 59;
-            this.cboCameraNo.SelectedIndexChanged += new System.EventHandler(this.cboCameraNo_SelectedIndexChanged);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("楷体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label5.Location = new System.Drawing.Point(685, 3);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 14);
-            this.label5.TabIndex = 60;
-            this.label5.Text = "相机选择";
-            // 
-            // cboTemplateNo
-            // 
-            this.cboTemplateNo.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.cboTemplateNo.FormattingEnabled = true;
-            this.cboTemplateNo.Items.AddRange(new object[] {
-            "模板1",
-            "模板2",
-            "模板3",
-            "模板4",
-            "模板5",
-            "模板6",
-            "模板7",
-            "模板8",
-            "模板9",
-            "模板10"});
-            this.cboTemplateNo.Location = new System.Drawing.Point(690, 68);
-            this.cboTemplateNo.Margin = new System.Windows.Forms.Padding(2);
-            this.cboTemplateNo.Name = "cboTemplateNo";
-            this.cboTemplateNo.Size = new System.Drawing.Size(92, 22);
-            this.cboTemplateNo.TabIndex = 59;
-            this.cboTemplateNo.SelectedIndexChanged += new System.EventHandler(this.cboTemplateNo_SelectedIndexChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("楷体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label6.Location = new System.Drawing.Point(687, 52);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(63, 14);
-            this.label6.TabIndex = 60;
-            this.label6.Text = "模板选择";
-            // 
-            // btnDelTemplate
-            // 
-            this.btnDelTemplate.Font = new System.Drawing.Font("楷体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnDelTemplate.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnDelTemplate.Location = new System.Drawing.Point(805, 65);
-            this.btnDelTemplate.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btnDelTemplate.Name = "btnDelTemplate";
-            this.btnDelTemplate.Size = new System.Drawing.Size(121, 27);
-            this.btnDelTemplate.TabIndex = 2;
-            this.btnDelTemplate.Text = "删除当前模板";
-            this.btnDelTemplate.UseVisualStyleBackColor = true;
-            this.btnDelTemplate.Click += new System.EventHandler(this.btnDelTemplate_Click);
             // 
             // label7
             // 
@@ -408,17 +335,27 @@
             this.hWindowControl1.TabIndex = 61;
             this.hWindowControl1.WindowSize = new System.Drawing.Size(677, 602);
             // 
+            // cboRoiNo
+            // 
+            this.cboRoiNo.FormattingEnabled = true;
+            this.cboRoiNo.Items.AddRange(new object[] {
+            "胶片1",
+            "胶片2",
+            "胶片3",
+            "胶片4"});
+            this.cboRoiNo.Location = new System.Drawing.Point(688, 75);
+            this.cboRoiNo.Name = "cboRoiNo";
+            this.cboRoiNo.Size = new System.Drawing.Size(94, 22);
+            this.cboRoiNo.TabIndex = 62;
+            // 
             // CreateShapeModelFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(937, 646);
+            this.Controls.Add(this.cboRoiNo);
             this.Controls.Add(this.hWindowControl1);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.cboPolarity);
-            this.Controls.Add(this.cboTemplateNo);
-            this.Controls.Add(this.cboCameraNo);
             this.Controls.Add(this.txtPixelLocation);
             this.Controls.Add(this.nudThreshold);
             this.Controls.Add(this.nudMinScore);
@@ -432,7 +369,6 @@
             this.Controls.Add(this.btnTakePic);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnSaveModel);
-            this.Controls.Add(this.btnDelTemplate);
             this.Controls.Add(this.btnOpenImg);
             this.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -472,13 +408,9 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnTakePic;
         private System.Windows.Forms.Button btnDrawROI1;
-        private System.Windows.Forms.ComboBox cboCameraNo;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox cboTemplateNo;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button btnDelTemplate;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cboPolarity;
         private HalconDotNet.HWindowControl hWindowControl1;
+        private System.Windows.Forms.ComboBox cboRoiNo;
     }
 }

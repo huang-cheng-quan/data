@@ -23,53 +23,37 @@ using System.Net.Sockets;
 using BatteryFeederDemo.VisionFrms;
 using WindowsFormsApp1;
 using WindowsFormsApp1.TcpTest;
+using Dyestripping.Models;
+using Camera_Capture_demo.Models;
 
 namespace Camera_Capture_demo.VisionFrms
 {
     public partial class CalibrationFrm : ZoomForm
     {
         HObject m_hImage;
-        HWindow m_hWindow;
-        //和PLC通讯的变量
-        Socket m_socket;
+        HWindow m_hWindow;       
         int m_icamNo;//相机序号
         MvClass mvclass;
         BindingList<CoordinatePair> m_datalist = new BindingList<CoordinatePair>();
-        string m_sReceiveMessage1 = "";
-        string m_sReceiveMessage2 = "";
-        delegate PointF delegateGetWorldPoint();
-        event delegateGetWorldPoint eventGetWorldPoint;
 
-        delegate void delegateMove(object sender, EventArgs e);
-        event delegateMove eventMove;
-
-        readonly bool isRobot = false;//取料机构,true:机器人;false:电机组
-        string plc_r_motor_x = "D8108";//取料模组当前X轴位置
-        string plc_r_motor_y = "D8110";//取料模组当前Y轴位置
-        //string plc_r_motor_u = "D8114";//取料模组当前U轴位置
-
-        string plc_r_camrea_x = "D8116";//相机当前X轴位置
-
-        MainForm mf = new MainForm();
+        MotorsClass motorsInstance;
         ProcessPlcData processplcdata = new ProcessPlcData();
         float? cam_pos;
-        public CalibrationFrm(int camNo, Socket socket)
+
+        public CalibrationFrm(int camNo)
         {
             InitializeComponent();
             this.m_icamNo = camNo;
-            this.Name += camNo;
-            m_socket = socket;
+            this.Name += camNo;          
         }
 
         private void CalibrationFrm_Load(object sender, EventArgs e)
-        {         
-            eventGetWorldPoint += GetMotorsCoordinatePoint;
-            eventMove += MotorsMove;            
+        {                        
             dataGridView1.DataSource = m_datalist;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            m_hWindow = hWindowControl1.HalconWindow;
-            //basler = BaslerClass.GetInstance(m_icamNo);
+            m_hWindow = hWindowControl1.HalconWindow;  
             mvclass = MvClass.GetInstance(m_icamNo);
+            motorsInstance = new MotorsClass(m_icamNo);
             mvclass.eventProcessImage += Mv_eventProcessImage;
 
         }    
@@ -107,14 +91,11 @@ namespace Camera_Capture_demo.VisionFrms
             {
                 return;
             }
-            if (eventGetWorldPoint != null)
+            PointXYU p = motorsInstance.GetCurrentPos();
+            if (p != null)
             {
-                PointF p = eventGetWorldPoint();
-                if (p != null)
-                {
-                    m_datalist[e.RowIndex].WorldPoint = p;
-                    dataGridView1.InvalidateRow(e.RowIndex);
-                }
+                m_datalist[e.RowIndex].WorldPoint = new PointF(p.X, p.Y);
+                dataGridView1.InvalidateRow(e.RowIndex);
             }
         }
         private void btnTakePic_Click(object sender, EventArgs e)
@@ -314,98 +295,7 @@ namespace Camera_Capture_demo.VisionFrms
         /// <summary>
         /// 获取电机组坐标填入对应的坐标对行，并存储当前的相机位置
         /// </summary>
-        /// <returns></returns>
-        private PointF GetMotorsCoordinatePoint()
-        {
-            PointF pf = new PointF ();
-            string sGetcoordinate = null;
-            
-            if (m_icamNo==1)
-            {
-                sGetcoordinate = processplcdata.GetCoordinate1;
-               
-                mf.TcpSendMessage(sGetcoordinate);
-                if (m_sReceiveMessage1.Substring(0,3)==processplcdata.PlcReceiveCoordinateFlag)
-                {
-                    lock (this)
-                    {
-                        pf = processplcdata.ProcessReceivePlcData(m_sReceiveMessage1);
-                    }
-                   
-                }
-            }
-            else
-            {
-                sGetcoordinate = processplcdata.GetCoordinate2;
-                mf.TcpSendMessage(sGetcoordinate);
-                if (m_sReceiveMessage2.Substring(0, 3) == processplcdata.PlcReceiveCoordinateFlag)
-                {
-                    lock (this)
-                    {
-                        pf = processplcdata.ProcessReceivePlcData(m_sReceiveMessage2);
-                    }
-                    
-                }
-            }
-            
-
-            return pf;
-        }
-        public void ReceivePlcMessage(string receiveData) 
-        {
-            if (m_icamNo == 1)
-            {
-                m_sReceiveMessage1 = receiveData;
-            }
-            else
-            {
-                m_sReceiveMessage2 = receiveData;
-            }
-        }
-        private void RobotMove(object sender, EventArgs e)
-        {
-            string axis = null;
-            string direction = null;
-            Button button = (Button)sender;
-            string subStr = button.Name.Substring(button.Name.Length - 2, 2);
-            switch (subStr.Substring(1))
-            {
-                case "X":
-                    axis = "1";
-                    break;
-                case "Y":
-                    axis = "2";
-                    break;
-                case "Z":
-                    axis = "3";
-                    break;
-                case "R":
-                    axis = "4";
-                    break;
-                default:
-                    break;
-            }
-            switch (subStr.Substring(0, 1))
-            {
-                case "P":
-                    direction = "+";
-                    break;
-                case "N":
-                    direction = "-";
-                    break;
-                default:
-                    break;
-            }
-            if (axis != null && direction != null)
-            {
-                //yamahaObj.SendTelnetCommand("@IDIST " + float.Parse(tbDist.Text) * 1000);
-               // yamahaObj.SendTelnetCommand("@INCHXY " + axis + direction);
-            }
-        }
-        private void MotorsMove(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        /// <returns></returns>     
         class CoordinatePair
             {
                 [DisplayName("点对序号")]

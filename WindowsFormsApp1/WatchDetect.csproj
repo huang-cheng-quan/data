@@ -61,6 +61,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files\MVTec\HALCON-20.11-Steady\bin\dotnet35\halcondotnet.dll</HintPath>
     </Reference>
+    <Reference Include="HslCommunication">
+      <HintPath>Dll\HslCommunication.dll</HintPath>
+    </Reference>
     <Reference Include="MvCameraControl.Net">
       <HintPath>MV\MvCameraControl.Net.dll</HintPath>
     </Reference>
@@ -81,8 +84,22 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectorDetection\Connector.cs" />
+    <Compile Include="DeviceSettingFrms\OmronFinsTcp.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DeviceSettingFrms\OmronFinsTcp.designer.cs">
+      <DependentUpon>OmronFinsTcp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceSettingFrms\OmronPlcSettingFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DeviceSettingFrms\OmronPlcSettingFrm.designer.cs">
+      <DependentUpon>OmronPlcSettingFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GlobalVariable\ConfigVars.cs" />
     <Compile Include="HalconVision\HalconOperator.cs" />
+    <Compile Include="HalconVision\HalonWinow.cs" />
     <Compile Include="Helpers\IniFileHelper.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\TransExpV2.cs" />
@@ -107,8 +124,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ConfigInfo.cs" />
+    <Compile Include="Models\MotorsClass.cs" />
     <Compile Include="Models\MvClass.cs" />
     <Compile Include="Models\PointXYU.cs" />
+    <Compile Include="Models\RobotInfo.cs" />
     <Compile Include="MotionProcess.cs" />
     <Compile Include="MV\BasicDemo\BasicDemo.cs">
       <SubType>Form</SubType>
@@ -151,6 +170,12 @@
     <Compile Include="VisionFrms\ToolOffsetSettingFrm.Designer.cs">
       <DependentUpon>ToolOffsetSettingFrm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DeviceSettingFrms\OmronFinsTcp.resx">
+      <DependentUpon>OmronFinsTcp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceSettingFrms\OmronPlcSettingFrm.resx">
+      <DependentUpon>OmronPlcSettingFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LoginFrms\LoginFrm.resx">
       <DependentUpon>LoginFrm.cs</DependentUpon>
     </EmbeddedResource>
