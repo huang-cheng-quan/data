@@ -785,8 +785,8 @@ namespace BasicDemo
 
                 tb.Text = cbDeviceList.SelectedItem.ToString();
                 string[] tmp = tb.Text.Split(new[] { "("},StringSplitOptions.None);
-                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].CameraNo = int.Parse(lb.Text)-1;
-                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].CameraId = tmp[1].Substring(0,tmp[1].Length-1);
+                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].CameraNo = int.Parse(lb.Text);
+                ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].CameraId = tmp[0];/*.Substring(0,tmp[0].Length-1);*/
                 ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].currentExposureTime = float.Parse(tbExposure.Text);
                 ConfigVars.configInfo.Cameras[cbDeviceList.SelectedIndex].currentGain = float.Parse(tbGain.Text);
                 XmlHelper.SerializeToXml(ConfigVars.configInfo);
@@ -805,53 +805,56 @@ namespace BasicDemo
         }
         private void btn_SetCam_FeedBelt_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_CamFeedBelt,label14);
+            camerData2Xml(txt_CamFeedBelt,lbl_SetCam_FeedBelt);
         }
        
         private void btn_ConnectorNegative_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_ConnectorNegative,label15);
+            camerData2Xml(txt_ConnectorNegative,lbl_ConnectorNegative);
         }
 
         private void btn_FeedPositive_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_FeedPositive, label16);
+            camerData2Xml(txt_FeedPositive1, lbl_FeedPositive1);
         }
 
         private void btn_ConnectorPositive_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_ConnectorPositive, label17);
+            camerData2Xml(txt_ConnectorPositive, lbl_ConnectorPositive);
         }
 
-        private void btn_ShortSideA_Click(object sender, EventArgs e)
+        private void btn_ShortSide_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_ShortSideA, label18);
-        }
-
-        private void btn_ShortSideB_Click(object sender, EventArgs e)
-        {
-            camerData2Xml(txt_ShortSideB, label19);
-        }
-
-        private void btn_Negative_Click(object sender, EventArgs e)
-        {
-            camerData2Xml(txt_Negative, label20);
-        }
-
-        private void btn_LongSideA_Click(object sender, EventArgs e)
-        {
-            camerData2Xml(txt_LongSideA, label21);
-        }
-
-        private void btn_LongSideB_Click(object sender, EventArgs e)
-        {
-            camerData2Xml(txt_LongSideB, label22);
+            camerData2Xml(txt_ShortSide, lbl_Short);
         }
 
         private void btn_Positive_Click(object sender, EventArgs e)
         {
-            camerData2Xml(txt_Positive, label23);
+            camerData2Xml(txt_Positive, lbl_Positive);
         }
+
+        private void btn_Negative_Click(object sender, EventArgs e)
+        {
+            camerData2Xml(txt_Negative, lbl_Negative);
+        }
+
+        private void btn_LongSide_Click(object sender, EventArgs e)
+        {
+            camerData2Xml(txt_LongSide, lbl_Long);
+        }
+
+        private void btn_FeedPositive2_Click(object sender, EventArgs e)
+        {
+            camerData2Xml(txt_FeedPositive2, lbl_FeedPositive2);
+        }
+
+        private void btn_FpcCheck_Click(object sender, EventArgs e)
+        {
+            camerData2Xml(txt_FpcCheck, lbl_fpcCheck);
+        }
+
+
+
 
         /*private void cbDeviceList_SelectedIndexChanged(object sender, EventArgs e)
         {

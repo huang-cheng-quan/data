@@ -1,5 +1,8 @@
-﻿using Camera_Capture_demo.GlobalVariable;
+﻿using BatteryFeederDemo;
+using Camera_Capture_demo.GlobalVariable;
+using Dyestripping.Models;
 using HalconDotNet;
+using HslCommunication;
 using MvCamCtrl.NET;
 using System;
 using System.Collections.Generic;
@@ -19,6 +22,8 @@ namespace WindowsFormsApp1.Models
         [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
         public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
 
+        
+
         [XmlAttribute("CameraNo")]
         public int CameraNo { get; set; }
         [XmlElement(ElementName = "CameraId")]
@@ -27,9 +32,9 @@ namespace WindowsFormsApp1.Models
         public string IpAddress { get; set; }
         private static List<MvClass> MvList;
         private static readonly object locker = new object();
-        private MyCamera m_MyCamera = null;
+        public MyCamera m_MyCamera = null;
         private string strUserID = null;
-        static int m_nCameraNum = 8;
+       
         [XmlIgnore]
         public long imageWidth = 0;         // 图像宽
         [XmlIgnore]
@@ -46,8 +51,6 @@ namespace WindowsFormsApp1.Models
         public long maxGain = 0;            // 最大增益
         [XmlElement(ElementName = "currentGain")]
         public float currentGain = 0;            // 当前增益
-
-        private long grabTime = 0;          // 采集图像时间
         [XmlIgnore]
         public bool isOpen = false; //相机是否打开
         private HObject hMvImage = null;
@@ -57,53 +60,186 @@ namespace WindowsFormsApp1.Models
         private static Object BufForDriverLock = new Object();
         MyCamera.MV_FRAME_OUT_INFO_EX m_stFrameInfo = new MyCamera.MV_FRAME_OUT_INFO_EX();
         IntPtr pTemp = IntPtr.Zero;
+        
+       
+        int[] m_nFrames;      // ch:帧数 | en:Frame Number
+
+
+        private static Dictionary<int, List<int>> m_dictImageIndex1 = new Dictionary<int, List<int>>();
 
         //相机委托的定义
         MyCamera.cbOutputExdelegate cbImage;
+        //内存相关变量
+        /*MotionProcess motionProcess;*/
+        private Object m_BufFerSaveImageLock = new Object();
 
-        private HObject hPylonImage = null;
-        private IntPtr latestFrameAddress = IntPtr.Zero;
-        private Stopwatch stopWatch = new Stopwatch();
+        int CamerNum = 4;
+        private int[] m_nImage_In = new int[MotionProcess.m_nCameraSaveNum];
+        private int[] m_nImageConnection_In = new int[MotionProcess.m_nCameraSaveConnectionNum];
+        IntPtr[] m_hDisplayHandle = new  IntPtr[MotionProcess.m_nCameraTotalNum];
+
         /// <summary>
         /// 图像处理自定义委托
         /// </summary>
         /// <param name="hImage">halcon图像变量</param>
-        public delegate void delegateProcessHImage(HObject hImage);
+        public delegate void delegateProcessHImage(HObject hImage,int motorNum);
         /// <summary>
         /// 图像处理委托事件
         /// </summary>
         public event delegateProcessHImage eventProcessImage;
+
+ 
+        public delegate void delegateProcessData(int camNum,MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo,IntPtr Image);
+        public static event delegateProcessData eventProcessData;
+
+
         private void ImageCallBack(IntPtr pData, ref MyCamera.MV_FRAME_OUT_INFO_EX pFrameInfo, IntPtr pUser)
         {
-            
+
             try
             {
-                lock (BufForDriverLock)
+                int nCamIndex = (int)pUser;
+                // ch:抓取的帧数 | en:Aquired Frame Number
+                ++m_nFrames[nCamIndex];
+                //定位部分
+                if (/*nCamIndex == 4 ||*/ nCamIndex == 6 || nCamIndex == 8)
                 {
-                    if (m_BufForDriver == IntPtr.Zero || pFrameInfo.nFrameLen > m_nBufSizeForDriver)
-                    {
-                        if (m_BufForDriver != IntPtr.Zero)
-                        {
-                            Marshal.Release(m_BufForDriver);
-                            m_BufForDriver = IntPtr.Zero;
-                        }
 
-                        m_BufForDriver = Marshal.AllocHGlobal((Int32)pFrameInfo.nFrameLen);
-                        if (m_BufForDriver == IntPtr.Zero)
-                        {
-                            return;
-                        }
-                        m_nBufSizeForDriver = pFrameInfo.nFrameLen;
+                    HOperatorSet.GenImage1Extern(out hMvImage, "byte", (HTuple)pFrameInfo.nWidth, (HTuple)pFrameInfo.nHeight, pData, IntPtr.Zero);
+                    //HOperatorSet.WriteImage(hImage, "jpg", 0, "D:/1.jpg");
+                    // 抛出图像处理事件
+                    eventProcessImage(hMvImage,0);
+                    switch (nCamIndex)
+                    {
+                        case 4:
+                            MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status4, (float)0);
+                            break;
+                        case 8:
+                            MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status8, (float)0);
+                            break;
+                        case 6:
+                            MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status6, (float)0);
+                            break;
+                        default:
+                            break;
                     }
 
-                    m_stFrameInfo = pFrameInfo;
-                    CopyMemory(m_BufForDriver, pData, pFrameInfo.nFrameLen);
+                }
+                //本体检测部分
+                else if (nCamIndex == 0 || nCamIndex == 1 || nCamIndex == 2 || nCamIndex == 3)
+
+                {
+                    lock (m_BufFerSaveImageLock)
+                    {
+                        CopyMemory(MotionProcess.m_pSaveImageBuf_N[nCamIndex, m_nImage_In[nCamIndex]], pData, pFrameInfo.nFrameLen);
+                        MotionProcess.m_dictImageIndex[nCamIndex].Add(m_nImage_In[nCamIndex]);
+                    }
+                    ++m_nImage_In[nCamIndex];
+                    if (m_nImage_In[nCamIndex] >= 10)
+                    {
+                        m_nImage_In[nCamIndex] = 0;
+                    }
+
+                    MotionProcess.m_stSaveParamInfer.enPixelType = pFrameInfo.enPixelType;
+                    MotionProcess.m_stSaveParamInfer.nDataLen = pFrameInfo.nFrameLen;
+                    MotionProcess.m_stSaveParamInfer.nHeight = pFrameInfo.nHeight;
+                    MotionProcess.m_stSaveParamInfer.nWidth = pFrameInfo.nWidth;
+
+                    MotionProcess.m_stSaveParam_N[nCamIndex].nDataLen = pFrameInfo.nFrameLen;
+
+                    MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo = new MyCamera.MV_DISPLAY_FRAME_INFO();
+                    stDisplayInfo.nDataLen = pFrameInfo.nFrameLen;
+                    stDisplayInfo.nWidth = pFrameInfo.nWidth;
+                    stDisplayInfo.nHeight = pFrameInfo.nHeight;
+                    stDisplayInfo.enPixelType = pFrameInfo.enPixelType;
+                    stDisplayInfo.hWnd = m_hDisplayHandle[nCamIndex];
+                    stDisplayInfo.pData = pData;
+                    eventProcessData(nCamIndex, stDisplayInfo, pData);
                     
                 }
-                HOperatorSet.GenImage1Extern(out hMvImage, "byte", (HTuple)pFrameInfo.nWidth, (HTuple)pFrameInfo.nHeight, m_BufForDriver, IntPtr.Zero);
-                //HOperatorSet.WriteImage(hMvImage, "jpg", 0, "D:/11.jpg");
-                // 抛出图像处理事件
-                eventProcessImage(hMvImage);
+                //连接器部分
+                else if (nCamIndex == 7 || nCamIndex == 9)
+                {
+                    MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo = new MyCamera.MV_DISPLAY_FRAME_INFO();
+                    stDisplayInfo.nDataLen = pFrameInfo.nFrameLen;
+                    stDisplayInfo.nWidth = pFrameInfo.nWidth;
+                    stDisplayInfo.nHeight = pFrameInfo.nHeight;
+                    stDisplayInfo.enPixelType = pFrameInfo.enPixelType;
+                    stDisplayInfo.hWnd = m_hDisplayHandle[nCamIndex];
+                    stDisplayInfo.pData = pData;
+                    //抛出图像显示事件
+                    eventProcessData(nCamIndex, stDisplayInfo, pData);
+
+                    if (nCamIndex == 7)
+                    {
+                        nCamIndex = 1;
+                    }
+                    else
+                    {
+                        nCamIndex = 2;
+                    }
+                    
+
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].enPixelType = pFrameInfo.enPixelType;
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].nDataLen = pFrameInfo.nFrameLen;
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].nHeight = pFrameInfo.nHeight;
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].nWidth = pFrameInfo.nWidth;
+                   
+                    lock (m_BufFerSaveImageLock)
+                    {
+                        CopyMemory(MotionProcess.m_pSaveImageBuf_Connection[nCamIndex, m_nImageConnection_In[nCamIndex]], pData, pFrameInfo.nFrameLen);
+                        MotionProcess.m_dictImageConnectionIndex[nCamIndex].Add(m_nImageConnection_In[nCamIndex]);
+                    }
+                    ++m_nImageConnection_In[nCamIndex];
+                    if (m_nImageConnection_In[nCamIndex] >= 6)
+                    {
+                        m_nImageConnection_In[nCamIndex] = 0;
+                    }
+                }
+                //连接器钢片检测
+                else if (nCamIndex == 5)
+                {
+                    /*HOperatorSet.GenImage1Extern(out hMvImage, "byte", (HTuple)pFrameInfo.nWidth, (HTuple)pFrameInfo.nHeight, pData, IntPtr.Zero);
+                    //HOperatorSet.WriteImage(hImage, "jpg", 0, "D:/1.jpg");
+                    // 抛出图像处理事件
+                    OperateResult<float> flag = MotorsClass.omronInstance.ReadFloat(MotorsClass.plc_cam_MotorFlag5);
+                    if (flag.Content == 0)
+                    {
+                        eventProcessImage(hMvImage, 0);
+                        MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status8, (float)0);
+                    }
+                    else
+                    {
+                        eventProcessImage(hMvImage, 1);
+                        MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status6, (float)0);
+                    }*/
+
+                    MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo = new MyCamera.MV_DISPLAY_FRAME_INFO();
+                    stDisplayInfo.nDataLen = pFrameInfo.nFrameLen;
+                    stDisplayInfo.nWidth = pFrameInfo.nWidth;
+                    stDisplayInfo.nHeight = pFrameInfo.nHeight;
+                    stDisplayInfo.enPixelType = pFrameInfo.enPixelType;
+                    stDisplayInfo.hWnd = m_hDisplayHandle[nCamIndex];
+                    stDisplayInfo.pData = pData;
+                    //抛出图像显示事件
+                    eventProcessData(nCamIndex, stDisplayInfo, pData);
+                    nCamIndex = 0;
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].enPixelType = pFrameInfo.enPixelType;
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].nDataLen = pFrameInfo.nFrameLen;
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].nHeight = pFrameInfo.nHeight;
+                    MotionProcess.m_stSaveParamConnection[nCamIndex].nWidth = pFrameInfo.nWidth;
+
+                    lock (m_BufFerSaveImageLock)
+                    {
+                        CopyMemory(MotionProcess.m_pSaveImageBuf_Connection[nCamIndex, m_nImageConnection_In[nCamIndex]], pData, pFrameInfo.nFrameLen);
+                        MotionProcess.m_dictImageConnectionIndex[nCamIndex].Add(m_nImageConnection_In[nCamIndex]);
+                    }
+                    ++m_nImageConnection_In[nCamIndex];
+                    if (m_nImageConnection_In[nCamIndex] >= 6)
+                    {
+                        m_nImageConnection_In[nCamIndex] = 0;
+                    }
+                }
 
             }
             catch (System.Exception ex)
@@ -118,14 +254,17 @@ namespace WindowsFormsApp1.Models
         /// 根据相机UserID实例化相机
         /// </summary>
         /// <param name="SerialNumber"></param>
-        private MvClass(string SerialNumber)
+        private MvClass(string SerialNumber,int Number)
         {
             try
             {
+               
+
+                m_nFrames = new int[MotionProcess.m_nCameraTotalNum];
                 //相机相关变量
                 MyCamera.MV_CC_DEVICE_INFO_LIST m_stDeviceList = new MyCamera.MV_CC_DEVICE_INFO_LIST();
-
-                strUserID = SerialNumber;
+                CameraNo = Number;
+                CameraId = SerialNumber;
                 string TmpSerialNumber = null;
                 // 枚举相机列表
                 int nRet = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE | MyCamera.MV_USB_DEVICE, ref m_stDeviceList);
@@ -143,7 +282,7 @@ namespace WindowsFormsApp1.Models
                         TmpSerialNumber = usbInfo.chSerialNumber;
                     }
                    
-                    if (strUserID == TmpSerialNumber)
+                    if (CameraId == TmpSerialNumber)
                     {
                         if (null == m_MyCamera)
                         {
@@ -160,14 +299,14 @@ namespace WindowsFormsApp1.Models
                             return;
                         }
                         // ch:设置采集连续模式 | en:Set Continues Aquisition Mode
-                        m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
-                        m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
+                        /*m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
+                        m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);*/
                        
                         //注册回调函数
                         cbImage = new MyCamera.cbOutputExdelegate(ImageCallBack);
 
-                        currentExposureTime = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraId == strUserID).currentExposureTime;
-                        currentGain = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraId == strUserID).currentGain;
+                        currentExposureTime = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraId == CameraId).currentExposureTime;
+                        currentGain = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraId == CameraId).currentGain;
                     }
 
                 }
@@ -179,13 +318,14 @@ namespace WindowsFormsApp1.Models
                 throw;
             }
         }
-
+        
         public static MvClass GetInstance(int cameraNo)
         {
+            
             if (MvList == null)
             {
                 MvList = new List<MvClass>();
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < MotionProcess.m_nCameraTotalNum; i++)
                 {
                     MvList.Add(null);
                 }
@@ -202,7 +342,7 @@ namespace WindowsFormsApp1.Models
                             string id = ConfigVars.configInfo.Cameras.FirstOrDefault(c => c.CameraNo == cameraNo).CameraId;
                             if (id!=null)
                             {
-                                MvList[cameraNo] = new MvClass(id);
+                                MvList[cameraNo] = new MvClass(id, cameraNo);
                             }
                             
                         }
@@ -232,8 +372,9 @@ namespace WindowsFormsApp1.Models
         }
         /*****************************************************/
         /******************    相机操作     ******************/
-        public bool OpenCam()
+        public bool OpenCam(int iCamNum)
         {
+           
             int nRet = 0;
             // ch:打开设备 | en:Open device
             if (null == m_MyCamera)
@@ -251,10 +392,10 @@ namespace WindowsFormsApp1.Models
                 m_MyCamera.MV_CC_DestroyDevice_NET();
                 return false;
             }
-
-            // ch:设置采集连续模式 | en:Set Continues Aquisition Mode
+            
+            /*// ch:设置采集连续模式 | en:Set Continues Aquisition Mode
             m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
-            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
+            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);*/
             //设置曝光和增益
             m_MyCamera.MV_CC_SetEnumValue_NET("ExposureAuto", 0);
             nRet = m_MyCamera.MV_CC_SetFloatValue_NET("ExposureTime", currentExposureTime);
@@ -263,18 +404,18 @@ namespace WindowsFormsApp1.Models
                 return false;
             }
 
-            m_MyCamera.MV_CC_SetEnumValue_NET("GainAuto", 0);
+           /* m_MyCamera.MV_CC_SetEnumValue_NET("GainAuto", 0);
             nRet = m_MyCamera.MV_CC_SetFloatValue_NET("Gain", currentGain);
             if (nRet != MyCamera.MV_OK)
             {
                 return false;
-            }
+            }*/
             //打开触发模式
             m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_ON);
             
-            m_MyCamera.MV_CC_RegisterImageCallBackEx_NET(cbImage, (IntPtr)0);
+            m_MyCamera.MV_CC_RegisterImageCallBackEx_NET(cbImage, (IntPtr)iCamNum);
             //设置软触发
-            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_SOFTWARE);
+            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_LINE0);
             //开始采集
             m_stFrameInfo.nFrameLen = 0;//取流之前先清除帧长度
             m_stFrameInfo.enPixelType = MyCamera.MvGvspPixelType.PixelType_Gvsp_Undefined;
@@ -286,7 +427,8 @@ namespace WindowsFormsApp1.Models
                 ShowErrorMsg("Start Grabbing Fail!", nRet);
                 return false;
             }
-
+            
+            //motionProcess = new MotionProcess();
             isOpen = true;
             return true;
             

@@ -52,6 +52,9 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>bitbug_favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BaseForm, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,8 +67,15 @@
     <Reference Include="HslCommunication">
       <HintPath>Dll\HslCommunication.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MvCameraControl.Net">
       <HintPath>MV\MvCameraControl.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs.WinForms">
+      <HintPath>Dll\Ookii.Dialogs.WinForms.1.2.0\lib\net45\Ookii.Dialogs.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -98,6 +108,12 @@
       <DependentUpon>OmronPlcSettingFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalVariable\ConfigVars.cs" />
+    <Compile Include="HalconTools\HalconTools_CreateModelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HalconTools\HalconTools_CreateModelForm.Designer.cs">
+      <DependentUpon>HalconTools_CreateModelForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="HalconVision\HalconOperator.cs" />
     <Compile Include="HalconVision\HalonWinow.cs" />
     <Compile Include="Helpers\IniFileHelper.cs" />
@@ -105,6 +121,9 @@
     <Compile Include="Helpers\TransExpV2.cs" />
     <Compile Include="Helpers\WindowHelper.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
+    <Compile Include="InferData\HttpQuery.cs" />
+    <Compile Include="InferData\InferServerData.cs" />
+    <Compile Include="InferData\Utils.cs" />
     <Compile Include="LoginFrms\LoginFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,6 +164,13 @@
     <Compile Include="TcpTest\TcpSocket.Designer.cs">
       <DependentUpon>TcpSocket.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimeDelete\SetTime.cs" />
+    <Compile Include="TimeDelete\SetTimeDelete.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeDelete\SetTimeDelete.Designer.cs">
+      <DependentUpon>SetTimeDelete.cs</DependentUpon>
+    </Compile>
     <Compile Include="VisionFrms\CalibDataGenerator.cs" />
     <Compile Include="VisionFrms\CalibDataSettingFrm.cs">
       <SubType>Form</SubType>
@@ -164,6 +190,12 @@
     <Compile Include="VisionFrms\CreateShapeModelFrm.Designer.cs">
       <DependentUpon>CreateShapeModelFrm.cs</DependentUpon>
     </Compile>
+    <Compile Include="VisionFrms\OffsetCalibrationFrom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VisionFrms\OffsetCalibrationFrom.Designer.cs">
+      <DependentUpon>OffsetCalibrationFrom.cs</DependentUpon>
+    </Compile>
     <Compile Include="VisionFrms\ToolOffsetSettingFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -175,6 +207,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DeviceSettingFrms\OmronPlcSettingFrm.resx">
       <DependentUpon>OmronPlcSettingFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HalconTools\HalconTools_CreateModelForm.resx">
+      <DependentUpon>HalconTools_CreateModelForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginFrms\LoginFrm.resx">
       <DependentUpon>LoginFrm.cs</DependentUpon>
@@ -207,6 +242,9 @@
     <EmbeddedResource Include="TcpTest\TcpSocket.resx">
       <DependentUpon>TcpSocket.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TimeDelete\SetTimeDelete.resx">
+      <DependentUpon>SetTimeDelete.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VisionFrms\CalibDataSettingFrm.resx">
       <DependentUpon>CalibDataSettingFrm.cs</DependentUpon>
     </EmbeddedResource>
@@ -216,6 +254,9 @@
     <EmbeddedResource Include="VisionFrms\CreateShapeModelFrm.resx">
       <DependentUpon>CreateShapeModelFrm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VisionFrms\OffsetCalibrationFrom.resx">
+      <DependentUpon>OffsetCalibrationFrom.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VisionFrms\ToolOffsetSettingFrm.resx">
       <DependentUpon>ToolOffsetSettingFrm.cs</DependentUpon>
     </EmbeddedResource>
@@ -223,6 +264,7 @@
     <None Include="MV\BasicDemo\obj\Debug\BasicDemo.csproj.AssemblyReference.cache" />
     <None Include="MV\BasicDemo\obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="MV\BasicDemo\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -237,6 +279,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bitbug_favicon.ico" />
     <Content Include="MV\BasicDemo\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
     <None Include="Resources\robot_24px_1172732_easyicon.net.png" />
   </ItemGroup>

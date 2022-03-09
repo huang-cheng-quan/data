@@ -12,6 +12,7 @@ using Camera_Capture_demo.Models;
 using Camera_Capture_demo.GlobalVariable;
 using Camera_Capture_demo.Helpers;
 using HslCommunication.Profinet.Omron;
+using HslCommunication;
 
 namespace Dyestripping.DeviceSettingFrms
 {
@@ -112,11 +113,10 @@ namespace Dyestripping.DeviceSettingFrms
             }
             try
             {
-                short[] words=omronInstance.ReadInt16(txtAddress.Text, Convert.ToUInt16(txtLength.Text)).Content;
-                foreach(short s in words)
-                {
-                    rtxResultMsg.AppendText(s.ToString() + "\n");
-                }
+                OperateResult<float[]> words =omronInstance.ReadFloat(txtAddress.Text,ushort.Parse(txtLength.Text));
+
+                rtxResultMsg.AppendText(words.Content[0].ToString() + "\n");
+
             }
             catch (Exception ex)
             {
@@ -132,7 +132,7 @@ namespace Dyestripping.DeviceSettingFrms
             }
             try
             {
-                omronInstance.Write(txtAddress.Text,Convert.ToInt16(txtWriteValue.Text));
+                omronInstance.Write(txtAddress.Text,float.Parse(txtWriteValue.Text));
             }
             catch (Exception ex)
             {

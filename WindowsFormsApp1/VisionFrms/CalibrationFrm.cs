@@ -25,6 +25,7 @@ using WindowsFormsApp1;
 using WindowsFormsApp1.TcpTest;
 using Dyestripping.Models;
 using Camera_Capture_demo.Models;
+using BatteryFeederDemo;
 
 namespace Camera_Capture_demo.VisionFrms
 {
@@ -33,31 +34,35 @@ namespace Camera_Capture_demo.VisionFrms
         HObject m_hImage;
         HWindow m_hWindow;       
         int m_icamNo;//相机序号
+        int MotorNo;
+        int m_imotorNumber;
         MvClass mvclass;
         BindingList<CoordinatePair> m_datalist = new BindingList<CoordinatePair>();
-
+        MotionProcess motionprocess;
         MotorsClass motorsInstance;
         ProcessPlcData processplcdata = new ProcessPlcData();
-        float? cam_pos;
 
-        public CalibrationFrm(int camNo)
+        string plc_cam_status = "D1000";////读写 0待机 1拍照 2拍照OK 3拍照NG 4拍照异常
+        float? cam_pos;
+        public CalibrationFrm(int camNo,int motorNum)
         {
             InitializeComponent();
             this.m_icamNo = camNo;
-            this.Name += camNo;          
+            this.Name += camNo;
+            this.m_imotorNumber = motorNum;
+            this.MotorNo = 0;
         }
-
         private void CalibrationFrm_Load(object sender, EventArgs e)
         {                        
             dataGridView1.DataSource = m_datalist;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             m_hWindow = hWindowControl1.HalconWindow;  
             mvclass = MvClass.GetInstance(m_icamNo);
-            motorsInstance = new MotorsClass(m_icamNo);
+            motorsInstance = new MotorsClass(MotorNo);
             mvclass.eventProcessImage += Mv_eventProcessImage;
 
         }    
-        private void Mv_eventProcessImage(HObject hImage)
+        private void Mv_eventProcessImage(HObject hImage, int motorNum)
         {
             this.m_hImage = hImage.Clone();
             HalconOperator.ShowImage(hWindowControl1, hImage);
@@ -91,7 +96,16 @@ namespace Camera_Capture_demo.VisionFrms
             {
                 return;
             }
-            PointXYU p = motorsInstance.GetCurrentPos();
+            PointXYU p = new PointXYU();
+            if (m_imotorNumber != 0)
+            {
+                p = motorsInstance.GetCurrentPos(m_imotorNumber);
+            }
+            else
+            {
+                p = motorsInstance.GetCurrentPos(m_icamNo);
+            }
+            
             if (p != null)
             {
                 m_datalist[e.RowIndex].WorldPoint = new PointF(p.X, p.Y);
@@ -102,11 +116,12 @@ namespace Camera_Capture_demo.VisionFrms
         {
             if (!mvclass.isOpen)
             {
-                mvclass.OpenCam();
+                mvclass.OpenCam(m_icamNo);
             }
-            mvclass.OneShot();
-           
-           
+            //MotionProcess.omronInstance1.Write(plc_cam_status4, 0);
+            //mvclass.OneShot();
+
+
         }
         private void btnOpenImg_Click(object sender, EventArgs e)
         {
@@ -172,7 +187,7 @@ namespace Camera_Capture_demo.VisionFrms
             {
                 HOperatorSet.Threshold(m_hImage, out HObject hRegion, 0, 100);
                 HOperatorSet.Connection(hRegion, out HObject connectedRegions);
-                HOperatorSet.SelectShape(connectedRegions, out HObject selectedRegions, new string[] { "area", "circularity" }, "and", new double[] { 10000, 0.6 }, new double[] { 100000, 1 });
+                HOperatorSet.SelectShape(connectedRegions, out HObject selectedRegions, new string[] { "area", "circularity" }, "and", new double[] { 1000, 0.6 }, new double[] { 100000, 1 });
                 HOperatorSet.SortRegion(selectedRegions, out HObject sortedRegions, "character", "true", "row");
                 m_hWindow.SetColor("red");
                 m_hWindow.DispObj(sortedRegions);
@@ -205,6 +220,8 @@ namespace Camera_Capture_demo.VisionFrms
         /// <param name="e"></param>
         private void btnSaveMat2D_Click(object sender, EventArgs e)
         {
+
+            cam_pos = 0;
             if (MessageBox.Show("是否保存标定结果?", "", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
             List<double> px = new List<double>();
@@ -228,11 +245,20 @@ namespace Camera_Capture_demo.VisionFrms
                 {
                     Directory.CreateDirectory(dir);
                 }
-                HOperatorSet.WriteTuple(homMat2D, dir + $"\\Cam{m_icamNo+1}_homMat2D");
-                if (cam_pos != null)
+                if (m_imotorNumber != 0)
                 {
-                    ConfigVars.configInfo.ToolInfos.CamPositionOnCalib = (float)cam_pos;
-                    XmlHelper.SerializeToXml(ConfigVars.configInfo);
+                    HOperatorSet.WriteTuple(homMat2D, dir + $"\\Cam{m_icamNo}_homMat2D");
+                }
+                else
+                {
+                    HOperatorSet.WriteTuple(homMat2D, dir + $"\\Cam{m_imotorNumber}_homMat2D");
+                }
+               
+                
+                if (homMat2D != null)
+                {
+                   /* ConfigVars.configInfo.ToolInfos.CamPositionOnCalib = (float)cam_pos;
+                    XmlHelper.SerializeToXml(ConfigVars.configInfo);*/
                     MessageBox.Show("标定信息保存成功");
                 }
                 else

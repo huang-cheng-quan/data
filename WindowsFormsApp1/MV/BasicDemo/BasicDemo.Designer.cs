@@ -56,46 +56,46 @@
             this.tbGain = new System.Windows.Forms.TextBox();
             this.tbExposure = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
+            this.lbl_FeedPositive2 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.txt_LongSideB = new System.Windows.Forms.TextBox();
-            this.btn_LongSideB = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
-            this.txt_ShortSideB = new System.Windows.Forms.TextBox();
-            this.btn_ShortSideB = new System.Windows.Forms.Button();
+            this.txt_FeedPositive2 = new System.Windows.Forms.TextBox();
+            this.btn_FeedPositive2 = new System.Windows.Forms.Button();
+            this.lbl_ConnectorPositive = new System.Windows.Forms.Label();
+            this.lbl_FeedPositive1 = new System.Windows.Forms.Label();
+            this.lbl_ConnectorNegative = new System.Windows.Forms.Label();
+            this.lbl_SetCam_FeedBelt = new System.Windows.Forms.Label();
+            this.lbl_Positive = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.txt_Positive = new System.Windows.Forms.TextBox();
-            this.btn_Positive = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
-            this.txt_LongSideA = new System.Windows.Forms.TextBox();
-            this.btn_LongSideA = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
+            this.txt_LongSide = new System.Windows.Forms.TextBox();
             this.txt_Negative = new System.Windows.Forms.TextBox();
-            this.btn_Negative = new System.Windows.Forms.Button();
+            this.txt_ShortSide = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txt_Positive = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.txt_ShortSideA = new System.Windows.Forms.TextBox();
-            this.btn_ShortSideA = new System.Windows.Forms.Button();
+            this.lbl_Long = new System.Windows.Forms.Label();
+            this.lbl_Negative = new System.Windows.Forms.Label();
+            this.lbl_Short = new System.Windows.Forms.Label();
+            this.btn_Positive = new System.Windows.Forms.Button();
+            this.btn_LongSide = new System.Windows.Forms.Button();
+            this.btn_Negative = new System.Windows.Forms.Button();
+            this.btn_ShortSide = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.txt_ConnectorPositive = new System.Windows.Forms.TextBox();
             this.btn_ConnectorPositive = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
-            this.txt_FeedPositive = new System.Windows.Forms.TextBox();
-            this.btn_FeedPositive = new System.Windows.Forms.Button();
+            this.txt_FeedPositive1 = new System.Windows.Forms.TextBox();
+            this.btn_FeedPositive1 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.txt_ConnectorNegative = new System.Windows.Forms.TextBox();
             this.btn_ConnectorNegative = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.txt_CamFeedBelt = new System.Windows.Forms.TextBox();
             this.btn_SetCam_FeedBelt = new System.Windows.Forms.Button();
+            this.lbl_fpcCheck = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txt_FpcCheck = new System.Windows.Forms.TextBox();
+            this.btn_FpcCheck = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -111,7 +111,6 @@
             this.cbDeviceList.Name = "cbDeviceList";
             this.cbDeviceList.Size = new System.Drawing.Size(632, 20);
             this.cbDeviceList.TabIndex = 0;
-            
             // 
             // pictureBox1
             // 
@@ -399,40 +398,40 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.label23);
-            this.groupBox5.Controls.Add(this.label22);
-            this.groupBox5.Controls.Add(this.label21);
-            this.groupBox5.Controls.Add(this.label20);
-            this.groupBox5.Controls.Add(this.label19);
-            this.groupBox5.Controls.Add(this.label18);
-            this.groupBox5.Controls.Add(this.label17);
-            this.groupBox5.Controls.Add(this.label16);
-            this.groupBox5.Controls.Add(this.label15);
+            this.groupBox5.Controls.Add(this.lbl_fpcCheck);
             this.groupBox5.Controls.Add(this.label14);
+            this.groupBox5.Controls.Add(this.txt_FpcCheck);
+            this.groupBox5.Controls.Add(this.btn_FpcCheck);
+            this.groupBox5.Controls.Add(this.lbl_FeedPositive2);
             this.groupBox5.Controls.Add(this.label13);
-            this.groupBox5.Controls.Add(this.txt_LongSideB);
-            this.groupBox5.Controls.Add(this.btn_LongSideB);
-            this.groupBox5.Controls.Add(this.label12);
-            this.groupBox5.Controls.Add(this.txt_ShortSideB);
-            this.groupBox5.Controls.Add(this.btn_ShortSideB);
+            this.groupBox5.Controls.Add(this.txt_FeedPositive2);
+            this.groupBox5.Controls.Add(this.btn_FeedPositive2);
+            this.groupBox5.Controls.Add(this.lbl_ConnectorPositive);
+            this.groupBox5.Controls.Add(this.lbl_FeedPositive1);
+            this.groupBox5.Controls.Add(this.lbl_ConnectorNegative);
+            this.groupBox5.Controls.Add(this.lbl_SetCam_FeedBelt);
+            this.groupBox5.Controls.Add(this.lbl_Positive);
             this.groupBox5.Controls.Add(this.label11);
-            this.groupBox5.Controls.Add(this.txt_Positive);
-            this.groupBox5.Controls.Add(this.btn_Positive);
             this.groupBox5.Controls.Add(this.label10);
-            this.groupBox5.Controls.Add(this.txt_LongSideA);
-            this.groupBox5.Controls.Add(this.btn_LongSideA);
-            this.groupBox5.Controls.Add(this.label9);
+            this.groupBox5.Controls.Add(this.txt_LongSide);
             this.groupBox5.Controls.Add(this.txt_Negative);
-            this.groupBox5.Controls.Add(this.btn_Negative);
+            this.groupBox5.Controls.Add(this.txt_ShortSide);
+            this.groupBox5.Controls.Add(this.label9);
+            this.groupBox5.Controls.Add(this.txt_Positive);
             this.groupBox5.Controls.Add(this.label8);
-            this.groupBox5.Controls.Add(this.txt_ShortSideA);
-            this.groupBox5.Controls.Add(this.btn_ShortSideA);
+            this.groupBox5.Controls.Add(this.lbl_Long);
+            this.groupBox5.Controls.Add(this.lbl_Negative);
+            this.groupBox5.Controls.Add(this.lbl_Short);
+            this.groupBox5.Controls.Add(this.btn_Positive);
+            this.groupBox5.Controls.Add(this.btn_LongSide);
+            this.groupBox5.Controls.Add(this.btn_Negative);
+            this.groupBox5.Controls.Add(this.btn_ShortSide);
             this.groupBox5.Controls.Add(this.label7);
             this.groupBox5.Controls.Add(this.txt_ConnectorPositive);
             this.groupBox5.Controls.Add(this.btn_ConnectorPositive);
             this.groupBox5.Controls.Add(this.label6);
-            this.groupBox5.Controls.Add(this.txt_FeedPositive);
-            this.groupBox5.Controls.Add(this.btn_FeedPositive);
+            this.groupBox5.Controls.Add(this.txt_FeedPositive1);
+            this.groupBox5.Controls.Add(this.btn_FeedPositive1);
             this.groupBox5.Controls.Add(this.label5);
             this.groupBox5.Controls.Add(this.txt_ConnectorNegative);
             this.groupBox5.Controls.Add(this.btn_ConnectorNegative);
@@ -446,239 +445,218 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "设置区域";
             // 
-            // label23
+            // lbl_FeedPositive2
             // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label23.Location = new System.Drawing.Point(8, 314);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(26, 16);
-            this.label23.TabIndex = 39;
-            this.label23.Text = "10";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label22.Location = new System.Drawing.Point(13, 281);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(17, 16);
-            this.label22.TabIndex = 38;
-            this.label22.Text = "9";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label21.Location = new System.Drawing.Point(13, 248);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(17, 16);
-            this.label21.TabIndex = 37;
-            this.label21.Text = "8";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label20.Location = new System.Drawing.Point(13, 215);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(17, 16);
-            this.label20.TabIndex = 36;
-            this.label20.Text = "7";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label19.Location = new System.Drawing.Point(13, 182);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(17, 16);
-            this.label19.TabIndex = 35;
-            this.label19.Text = "6";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label18.Location = new System.Drawing.Point(13, 149);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(17, 16);
-            this.label18.TabIndex = 34;
-            this.label18.Text = "5";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label17.Location = new System.Drawing.Point(13, 116);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(17, 16);
-            this.label17.TabIndex = 33;
-            this.label17.Text = "4";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label16.Location = new System.Drawing.Point(13, 83);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(17, 16);
-            this.label16.TabIndex = 32;
-            this.label16.Text = "3";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label15.Location = new System.Drawing.Point(13, 50);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(17, 16);
-            this.label15.TabIndex = 31;
-            this.label15.Text = "2";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label14.Location = new System.Drawing.Point(13, 17);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(17, 16);
-            this.label14.TabIndex = 30;
-            this.label14.Text = "1";
+            this.lbl_FeedPositive2.AutoSize = true;
+            this.lbl_FeedPositive2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_FeedPositive2.Location = new System.Drawing.Point(13, 287);
+            this.lbl_FeedPositive2.Name = "lbl_FeedPositive2";
+            this.lbl_FeedPositive2.Size = new System.Drawing.Size(17, 16);
+            this.lbl_FeedPositive2.TabIndex = 41;
+            this.lbl_FeedPositive2.Text = "8";
             // 
             // label13
             // 
             this.label13.AutoSize = true;
             this.label13.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label13.Location = new System.Drawing.Point(36, 284);
+            this.label13.Location = new System.Drawing.Point(36, 291);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(95, 12);
-            this.label13.TabIndex = 29;
-            this.label13.Text = "侧面长边B相机：";
+            this.label13.TabIndex = 40;
+            this.label13.Text = "本体定位2相机：";
             // 
-            // txt_LongSideB
+            // txt_FeedPositive2
             // 
-            this.txt_LongSideB.Location = new System.Drawing.Point(165, 281);
-            this.txt_LongSideB.Name = "txt_LongSideB";
-            this.txt_LongSideB.Size = new System.Drawing.Size(251, 21);
-            this.txt_LongSideB.TabIndex = 28;
+            this.txt_FeedPositive2.Location = new System.Drawing.Point(175, 287);
+            this.txt_FeedPositive2.Name = "txt_FeedPositive2";
+            this.txt_FeedPositive2.Size = new System.Drawing.Size(251, 21);
+            this.txt_FeedPositive2.TabIndex = 39;
             // 
-            // btn_LongSideB
+            // btn_FeedPositive2
             // 
-            this.btn_LongSideB.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_LongSideB.Location = new System.Drawing.Point(432, 276);
-            this.btn_LongSideB.Name = "btn_LongSideB";
-            this.btn_LongSideB.Size = new System.Drawing.Size(77, 28);
-            this.btn_LongSideB.TabIndex = 27;
-            this.btn_LongSideB.Text = "确定";
-            this.btn_LongSideB.UseVisualStyleBackColor = true;
-            this.btn_LongSideB.Click += new System.EventHandler(this.btn_LongSideB_Click);
+            this.btn_FeedPositive2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btn_FeedPositive2.Location = new System.Drawing.Point(460, 280);
+            this.btn_FeedPositive2.Name = "btn_FeedPositive2";
+            this.btn_FeedPositive2.Size = new System.Drawing.Size(77, 28);
+            this.btn_FeedPositive2.TabIndex = 38;
+            this.btn_FeedPositive2.Text = "确定";
+            this.btn_FeedPositive2.UseVisualStyleBackColor = true;
+            this.btn_FeedPositive2.Click += new System.EventHandler(this.btn_FeedPositive2_Click);
             // 
-            // label12
+            // lbl_ConnectorPositive
             // 
-            this.label12.AutoSize = true;
-            this.label12.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label12.Location = new System.Drawing.Point(36, 185);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(95, 12);
-            this.label12.TabIndex = 26;
-            this.label12.Text = "侧面短边B相机：";
+            this.lbl_ConnectorPositive.AutoSize = true;
+            this.lbl_ConnectorPositive.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_ConnectorPositive.Location = new System.Drawing.Point(13, 249);
+            this.lbl_ConnectorPositive.Name = "lbl_ConnectorPositive";
+            this.lbl_ConnectorPositive.Size = new System.Drawing.Size(17, 16);
+            this.lbl_ConnectorPositive.TabIndex = 37;
+            this.lbl_ConnectorPositive.Text = "7";
             // 
-            // txt_ShortSideB
+            // lbl_FeedPositive1
             // 
-            this.txt_ShortSideB.Location = new System.Drawing.Point(165, 182);
-            this.txt_ShortSideB.Name = "txt_ShortSideB";
-            this.txt_ShortSideB.Size = new System.Drawing.Size(251, 21);
-            this.txt_ShortSideB.TabIndex = 25;
+            this.lbl_FeedPositive1.AutoSize = true;
+            this.lbl_FeedPositive1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_FeedPositive1.Location = new System.Drawing.Point(13, 215);
+            this.lbl_FeedPositive1.Name = "lbl_FeedPositive1";
+            this.lbl_FeedPositive1.Size = new System.Drawing.Size(17, 16);
+            this.lbl_FeedPositive1.TabIndex = 36;
+            this.lbl_FeedPositive1.Text = "6";
             // 
-            // btn_ShortSideB
+            // lbl_ConnectorNegative
             // 
-            this.btn_ShortSideB.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_ShortSideB.Location = new System.Drawing.Point(432, 177);
-            this.btn_ShortSideB.Name = "btn_ShortSideB";
-            this.btn_ShortSideB.Size = new System.Drawing.Size(77, 28);
-            this.btn_ShortSideB.TabIndex = 24;
-            this.btn_ShortSideB.Text = "确定";
-            this.btn_ShortSideB.UseVisualStyleBackColor = true;
-            this.btn_ShortSideB.Click += new System.EventHandler(this.btn_ShortSideB_Click);
+            this.lbl_ConnectorNegative.AutoSize = true;
+            this.lbl_ConnectorNegative.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_ConnectorNegative.Location = new System.Drawing.Point(13, 182);
+            this.lbl_ConnectorNegative.Name = "lbl_ConnectorNegative";
+            this.lbl_ConnectorNegative.Size = new System.Drawing.Size(17, 16);
+            this.lbl_ConnectorNegative.TabIndex = 35;
+            this.lbl_ConnectorNegative.Text = "5";
+            // 
+            // lbl_SetCam_FeedBelt
+            // 
+            this.lbl_SetCam_FeedBelt.AutoSize = true;
+            this.lbl_SetCam_FeedBelt.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_SetCam_FeedBelt.Location = new System.Drawing.Point(13, 149);
+            this.lbl_SetCam_FeedBelt.Name = "lbl_SetCam_FeedBelt";
+            this.lbl_SetCam_FeedBelt.Size = new System.Drawing.Size(17, 16);
+            this.lbl_SetCam_FeedBelt.TabIndex = 34;
+            this.lbl_SetCam_FeedBelt.Text = "4";
+            // 
+            // lbl_Positive
+            // 
+            this.lbl_Positive.AutoSize = true;
+            this.lbl_Positive.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_Positive.Location = new System.Drawing.Point(13, 116);
+            this.lbl_Positive.Name = "lbl_Positive";
+            this.lbl_Positive.Size = new System.Drawing.Size(17, 16);
+            this.lbl_Positive.TabIndex = 33;
+            this.lbl_Positive.Text = "3";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label11.Location = new System.Drawing.Point(36, 317);
+            this.label11.Location = new System.Drawing.Point(36, 120);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(89, 12);
             this.label11.TabIndex = 23;
             this.label11.Text = "本体正面相机：";
             // 
-            // txt_Positive
-            // 
-            this.txt_Positive.Location = new System.Drawing.Point(165, 314);
-            this.txt_Positive.Name = "txt_Positive";
-            this.txt_Positive.Size = new System.Drawing.Size(251, 21);
-            this.txt_Positive.TabIndex = 22;
-            // 
-            // btn_Positive
-            // 
-            this.btn_Positive.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_Positive.Location = new System.Drawing.Point(432, 309);
-            this.btn_Positive.Name = "btn_Positive";
-            this.btn_Positive.Size = new System.Drawing.Size(77, 28);
-            this.btn_Positive.TabIndex = 21;
-            this.btn_Positive.Text = "确定";
-            this.btn_Positive.UseVisualStyleBackColor = true;
-            this.btn_Positive.Click += new System.EventHandler(this.btn_Positive_Click);
-            // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label10.Location = new System.Drawing.Point(36, 251);
+            this.label10.Location = new System.Drawing.Point(36, 86);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(95, 12);
+            this.label10.Size = new System.Drawing.Size(89, 12);
             this.label10.TabIndex = 20;
-            this.label10.Text = "侧面长边A相机：";
+            this.label10.Text = "侧面长边相机：";
             // 
-            // txt_LongSideA
+            // txt_LongSide
             // 
-            this.txt_LongSideA.Location = new System.Drawing.Point(165, 248);
-            this.txt_LongSideA.Name = "txt_LongSideA";
-            this.txt_LongSideA.Size = new System.Drawing.Size(251, 21);
-            this.txt_LongSideA.TabIndex = 19;
+            this.txt_LongSide.Location = new System.Drawing.Point(175, 83);
+            this.txt_LongSide.Name = "txt_LongSide";
+            this.txt_LongSide.Size = new System.Drawing.Size(251, 21);
+            this.txt_LongSide.TabIndex = 19;
             // 
-            // btn_LongSideA
+            // txt_Negative
             // 
-            this.btn_LongSideA.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_LongSideA.Location = new System.Drawing.Point(432, 243);
-            this.btn_LongSideA.Name = "btn_LongSideA";
-            this.btn_LongSideA.Size = new System.Drawing.Size(77, 28);
-            this.btn_LongSideA.TabIndex = 18;
-            this.btn_LongSideA.Text = "确定";
-            this.btn_LongSideA.UseVisualStyleBackColor = true;
-            this.btn_LongSideA.Click += new System.EventHandler(this.btn_LongSideA_Click);
+            this.txt_Negative.Location = new System.Drawing.Point(175, 52);
+            this.txt_Negative.Name = "txt_Negative";
+            this.txt_Negative.Size = new System.Drawing.Size(251, 21);
+            this.txt_Negative.TabIndex = 16;
+            // 
+            // txt_ShortSide
+            // 
+            this.txt_ShortSide.Location = new System.Drawing.Point(175, 14);
+            this.txt_ShortSide.Name = "txt_ShortSide";
+            this.txt_ShortSide.Size = new System.Drawing.Size(251, 21);
+            this.txt_ShortSide.TabIndex = 13;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label9.Location = new System.Drawing.Point(36, 218);
+            this.label9.Location = new System.Drawing.Point(34, 53);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(119, 12);
             this.label9.TabIndex = 17;
             this.label9.Text = "本体反面/麦拉相机：";
             // 
-            // txt_Negative
+            // txt_Positive
             // 
-            this.txt_Negative.Location = new System.Drawing.Point(165, 215);
-            this.txt_Negative.Name = "txt_Negative";
-            this.txt_Negative.Size = new System.Drawing.Size(251, 21);
-            this.txt_Negative.TabIndex = 16;
+            this.txt_Positive.Location = new System.Drawing.Point(175, 111);
+            this.txt_Positive.Name = "txt_Positive";
+            this.txt_Positive.Size = new System.Drawing.Size(251, 21);
+            this.txt_Positive.TabIndex = 25;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label8.Location = new System.Drawing.Point(34, 17);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(89, 12);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "侧面短边相机：";
+            // 
+            // lbl_Long
+            // 
+            this.lbl_Long.AutoSize = true;
+            this.lbl_Long.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_Long.Location = new System.Drawing.Point(13, 83);
+            this.lbl_Long.Name = "lbl_Long";
+            this.lbl_Long.Size = new System.Drawing.Size(17, 16);
+            this.lbl_Long.TabIndex = 32;
+            this.lbl_Long.Text = "2";
+            // 
+            // lbl_Negative
+            // 
+            this.lbl_Negative.AutoSize = true;
+            this.lbl_Negative.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_Negative.Location = new System.Drawing.Point(13, 50);
+            this.lbl_Negative.Name = "lbl_Negative";
+            this.lbl_Negative.Size = new System.Drawing.Size(17, 16);
+            this.lbl_Negative.TabIndex = 31;
+            this.lbl_Negative.Text = "1";
+            // 
+            // lbl_Short
+            // 
+            this.lbl_Short.AutoSize = true;
+            this.lbl_Short.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_Short.Location = new System.Drawing.Point(13, 17);
+            this.lbl_Short.Name = "lbl_Short";
+            this.lbl_Short.Size = new System.Drawing.Size(17, 16);
+            this.lbl_Short.TabIndex = 30;
+            this.lbl_Short.Text = "0";
+            // 
+            // btn_Positive
+            // 
+            this.btn_Positive.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btn_Positive.Location = new System.Drawing.Point(460, 110);
+            this.btn_Positive.Name = "btn_Positive";
+            this.btn_Positive.Size = new System.Drawing.Size(77, 28);
+            this.btn_Positive.TabIndex = 24;
+            this.btn_Positive.Text = "确定";
+            this.btn_Positive.UseVisualStyleBackColor = true;
+            this.btn_Positive.Click += new System.EventHandler(this.btn_Positive_Click);
+            // 
+            // btn_LongSide
+            // 
+            this.btn_LongSide.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btn_LongSide.Location = new System.Drawing.Point(462, 76);
+            this.btn_LongSide.Name = "btn_LongSide";
+            this.btn_LongSide.Size = new System.Drawing.Size(77, 28);
+            this.btn_LongSide.TabIndex = 18;
+            this.btn_LongSide.Text = "确定";
+            this.btn_LongSide.UseVisualStyleBackColor = true;
+            this.btn_LongSide.Click += new System.EventHandler(this.btn_LongSide_Click);
             // 
             // btn_Negative
             // 
             this.btn_Negative.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_Negative.Location = new System.Drawing.Point(432, 210);
+            this.btn_Negative.Location = new System.Drawing.Point(460, 46);
             this.btn_Negative.Name = "btn_Negative";
             this.btn_Negative.Size = new System.Drawing.Size(77, 28);
             this.btn_Negative.TabIndex = 15;
@@ -686,39 +664,22 @@
             this.btn_Negative.UseVisualStyleBackColor = true;
             this.btn_Negative.Click += new System.EventHandler(this.btn_Negative_Click);
             // 
-            // label8
+            // btn_ShortSide
             // 
-            this.label8.AutoSize = true;
-            this.label8.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label8.Location = new System.Drawing.Point(36, 152);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(95, 12);
-            this.label8.TabIndex = 14;
-            this.label8.Text = "侧面短边A相机：";
-            // 
-            // txt_ShortSideA
-            // 
-            this.txt_ShortSideA.Location = new System.Drawing.Point(165, 149);
-            this.txt_ShortSideA.Name = "txt_ShortSideA";
-            this.txt_ShortSideA.Size = new System.Drawing.Size(251, 21);
-            this.txt_ShortSideA.TabIndex = 13;
-            // 
-            // btn_ShortSideA
-            // 
-            this.btn_ShortSideA.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_ShortSideA.Location = new System.Drawing.Point(432, 144);
-            this.btn_ShortSideA.Name = "btn_ShortSideA";
-            this.btn_ShortSideA.Size = new System.Drawing.Size(77, 28);
-            this.btn_ShortSideA.TabIndex = 12;
-            this.btn_ShortSideA.Text = "确定";
-            this.btn_ShortSideA.UseVisualStyleBackColor = true;
-            this.btn_ShortSideA.Click += new System.EventHandler(this.btn_ShortSideA_Click);
+            this.btn_ShortSide.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btn_ShortSide.Location = new System.Drawing.Point(460, 9);
+            this.btn_ShortSide.Name = "btn_ShortSide";
+            this.btn_ShortSide.Size = new System.Drawing.Size(77, 28);
+            this.btn_ShortSide.TabIndex = 12;
+            this.btn_ShortSide.Text = "确定";
+            this.btn_ShortSide.UseVisualStyleBackColor = true;
+            this.btn_ShortSide.Click += new System.EventHandler(this.btn_ShortSide_Click);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label7.Location = new System.Drawing.Point(36, 119);
+            this.label7.Location = new System.Drawing.Point(34, 252);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(125, 12);
             this.label7.TabIndex = 11;
@@ -726,7 +687,7 @@
             // 
             // txt_ConnectorPositive
             // 
-            this.txt_ConnectorPositive.Location = new System.Drawing.Point(165, 116);
+            this.txt_ConnectorPositive.Location = new System.Drawing.Point(175, 249);
             this.txt_ConnectorPositive.Name = "txt_ConnectorPositive";
             this.txt_ConnectorPositive.Size = new System.Drawing.Size(251, 21);
             this.txt_ConnectorPositive.TabIndex = 10;
@@ -734,7 +695,7 @@
             // btn_ConnectorPositive
             // 
             this.btn_ConnectorPositive.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_ConnectorPositive.Location = new System.Drawing.Point(432, 111);
+            this.btn_ConnectorPositive.Location = new System.Drawing.Point(460, 243);
             this.btn_ConnectorPositive.Name = "btn_ConnectorPositive";
             this.btn_ConnectorPositive.Size = new System.Drawing.Size(77, 28);
             this.btn_ConnectorPositive.TabIndex = 9;
@@ -746,35 +707,35 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label6.Location = new System.Drawing.Point(36, 86);
+            this.label6.Location = new System.Drawing.Point(36, 219);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(89, 12);
+            this.label6.Size = new System.Drawing.Size(95, 12);
             this.label6.TabIndex = 8;
-            this.label6.Text = "本体定位相机：";
+            this.label6.Text = "本体定位1相机：";
             // 
-            // txt_FeedPositive
+            // txt_FeedPositive1
             // 
-            this.txt_FeedPositive.Location = new System.Drawing.Point(165, 83);
-            this.txt_FeedPositive.Name = "txt_FeedPositive";
-            this.txt_FeedPositive.Size = new System.Drawing.Size(251, 21);
-            this.txt_FeedPositive.TabIndex = 7;
+            this.txt_FeedPositive1.Location = new System.Drawing.Point(175, 215);
+            this.txt_FeedPositive1.Name = "txt_FeedPositive1";
+            this.txt_FeedPositive1.Size = new System.Drawing.Size(251, 21);
+            this.txt_FeedPositive1.TabIndex = 7;
             // 
-            // btn_FeedPositive
+            // btn_FeedPositive1
             // 
-            this.btn_FeedPositive.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_FeedPositive.Location = new System.Drawing.Point(432, 78);
-            this.btn_FeedPositive.Name = "btn_FeedPositive";
-            this.btn_FeedPositive.Size = new System.Drawing.Size(77, 28);
-            this.btn_FeedPositive.TabIndex = 6;
-            this.btn_FeedPositive.Text = "确定";
-            this.btn_FeedPositive.UseVisualStyleBackColor = true;
-            this.btn_FeedPositive.Click += new System.EventHandler(this.btn_FeedPositive_Click);
+            this.btn_FeedPositive1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btn_FeedPositive1.Location = new System.Drawing.Point(460, 208);
+            this.btn_FeedPositive1.Name = "btn_FeedPositive1";
+            this.btn_FeedPositive1.Size = new System.Drawing.Size(77, 28);
+            this.btn_FeedPositive1.TabIndex = 6;
+            this.btn_FeedPositive1.Text = "确定";
+            this.btn_FeedPositive1.UseVisualStyleBackColor = true;
+            this.btn_FeedPositive1.Click += new System.EventHandler(this.btn_FeedPositive_Click);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label5.Location = new System.Drawing.Point(36, 53);
+            this.label5.Location = new System.Drawing.Point(36, 186);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(125, 12);
             this.label5.TabIndex = 5;
@@ -782,7 +743,7 @@
             // 
             // txt_ConnectorNegative
             // 
-            this.txt_ConnectorNegative.Location = new System.Drawing.Point(165, 50);
+            this.txt_ConnectorNegative.Location = new System.Drawing.Point(175, 182);
             this.txt_ConnectorNegative.Name = "txt_ConnectorNegative";
             this.txt_ConnectorNegative.Size = new System.Drawing.Size(251, 21);
             this.txt_ConnectorNegative.TabIndex = 4;
@@ -790,7 +751,7 @@
             // btn_ConnectorNegative
             // 
             this.btn_ConnectorNegative.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btn_ConnectorNegative.Location = new System.Drawing.Point(432, 45);
+            this.btn_ConnectorNegative.Location = new System.Drawing.Point(460, 177);
             this.btn_ConnectorNegative.Name = "btn_ConnectorNegative";
             this.btn_ConnectorNegative.Size = new System.Drawing.Size(77, 28);
             this.btn_ConnectorNegative.TabIndex = 3;
@@ -801,7 +762,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(36, 20);
+            this.label4.Location = new System.Drawing.Point(36, 152);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(113, 12);
             this.label4.TabIndex = 2;
@@ -809,14 +770,14 @@
             // 
             // txt_CamFeedBelt
             // 
-            this.txt_CamFeedBelt.Location = new System.Drawing.Point(165, 17);
+            this.txt_CamFeedBelt.Location = new System.Drawing.Point(175, 149);
             this.txt_CamFeedBelt.Name = "txt_CamFeedBelt";
             this.txt_CamFeedBelt.Size = new System.Drawing.Size(251, 21);
             this.txt_CamFeedBelt.TabIndex = 1;
             // 
             // btn_SetCam_FeedBelt
             // 
-            this.btn_SetCam_FeedBelt.Location = new System.Drawing.Point(432, 12);
+            this.btn_SetCam_FeedBelt.Location = new System.Drawing.Point(460, 142);
             this.btn_SetCam_FeedBelt.Name = "btn_SetCam_FeedBelt";
             this.btn_SetCam_FeedBelt.Size = new System.Drawing.Size(77, 28);
             this.btn_SetCam_FeedBelt.TabIndex = 0;
@@ -824,11 +785,49 @@
             this.btn_SetCam_FeedBelt.UseVisualStyleBackColor = true;
             this.btn_SetCam_FeedBelt.Click += new System.EventHandler(this.btn_SetCam_FeedBelt_Click);
             // 
+            // lbl_fpcCheck
+            // 
+            this.lbl_fpcCheck.AutoSize = true;
+            this.lbl_fpcCheck.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbl_fpcCheck.Location = new System.Drawing.Point(13, 324);
+            this.lbl_fpcCheck.Name = "lbl_fpcCheck";
+            this.lbl_fpcCheck.Size = new System.Drawing.Size(17, 16);
+            this.lbl_fpcCheck.TabIndex = 45;
+            this.lbl_fpcCheck.Text = "9";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label14.Location = new System.Drawing.Point(36, 328);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(83, 12);
+            this.label14.TabIndex = 44;
+            this.label14.Text = "Fpc检测相机：";
+            // 
+            // txt_FpcCheck
+            // 
+            this.txt_FpcCheck.Location = new System.Drawing.Point(175, 324);
+            this.txt_FpcCheck.Name = "txt_FpcCheck";
+            this.txt_FpcCheck.Size = new System.Drawing.Size(251, 21);
+            this.txt_FpcCheck.TabIndex = 43;
+            // 
+            // btn_FpcCheck
+            // 
+            this.btn_FpcCheck.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btn_FpcCheck.Location = new System.Drawing.Point(460, 317);
+            this.btn_FpcCheck.Name = "btn_FpcCheck";
+            this.btn_FpcCheck.Size = new System.Drawing.Size(77, 28);
+            this.btn_FpcCheck.TabIndex = 42;
+            this.btn_FpcCheck.Text = "确定";
+            this.btn_FpcCheck.UseVisualStyleBackColor = true;
+            this.btn_FpcCheck.Click += new System.EventHandler(this.btn_FpcCheck_Click);
+            // 
             // MV_CameraSettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1464, 549);
+            this.ClientSize = new System.Drawing.Size(1464, 731);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -882,46 +881,46 @@
         private System.Windows.Forms.Button bnSavePng;
         private System.Windows.Forms.Button bnSaveTiff;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox txt_LongSideB;
-        private System.Windows.Forms.Button btn_LongSideB;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox txt_ShortSideB;
-        private System.Windows.Forms.Button btn_ShortSideB;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txt_Positive;
         private System.Windows.Forms.Button btn_Positive;
+        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox txt_LongSideA;
-        private System.Windows.Forms.Button btn_LongSideA;
+        private System.Windows.Forms.TextBox txt_LongSide;
+        private System.Windows.Forms.Button btn_LongSide;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox txt_Negative;
         private System.Windows.Forms.Button btn_Negative;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox txt_ShortSideA;
-        private System.Windows.Forms.Button btn_ShortSideA;
+        private System.Windows.Forms.TextBox txt_ShortSide;
+        private System.Windows.Forms.Button btn_ShortSide;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txt_ConnectorPositive;
         private System.Windows.Forms.Button btn_ConnectorPositive;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txt_FeedPositive;
-        private System.Windows.Forms.Button btn_FeedPositive;
+        private System.Windows.Forms.TextBox txt_FeedPositive1;
+        private System.Windows.Forms.Button btn_FeedPositive1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txt_ConnectorNegative;
         private System.Windows.Forms.Button btn_ConnectorNegative;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txt_CamFeedBelt;
         private System.Windows.Forms.Button btn_SetCam_FeedBelt;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label lbl_ConnectorPositive;
+        private System.Windows.Forms.Label lbl_FeedPositive1;
+        private System.Windows.Forms.Label lbl_ConnectorNegative;
+        private System.Windows.Forms.Label lbl_SetCam_FeedBelt;
+        private System.Windows.Forms.Label lbl_Positive;
+        private System.Windows.Forms.Label lbl_Long;
+        private System.Windows.Forms.Label lbl_Negative;
+        private System.Windows.Forms.Label lbl_Short;
+        private System.Windows.Forms.Label lbl_FeedPositive2;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txt_FeedPositive2;
+        private System.Windows.Forms.Button btn_FeedPositive2;
+        private System.Windows.Forms.Label lbl_fpcCheck;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox txt_FpcCheck;
+        private System.Windows.Forms.Button btn_FpcCheck;
     }
 }
 

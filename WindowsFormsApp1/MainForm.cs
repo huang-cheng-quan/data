@@ -26,6 +26,14 @@ using Camera_Capture_demo.HalconVision;
 using Dyestripping.DeviceSettingFrms;
 using WindowsFormsApp1.ConnectorDetection;
 using WindowsFormsApp1.HalconVision;
+using static WindowsFormsApp1.InferData.InferServerData;
+using WindowsFormsApp1.TimeDelete;
+using System.Globalization;
+using Microsoft.VisualBasic;
+using System.IO;
+using MvCamCtrl.NET;
+using WindowsFormsApp1.VisionFrms;
+using WindowsFormsApp1.HalconTools;
 
 namespace WindowsFormsApp1
 {
@@ -36,40 +44,175 @@ namespace WindowsFormsApp1
         //和PLC的连接    
         MotionProcess motionProcess;
         //整体变量
-        int m_CamerNum = 8;
-        //TcpSocket类接口
-        public delegate void delegateAcceptePLCMessage1(string AccepteMessage);
-        public event delegateAcceptePLCMessage1 EventAcceptePLCMessage1;
-        public delegate void delegateAcceptePLCMessage2(string AccepteMessage);
-        public event delegateAcceptePLCMessage2 EventAcceptePLCMessage2;
-        //深度学习变量
-        string m_sModel_Path_P1 = "D:/halcon_DeepLearning/Watch_deep_segment_data/model_backupdata/20219271519";
-        string m_sModel_Path_P2_P6 = "D:/halcon_DeepLearning/Watch_deep_segment_data/model_backupdata/20219261653";
-        HTuple m_hv_DLModelHandle_P01 = new HTuple();
-        HTuple m_hv_DLModelHandle_P2_P6 = new HTuple();
-        string Model_Path = "";
-        HTuple m_hv_DatasetInfo = new HTuple();
-        HWindow m_hwWin1 = new HWindow();
-        HalonWinow hw = new HalonWinow();
-        HalconInfer hi = new HalconInfer();
+        int m_CamerNum = 10;
+       
+        
+
+        SetTime setTime = new SetTime();
+        /// <summary>
+        /// 光度立体路径
+        /// </summary>
+        string PicShow_Path = null;
+        //原始图片保存天数
+        int m_iOriginalImagesSaveTime = 7;
+        //缩略图保存天数
+        int m_iCompressionImagesSaveTime = 7;
+        string OriginalImagesSaveFilePath = "";
+        string CompressionImagesSaveFilePath = "";
+        //显示图像窗口
+        IntPtr[] m_hDisplayHandle;
 
         
         public MainForm()
         {
             InitializeComponent();
-           // prepareData(1);
+            // prepareData(1);
         }
-        private bool Login(int level)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            LoginFrm frm = new LoginFrm(level);
-            return (frm.ShowDialog() == DialogResult.OK);
+
+            ConfigVars.configInfo = XmlHelper.DeserializeFromXml<ConfigInfo>();
+            
+            if (ConfigVars.configInfo.UserInfos == null)
+            {
+                ConfigVars.configInfo.UserInfos = new UserInfos()
+                {
+                    OperatorPwd = "1",
+                    AdministratorPwd = "1",
+                    DeveloperPwd = "1"
+                };
+            }
+            if (ConfigVars.configInfo.OmronPlcs == null || ConfigVars.configInfo.OmronPlcs.Count == 0)
+            {
+                List<OmronPlcFactory> omronPlcs = new List<OmronPlcFactory>();
+                for (int i = 0; i < 2; i++)
+                {
+                    omronPlcs.Add(new OmronPlcFactory() { PlcNo = i });
+                }
+                ConfigVars.configInfo.OmronPlcs = omronPlcs;
+            }
+            if (ConfigVars.configInfo.calibrationData==null|| ConfigVars.configInfo.calibrationData.Count==0)
+            {
+                List<CalibrationData> calbraitiondata = new List<CalibrationData>();
+               
+                for (int i = 0; i < MotionProcess.NeedLocate; i++)
+                {
+                    if (i != MotionProcess.multitudeMotorToOneCameraFlag)
+                    {
+                        calbraitiondata.Add(new CalibrationData() { CameraNum = i, MotorNum = 0 });
+                    }
+                    else
+                    {
+                        for (int j = 0; j < MotionProcess.multitudeMotorNum; j++)
+                        {
+                            calbraitiondata.Add(new CalibrationData() { CameraNum = i, MotorNum = j });
+                        }
+                    }
+                    
+                }
+                ConfigVars.configInfo.calibrationData = calbraitiondata;
+            }
+
+            if (ConfigVars.configInfo.Cameras == null || ConfigVars.configInfo.Cameras.Count == 0)
+            {
+                List<MvClass> cameras = new List<MvClass>();
+                for (int i = 0; i < m_CamerNum; i++)
+                {
+                    cameras.Add(new MvClass() { CameraNo = i });
+                }
+                ConfigVars.configInfo.Cameras = cameras;
+            }
+            if (ConfigVars.configInfo.client_Data != null)
+            {
+                MotionProcess.Client_IP = ConfigVars.configInfo.client_Data.IP_Client;
+                MotionProcess.Cilent_Port = ConfigVars.configInfo.client_Data.Port_Client;
+            }
+            if (ConfigVars.configInfo.Save_Time_Period == null)
+            {
+                ConfigVars.configInfo.Save_Time_Period = new SaveTimePeriod();
+            }
+            else
+            {
+                m_iOriginalImagesSaveTime = ConfigVars.configInfo.Save_Time_Period.OriginalImagesSaveTime;
+                m_iCompressionImagesSaveTime = ConfigVars.configInfo.Save_Time_Period.CompressionImagesSaveTime;
+            }
+            if (ConfigVars.configInfo.ProductInfos.SelectProject != null)
+            {
+                txt_ProjectName.Text = ConfigVars.configInfo.ProductInfos.SelectProject;
+                MotionProcess.m_Job_name = ConfigVars.configInfo.ProductInfos.SelectProject;
+            }
+            if (ConfigVars.configInfo.ToolInfos == null)
+            {
+                ConfigVars.configInfo.ToolInfos = new ToolInfos();
+            }
+            if (ConfigVars.configInfo.calibrationData==null)
+            {
+                for (int i = 0; i < MotionProcess.NeedLocate; i++)
+                {
+                    ConfigVars.configInfo.calibrationData[i] = new CalibrationData();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < MotionProcess.NeedLocate; i++)
+                {
+                    MotionProcess.motion_SinglePixelAccuracy[i] = ConfigVars.configInfo.calibrationData[i].SinglePixelAccuracy;
+                }
+                
+            }
+            XmlHelper.SerializeToXml(ConfigVars.configInfo);
+            //motionProcess = new MotionProcess();
+
+            #region 事件注册
+            LogHelper.LogDisp += LogHelper_LogDisp;
+            MotionProcess.event_OnImgDisp += MotionProcess_OnImgDisp;
+            MotionProcess.event_OnPositionDisp += MotionProcess_OnPositionDisp;
+            MotionProcess.event_LabelDisplay += MotionProcess_OnLabelDisp;
+            MotionProcess.event_ProcessSampleResultData_NVT += ProcessSampleResultData_NVT_Data;
+            MotionProcess.event_ProcessSampleResultData2_NVT += ProcessSampleResultData2_NVT_Data;
+            MotionProcess.event_QrCodeShow += MotionProcess_eventQrcodeShow;
+            MvClass.eventProcessData += MotionProcess_eventProcessImageShow;
+            
+            #endregion
+            m_hDisplayHandle = new IntPtr[MotionProcess.m_nCameraTotalNum];
+
+            motionProcess = MotionProcess.GetInstance();
+            motionProcess.Init();
         }
-        private bool CheckHImageFrmIsOpen()
+
+        #region 显示委托
+        private void ProcessSampleResultData_NVT_Data(SampleResultData_NVT Srdn)
         {
-            return WindowHelper.CheckFormIsOpen("CalibrationFrm0") || WindowHelper.CheckFormIsOpen("CalibrationFrm1")
-                || WindowHelper.CheckFormIsOpen("CreateShapeModelFrm");
+            motionProcess.Show_image2Picbox(Srdn, pic_1, pic_2, pic_3, pic_4, pic_5, pic_6, pic_7, picShow);
         }
-        private void MotionProcess_OnImgDisp(HObject hImage, int camNo)
+        private void ProcessSampleResultData2_NVT_Data(SampleResultData2_NVT srdn2)
+        {
+            motionProcess.Show_Result2Table(srdn2, dataGridView2, 1);
+        }
+      
+        private void MotionProcess_OnLabelDisp(int Number, int flag)
+        {
+            this.BeginInvoke(new MethodInvoker(() =>
+            {
+                switch (flag)
+                {
+                    case 0:
+                        lbl_TotalSampleNums2.Text = Number.ToString();
+                        break;
+                    case 1:
+                        lbl_NGSampleNums2.Text = Number.ToString();
+                        break;
+                    case 2:
+                        lbl_OKSampleNums2.Text = Number.ToString();
+                        break;
+                    default:
+                        break;
+                }
+
+
+            }));
+        }
+        private void MotionProcess_OnImgDisp(HObject hImage, int camNo,int motorNum)
         {
             if (hImage == null)
             {
@@ -78,42 +221,99 @@ namespace WindowsFormsApp1
             if (halconOperatorList == null)
             {
                 halconOperatorList = new List<HalconOperator>();
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < MotionProcess.m_ihalconProcesEndNum; i++)
                 {
-                    halconOperatorList.Add(HalconOperator.GetInstance(i + 1));
+                    if (i!=5)
+                    {
+                        halconOperatorList.Add(HalconOperator.GetInstance(i,0));
+                    }
+                    else
+                    {
+                        halconOperatorList.Add(HalconOperator.GetInstance(i, 1));
+                        halconOperatorList.Add(HalconOperator.GetInstance(i, 2));
+                    }
+                    
                 }
+
             }
             this.BeginInvoke(new MethodInvoker(() =>
             {
-                HObject ho_Image = hImage.Clone();
+                
                 switch (camNo)
                 {
-                    case 1:
-                        HalconOperator.ShowImage(hWindowControl1, hImage);
-                        halconOperatorList[0].FindShapeModel(hWindowControl1.HalconWindow, ho_Image, out _, out List<PointXYU> pointXYUs1);
-                        motionProcess.GetPointList(1, pointXYUs1);
+                    case 4:
+                        motionProcess.GetModelPoint(hWindowControl1, camNo, hImage, motorNum);
                         break;
-                    case 2:
-                        HalconOperator.ShowImage(hWindowControl2, hImage);
-                        halconOperatorList[1].FindShapeModel(hWindowControl2.HalconWindow, ho_Image, out _, out List<PointXYU> pointXYUs2);
-                        motionProcess.GetPointList(2, pointXYUs2);
+                    case 6:
+                        motionProcess.GetModelPoint(hWindowControl2, camNo, hImage, motorNum);
                         break;
+                    case 8:
+                        motionProcess.GetModelPoint(hWindowControl3, camNo, hImage, motorNum);
+                        break;
+                    case 5:
+                        if (motorNum==1)
+                        {
+                            motionProcess.GetModelPoint(hWindowControl4, camNo, hImage, motorNum);
+                        }
+                        else
+                        {
+                            motionProcess.GetModelPoint(hWindowControl5, camNo, hImage, motorNum);
+                        }
+                       
+                        break;
+                   
                     default:
                         break;
                 }
+            }));
+        }
+        private void MotionProcess_eventProcessImageShow(int camNum, MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo, IntPtr data)
+        {
+            this.BeginInvoke(new MethodInvoker(() =>
+            {
+                stDisplayInfo.hWnd = m_hDisplayHandle[camNum];
+                MotionProcess.m_listMvCameras[camNum].m_MyCamera.MV_CC_DisplayOneFrame_NET(ref stDisplayInfo);
+            }));
+
+        }
+        private void MotionProcess_eventQrcodeShow(string code) 
+        {
+            this.BeginInvoke(new MethodInvoker(() =>
+            {
+                label38.Text = code;
             }));
         }
         private void MotionProcess_OnPositionDisp(int toolNo, PointXYU pointXYU)
         {
             this.BeginInvoke(new MethodInvoker(() =>
             {
-                //lblCurrentNo.Text = current.ToString();
-                //lblTotalNum.Text = total.ToString();
-                lblToolNo.Text = toolNo.ToString();
                 if (pointXYU != null)
                 {
-                    lblPosition.Text = string.Format("X:{0}\nY:{1}\nU:{2}", pointXYU.X, pointXYU.Y, pointXYU.U);
+                    switch (toolNo)
+                    {
+
+                        case 4:
+                            label41.Text = pointXYU.X.ToString("00.00");
+                            label42.Text = pointXYU.Y.ToString("00.00");
+                            label43.Text = pointXYU.U.ToString("00.00");
+                            break;
+                        case 6:
+                            label44.Text = pointXYU.X.ToString("00.00");
+                            label45.Text = pointXYU.Y.ToString("00.00");
+                            label46.Text = pointXYU.U.ToString("00.00");
+                            break;
+                        case 8:
+                            label47.Text = pointXYU.X.ToString("00.00");
+                            label48.Text = pointXYU.Y.ToString("00.00");
+                            label49.Text = pointXYU.U.ToString("00.00");
+                            break;
+                        default:
+                            break;
+                    }
                 }
+               
+
+             
             }));
         }
         private void LogHelper_LogDisp(string msg, string level)
@@ -146,50 +346,14 @@ namespace WindowsFormsApp1
             }
 ));
         }
+        #endregion
+
         private void 相机设置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Login(0))
+            if (motionProcess.Login(0))
             {
                 WindowHelper.ShowOrActiveForm<MV_CameraSettingForm>("MV_CameraSettingForm");
             }
-        }
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            #region 事件注册
-            LogHelper.LogDisp += LogHelper_LogDisp;
-            MotionProcess.OnImgDisp += MotionProcess_OnImgDisp;
-            MotionProcess.OnPositionDisp += MotionProcess_OnPositionDisp;
-            #endregion
-            ConfigVars.configInfo = XmlHelper.DeserializeFromXml<ConfigInfo>();
-                
-            if (ConfigVars.configInfo.UserInfos == null)
-            {
-                ConfigVars.configInfo.UserInfos = new UserInfos()
-                {
-                    OperatorPwd = "1",
-                    AdministratorPwd = "1",
-                    DeveloperPwd = "1"
-                };
-            }
-            if (ConfigVars.configInfo.OmronPlcs == null || ConfigVars.configInfo.OmronPlcs.Count == 0)
-            {
-                List<OmronPlcFactory> omronPlcs = new List<OmronPlcFactory>();
-                for (int i = 0; i < 2; i++)
-                {
-                    omronPlcs.Add(new OmronPlcFactory() { PlcNo = i });
-                }
-                ConfigVars.configInfo.OmronPlcs = omronPlcs;
-            }
-            if (ConfigVars.configInfo.Cameras == null || ConfigVars.configInfo.Cameras.Count == 0)
-            {
-                List<MvClass> cameras = new List<MvClass>();
-                for (int i = 0; i < 8; i++)
-                {
-                    cameras.Add(new MvClass() { CameraNo = i });
-                }
-                ConfigVars.configInfo.Cameras = cameras;
-            }
-            XmlHelper.SerializeToXml(ConfigVars.configInfo);
         }
         private void 标定设置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -197,87 +361,92 @@ namespace WindowsFormsApp1
         }
         private void 坐标标定ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Login(1))
+            if (motionProcess.Login(1))
             {
                 if (!WindowHelper.CheckFormIsOpen("CalibrationFrm0"))
                 {
-                    CalibrationFrm frm = new CalibrationFrm(0);  
+                    CalibrationFrm frm = new CalibrationFrm(4,0);
                     frm.Show();
                 }
-            }
-        }      
-        private void btn_FeedBelt_Click(object sender, EventArgs e)
-        {
-            if (btn_FeedBelt.Text == "启动")
-            {
-                if (motionProcess == null || !motionProcess.is_init)
-                {
-                    /*motionProcess = MotionProcess.GetInstance();*/
-                    motionProcess.Init();
-                }
-                if (CheckHImageFrmIsOpen())
-                {
-                    MessageBox.Show("请先关闭设置窗口");
-                    return;
-                }
-                if (motionProcess.is_init)
-                {
-                    motionProcess.abort = false;
-                    btn_FeedBelt.Text = "停止";
-                }
-            }
-            else
-            {
-                motionProcess.abort = true;
-                btn_FeedBelt.Text = "启动";
             }
         }
         private void 坐标标定本体定位ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Login(1))
+            if (motionProcess.Login(1))
             {
-                if (!WindowHelper.CheckFormIsOpen("CalibrationFrm0"))
+                if (!WindowHelper.CheckFormIsOpen("OffsetCalibrationFrom"))
                 {
-                    CalibrationFrm frm = new CalibrationFrm(1);
+                    OffsetCalibrationFrom frm = new OffsetCalibrationFrom(6,0);
+                    frm.Show();
+                }
+            }
+        }
+        private void 坐标标定本体定位2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (motionProcess.Login(1))
+            {
+                if (!WindowHelper.CheckFormIsOpen("OffsetCalibrationFrom"))
+                {
+                    OffsetCalibrationFrom frm = new OffsetCalibrationFrom(8,0);
                     frm.Show();
                 }
             }
         }
         private void 模板建立ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            motionProcess = new MotionProcess();
             if (motionProcess != null && !motionProcess.abort)
             {
                 MessageBox.Show("设备运行中,设置界面不可打开");
                 return;
             }
-            if (Login(1))
+            if (motionProcess.Login(1))
             {
                 if (!WindowHelper.CheckFormIsOpen("CreateShapeModelFrm0"))
                 {
-                    CreateShapeModelFrm frm = new CreateShapeModelFrm(0);
+                    CreateShapeModelFrm frm = new CreateShapeModelFrm(4);
                     frm.Show();
                 }
             }
         }
         private void 模板建立本体定位ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             if (motionProcess != null && !motionProcess.abort)
             {
                 MessageBox.Show("设备运行中,设置界面不可打开");
                 return;
             }
-            if (Login(1))
+
+            if (motionProcess.Login(1))
             {
-                if (!WindowHelper.CheckFormIsOpen("CreateShapeModelFrm1"))
+                if (!WindowHelper.CheckFormIsOpen("HalconTools_CreateModelForm"))
                 {
-                    CreateShapeModelFrm frm = new CreateShapeModelFrm(1);
+                    HalconTools_CreateModelForm frm = new HalconTools_CreateModelForm(6);
+                    frm.Show();
+                }
+            }
+        }
+        private void 模板建立本体定位2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (motionProcess != null && !motionProcess.abort)
+            {
+                MessageBox.Show("设备运行中,设置界面不可打开");
+                return;
+            }
+            if (motionProcess.Login(1))
+            {
+                if (!WindowHelper.CheckFormIsOpen("HalconTools_CreateModelForm"))
+                {
+                    HalconTools_CreateModelForm frm = new HalconTools_CreateModelForm(8);
                     frm.Show();
                 }
             }
         }
         private void plc设置上料ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Login(1))
+
+            if (motionProcess.Login(1))
             {
                 if (!WindowHelper.CheckFormIsOpen("OmronPlcSettingFrm0"))
                 {
@@ -288,7 +457,7 @@ namespace WindowsFormsApp1
         }
         private void pLC设置本体定位ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Login(1))
+            if (motionProcess.Login(1))
             {
                 if (!WindowHelper.CheckFormIsOpen("OmronPlcSettingFrm1"))
                 {
@@ -297,274 +466,6 @@ namespace WindowsFormsApp1
                 }
             }
         }
-        public void  prepareData(int model_flag)
-
-        {
-            // Local iconic variables 
-
-            HObject ho_ImageBatch = null, ho_Image = null;
-            HObject ho_SegmentationImage = null, ho_ClassRegions = null;
-            HObject ho_ClassRegion = null, ho_ConnectedRegions = null, ho_CurrentRegion = null;
-
-            // Local control variables 
-
-            HTuple hv_OKorNGflag = new HTuple(), hv_ShowExampleScreens = new HTuple();
-            HTuple hv_UsePretrainedModel = new HTuple(), hv_DLDeviceHandles = new HTuple();
-            HTuple hv_DLDevice = new HTuple(), hv_ImageDir = new HTuple();
-            HTuple hv_ExampleDataDir = new HTuple(), hv_PreprocessParamFileName = new HTuple();
-            HTuple hv_RetrainedModelFileName = new HTuple(), hv_ClassNames = new HTuple();
-            HTuple hv_ClassIDs = new HTuple(), hv_BatchSizeInference = new HTuple();
-            HTuple hv_DLModelHandle = new HTuple(), hv_DLPreprocessParam = new HTuple();
-            HTuple hv_WindowHandleDict = new HTuple();
-            HTuple hv_GenParamDisplay = new HTuple(), hv_ImageFiles = new HTuple();
-            HTuple hv_BatchIndex = new HTuple(), hv_Batch = new HTuple();
-            HTuple hv_BaseName = new HTuple(), hv_Extension = new HTuple();
-            HTuple hv_Directory = new HTuple(), hv_DLSampleBatch = new HTuple();
-            HTuple hv_DLResultBatch = new HTuple(), hv_SampleIndex = new HTuple();
-            HTuple hv_WindowHandles = new HTuple(), hv_Areas = new HTuple();
-            HTuple hv_ClassIndex = new HTuple(), hv_Area = new HTuple();
-            HTuple hv_Row = new HTuple(), hv_Column = new HTuple();
-            HTuple hv_ConnectIndex = new HTuple(), hv_Text = new HTuple();
-            HTuple hv_BoxColor = new HTuple();
-            // Initialize local and output iconic variables 
-            HOperatorSet.GenEmptyObj(out ho_ImageBatch);
-            HOperatorSet.GenEmptyObj(out ho_Image);
-            HOperatorSet.GenEmptyObj(out ho_SegmentationImage);
-            HOperatorSet.GenEmptyObj(out ho_ClassRegions);
-            HOperatorSet.GenEmptyObj(out ho_ClassRegion);
-            HOperatorSet.GenEmptyObj(out ho_ConnectedRegions);
-            HOperatorSet.GenEmptyObj(out ho_CurrentRegion);
-            try
-            {
-                hv_OKorNGflag.Dispose();
-                hv_OKorNGflag = 0;
-
-                if (HDevWindowStack.IsOpen())
-                {
-                    HOperatorSet.SetDraw(HDevWindowStack.GetActive(), "margin");
-                }
-                if (HDevWindowStack.IsOpen())
-                {
-                    HOperatorSet.SetLineWidth(HDevWindowStack.GetActive(), 3);
-                }
-                hv_ShowExampleScreens.Dispose();
-                hv_ShowExampleScreens = 1;
-
-                hv_UsePretrainedModel.Dispose();
-                hv_UsePretrainedModel = 0;
-
-                hv_DLDeviceHandles.Dispose();
-                HOperatorSet.QueryAvailableDlDevices((new HTuple("runtime")), (new HTuple("gpu")), out hv_DLDeviceHandles);
-                if ((int)(new HTuple((new HTuple(hv_DLDeviceHandles.TupleLength())).TupleEqual(
-                    0))) != 0)
-                {
-                    throw new HalconException("No supported device found to continue this example.");
-                }
-                //Due to the filter used in query_available_dl_devices, the first device is a GPU, if available.
-                hv_DLDevice.Dispose();
-                using (HDevDisposeHelper dh = new HDevDisposeHelper())
-                {
-                    hv_DLDevice = hv_DLDeviceHandles.TupleSelect(
-                        0);
-                }
-
-
-                hv_ExampleDataDir.Dispose();
-
-                hv_PreprocessParamFileName.Dispose();
-                using (HDevDisposeHelper dh = new HDevDisposeHelper())
-                {
-                    if (model_flag == 1)
-                    {
-                        Model_Path = m_sModel_Path_P1;
-                    }
-                    else if (model_flag == 6)
-                    {
-                        Model_Path = m_sModel_Path_P2_P6;
-                    }
-                    hv_PreprocessParamFileName = Model_Path + "/PreprocessParamFileName.hdict";
-                }
-                //Path of the retrained segmentation model.
-
-                using (HDevDisposeHelper dh = new HDevDisposeHelper())
-                {
-
-                    hv_RetrainedModelFileName = m_sModel_Path_P1 + "/model_best.hdl";
-
-                }
-
-                //
-                //Provide the class names and IDs.
-                //标签类
-                hv_ClassNames.Dispose();
-                hv_ClassNames = new HTuple();
-                hv_ClassNames[0] = "background";
-                hv_ClassNames[1] = "AK";
-                hv_ClassNames[2] = "FL";
-                hv_ClassNames[3] = "GS";
-                hv_ClassNames[4] = "HH";
-                hv_ClassNames[5] = "GB";
-                hv_ClassNames[6] = "LL";
-                hv_ClassNames[7] = "ZY";
-                hv_ClassNames[8] = "JQ";
-                hv_ClassNames[9] = "JY";
-                hv_ClassNames[10] = "JC";
-                hv_ClassNames[11] = "JZZ";
-                hv_ClassNames[12] = "MLP";
-                hv_ClassNames[13] = "ZW";
-                //标签id
-                hv_ClassIDs.Dispose();
-                hv_ClassIDs = new HTuple();
-                hv_ClassIDs[0] = 0;
-                hv_ClassIDs[1] = 1;
-                hv_ClassIDs[2] = 2;
-                hv_ClassIDs[3] = 3;
-                hv_ClassIDs[4] = 4;
-                hv_ClassIDs[5] = 5;
-                hv_ClassIDs[6] = 6;
-                hv_ClassIDs[7] = 7;
-                hv_ClassIDs[8] = 8;
-                hv_ClassIDs[9] = 9;
-                hv_ClassIDs[10] = 10;
-                hv_ClassIDs[11] = 11;
-                hv_ClassIDs[12] = 12;
-                hv_ClassIDs[13] = 13;
-                //
-                //Batch Size used during inference.
-                hv_BatchSizeInference.Dispose();
-                hv_BatchSizeInference = 1;
-
-                hv_DLModelHandle.Dispose();
-
-                HOperatorSet.ReadDlModel(hv_RetrainedModelFileName, out hv_DLModelHandle);
-                switch (model_flag)
-                {
-                    case 1:
-                        m_hv_DLModelHandle_P01 = hv_DLModelHandle;
-                        break;
-                    case 6:
-                        m_hv_DLModelHandle_P2_P6 = hv_DLModelHandle;
-                        break;
-                    default:
-                        break;
-                }
-
-                HOperatorSet.SetDlModelParam(hv_DLModelHandle, "batch_size", hv_BatchSizeInference);
-
-                HOperatorSet.SetDlModelParam(hv_DLModelHandle, "device", hv_DLDevice);
-
-                hv_DLPreprocessParam.Dispose();
-                HOperatorSet.ReadDict(hv_PreprocessParamFileName, new HTuple(), new HTuple(),
-                    out hv_DLPreprocessParam);
-                //
-                //Set parameters for visualization of results.
-                hv_WindowHandleDict.Dispose();
-                HOperatorSet.CreateDict(out hv_WindowHandleDict);
-                m_hv_DatasetInfo.Dispose();
-                HOperatorSet.CreateDict(out m_hv_DatasetInfo);
-                HOperatorSet.SetDictTuple(m_hv_DatasetInfo, "class_ids", hv_ClassIDs);
-                HOperatorSet.SetDictTuple(m_hv_DatasetInfo, "class_names", hv_ClassNames);
-                hv_GenParamDisplay.Dispose();
-                HOperatorSet.CreateDict(out hv_GenParamDisplay);
-                HOperatorSet.SetDictTuple(hv_GenParamDisplay, "segmentation_exclude_class_ids",
-                    0);
-                HOperatorSet.SetDictTuple(hv_GenParamDisplay, "segmentation_transparency",
-                    "80");
-                HOperatorSet.SetDictTuple(hv_GenParamDisplay, "font_size", 16);
-
-
-            }
-            catch (HalconException HDevExpDefaultException)
-            {
-                ho_ImageBatch.Dispose();
-                ho_Image.Dispose();
-                ho_SegmentationImage.Dispose();
-                ho_ClassRegions.Dispose();
-                ho_ClassRegion.Dispose();
-                ho_ConnectedRegions.Dispose();
-                ho_CurrentRegion.Dispose();
-
-                hv_OKorNGflag.Dispose();
-                hv_ShowExampleScreens.Dispose();
-                hv_UsePretrainedModel.Dispose();
-                hv_DLDevice.Dispose();
-                hv_ImageDir.Dispose();
-                hv_ExampleDataDir.Dispose();
-                hv_PreprocessParamFileName.Dispose();
-                hv_RetrainedModelFileName.Dispose();
-                hv_ClassNames.Dispose();
-                hv_ClassIDs.Dispose();
-                hv_BatchSizeInference.Dispose();
-                hv_DLModelHandle.Dispose();
-                hv_DLPreprocessParam.Dispose();
-                hv_WindowHandleDict.Dispose();
-                m_hv_DatasetInfo.Dispose();
-                hv_GenParamDisplay.Dispose();
-                hv_ImageFiles.Dispose();
-                hv_BatchIndex.Dispose();
-                hv_Batch.Dispose();
-                hv_BaseName.Dispose();
-                hv_Extension.Dispose();
-                hv_Directory.Dispose();
-                hv_DLSampleBatch.Dispose();
-                hv_DLResultBatch.Dispose();
-                hv_SampleIndex.Dispose();
-                hv_WindowHandles.Dispose();
-                hv_Areas.Dispose();
-                hv_ClassIndex.Dispose();
-                hv_Area.Dispose();
-                hv_Row.Dispose();
-                hv_Column.Dispose();
-                hv_ConnectIndex.Dispose();
-                hv_Text.Dispose();
-                hv_BoxColor.Dispose();
-
-                throw HDevExpDefaultException;
-            }
-            ho_ImageBatch.Dispose();
-            ho_Image.Dispose();
-            ho_SegmentationImage.Dispose();
-            ho_ClassRegions.Dispose();
-            ho_ClassRegion.Dispose();
-            ho_ConnectedRegions.Dispose();
-            ho_CurrentRegion.Dispose();
-
-            hv_OKorNGflag.Dispose();
-            hv_ShowExampleScreens.Dispose();
-            hv_UsePretrainedModel.Dispose();
-            hv_DLDeviceHandles.Dispose();
-            hv_ImageDir.Dispose();
-            hv_ExampleDataDir.Dispose();
-            hv_PreprocessParamFileName.Dispose();
-            hv_RetrainedModelFileName.Dispose();
-            hv_ClassNames.Dispose();
-            hv_ClassIDs.Dispose();
-            hv_BatchSizeInference.Dispose();
-            hv_DLModelHandle.Dispose();
-            hv_DLPreprocessParam.Dispose();
-            hv_WindowHandleDict.Dispose();
-            m_hv_DatasetInfo.Dispose();
-            hv_GenParamDisplay.Dispose();
-            hv_ImageFiles.Dispose();
-            hv_BatchIndex.Dispose();
-            hv_Batch.Dispose();
-            hv_BaseName.Dispose();
-            hv_Extension.Dispose();
-            hv_Directory.Dispose();
-            hv_DLSampleBatch.Dispose();
-            hv_DLResultBatch.Dispose();
-            hv_SampleIndex.Dispose();
-            hv_WindowHandles.Dispose();
-            hv_Areas.Dispose();
-            hv_ClassIndex.Dispose();
-            hv_Area.Dispose();
-            hv_Row.Dispose();
-            hv_Column.Dispose();
-            hv_ConnectIndex.Dispose();
-            hv_Text.Dispose();
-            hv_BoxColor.Dispose();
-
-        }
         private void btn_ResetFeedBelt_Click(object sender, EventArgs e)
         {
         }
@@ -572,7 +473,195 @@ namespace WindowsFormsApp1
         {
             this.Close();
         }
-    }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("是否退出程序", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+            {
+                LogHelper.LogInfo("软件退出");
+                if (motionProcess != null)
+                   motionProcess.Exit();
 
-   
+                LogHelper.ExitThread();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            setTime.DeleteFile(OriginalImagesSaveFilePath, m_iOriginalImagesSaveTime);  //删除原始照片超过天数的文件
+            setTime.DeleteFile(CompressionImagesSaveFilePath, m_iCompressionImagesSaveTime);  //删除压缩照片超过天数的文件
+        }
+        private void 切换项目ToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (motionProcess.Login(1))
+            {
+                try
+                {
+                    string desc = null;
+                    if (CultureInfo.InstalledUICulture.Name == "zh-CN")
+                    {
+                        desc = "请选择Project目录下的项目";
+                    }
+                    else
+                    {
+                        desc = "Select the project in the Project directory";
+                    }
+                    string _selectedFolder = motionProcess.SelectFolder(desc, false);
+                    //显示选择安装目录界面，同时允许创建新文件夹
+                    if (_selectedFolder.Length > 0)
+                    {
+                        ConfigVars.configInfo.ProductInfos.SelectProject = _selectedFolder.Replace(Application.StartupPath + "\\Project\\", string.Empty);
+                        XmlHelper.SerializeToXml(ConfigVars.configInfo);
+                        txt_ProjectName.Text = ConfigVars.configInfo.ProductInfos.SelectProject;
+                        MotionProcess.m_Job_name = txt_ProjectName.Text;
+                       
+                        if (halconOperatorList != null)
+                        {
+                            halconOperatorList[0].ReUpdateParams();
+                            halconOperatorList[1].ReUpdateParams();
+                        }
+                        if (CultureInfo.InstalledUICulture.Name == "zh-CN")
+                        {
+                            MessageBox.Show(ConfigVars.configInfo.ProductInfos.SelectProject + "项目加载完成");
+                        }
+                        else
+                        {
+                            MessageBox.Show(ConfigVars.configInfo.ProductInfos.SelectProject + "The project is loaded");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (CultureInfo.InstalledUICulture.Name == "zh-CN")
+                    {
+                        MessageBox.Show("项目加载失败！" + ex.Message);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Project Load Failure！" + ex.Message);
+                    }
+                }
+            }
+        }
+        private void 新建项目ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (motionProcess.Login(1))
+            {
+                string proj_name = Interaction.InputBox("请输入项目名称", "新建项目");
+                if (!string.IsNullOrEmpty(proj_name))
+                {
+                    string dest_proj_Path = Application.StartupPath + "\\Project\\" + proj_name;
+                    if (!Directory.Exists(dest_proj_Path))
+                    {
+                        Directory.CreateDirectory(dest_proj_Path);
+                    }
+                    MotionProcess.m_Job_name = proj_name;
+                }
+            }
+        }
+        private void btn_Start_Click(object sender, EventArgs e)
+        {
+            m_hDisplayHandle[0] = pictureBox1.Handle;
+            m_hDisplayHandle[1] = pictureBox2.Handle;
+            m_hDisplayHandle[2] = pictureBox3.Handle;
+            m_hDisplayHandle[3] = pictureBox4.Handle;
+            m_hDisplayHandle[5] = pictureBox5.Handle;
+            m_hDisplayHandle[7] = pictureBox8.Handle;
+            m_hDisplayHandle[9] = pictureBox9.Handle;
+            //motionProcess = new MotionProcess();
+            
+            if (btn_Start.Text == "启动")
+            {
+                if (motionProcess == null || !motionProcess.is_init)
+                {
+                    motionProcess = MotionProcess.GetInstance();
+                    motionProcess.Init();
+                }
+                
+                if (motionProcess.CheckHImageFrmIsOpen())
+                {
+                    MessageBox.Show("请先关闭设置窗口");
+                    return;
+                }
+                if (motionProcess.is_init)
+                {
+                    motionProcess.abort = false;
+                    btn_Start.Text = "停止";
+                }
+            }
+            else
+            {
+                motionProcess.abort = true;
+                btn_Start.Text = "启动";
+            }
+        }
+        private void btn_Stop_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        private void 设置补偿值ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (motionProcess.Login(1))
+            {
+                if (!WindowHelper.CheckFormIsOpen("ToolOffsetSettingFrm"))
+                {
+                    ToolOffsetSettingFrm frm = new ToolOffsetSettingFrm();
+                    frm.Show();
+                }
+            }
+        }
+        private void btn_Reset_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void 坐标标定钢片检测AToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            motionProcess = new MotionProcess();
+
+            if (motionProcess.Login(1))
+            {
+                if (!WindowHelper.CheckFormIsOpen("OffsetCalibrationFrom"))
+                {
+                    OffsetCalibrationFrom frm = new OffsetCalibrationFrom(5,1);
+                    frm.Show();
+                }
+            }
+        }
+        private void 坐标标定钢片检测BToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            motionProcess = new MotionProcess();
+
+            if (motionProcess.Login(1))
+            {
+                if (!WindowHelper.CheckFormIsOpen("OffsetCalibrationFrom"))
+                {
+                    OffsetCalibrationFrom frm = new OffsetCalibrationFrom(5,2);
+                    frm.Show();
+                }
+            }
+        }
+
+        private void 模板建立钢片检测AToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            motionProcess = new MotionProcess();
+            if (motionProcess != null && !motionProcess.abort)
+            {
+                MessageBox.Show("设备运行中,设置界面不可打开");
+                return;
+            }
+            if (motionProcess.Login(1))
+            {
+                if (!WindowHelper.CheckFormIsOpen("HalconTools_CreateModelForm"))
+                {
+                    HalconTools_CreateModelForm frm = new HalconTools_CreateModelForm(5);
+                    frm.Show();
+                }
+            }
+        }
+    }
 }
+
+
+

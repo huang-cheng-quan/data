@@ -15,6 +15,9 @@ namespace Camera_Capture_demo.Models
         [XmlArray("OmronPlcs")]
         public List<OmronPlcFactory> OmronPlcs { get; set; }
 
+        [XmlArray("calibrationData")]
+        public List<CalibrationData> calibrationData { get; set; }
+
         [XmlElement(ElementName = "UserInfos")]
         public UserInfos UserInfos { get; set; }
 
@@ -25,6 +28,10 @@ namespace Camera_Capture_demo.Models
 
         [XmlElement(ElementName = "File_save_address")]
         public Save_file_Address save_file_Address { get; set; }
+
+        [XmlElement(ElementName = "Save_Time_Period")]
+        public SaveTimePeriod Save_Time_Period { get; set; }
+
 
         [XmlElement(ElementName = "Serial_port_information")]
         public Serial_port_information serial_PortInformation { get; set; }
@@ -59,6 +66,26 @@ namespace Camera_Capture_demo.Models
         public string Jobname { get; set; }
 
     }
+    public class CalibrationData
+    {
+        [XmlAttribute("CameraNum")]
+        public int CameraNum { get; set; }
+        [XmlAttribute("MotorNum")]
+        public int MotorNum { get; set; }
+        [XmlElement(ElementName = "SinglePixelAccuracy")]
+        public double SinglePixelAccuracy { get; set; }
+        [XmlElement(ElementName = "FitCenterRow")]
+        public double FitCenterRow { get; set; }
+        [XmlElement(ElementName = "FitCenterColumn")]
+        public double FitCenterColumn { get; set; }
+        [XmlElement(ElementName = "ModelWordX")]
+        public double ModelWordX { get; set; }
+        [XmlElement(ElementName = "ModelWordY")]
+        public double ModelWordY { get; set; }
+        [XmlElement(ElementName = "ModelWordU")]
+        public double ModelWordU { get; set; }
+
+    }
     public class ProductInfos
     {
         [XmlElement(ElementName = "SelectProject")]
@@ -70,14 +97,32 @@ namespace Camera_Capture_demo.Models
         public float Xoffset1 { get; set; }
         [XmlElement(ElementName = "Yoffset1")]
         public float Yoffset1 { get; set; }
+
+
         [XmlElement(ElementName = "Xoffset2")]
         public float Xoffset2 { get; set; }
         [XmlElement(ElementName = "Yoffset2")]
         public float Yoffset2 { get; set; }
+
+
         [XmlElement(ElementName = "Xoffset3")]
         public float Xoffset3 { get; set; }
         [XmlElement(ElementName = "Yoffset3")]
         public float Yoffset3 { get; set; }
+
+
+        [XmlElement(ElementName = "Xoffset4")]
+        public float Xoffset4 { get; set; }
+        [XmlElement(ElementName = "Yoffset4")]
+        public float Yoffset4 { get; set; }
+
+
+        [XmlElement(ElementName = "Xoffset5")]
+        public float Xoffset5 { get; set; }
+        [XmlElement(ElementName = "Yoffset5")]
+        public float Yoffset5 { get; set; }
+
+
         [XmlElement(ElementName = "CamPositionOnCalib")]
         public float CamPositionOnCalib { get; set; }//标定时的相机坐标
 
@@ -89,6 +134,14 @@ namespace Camera_Capture_demo.Models
         [XmlElement(ElementName = "Port_Client")]
         public int Port_Client { get; set; }
     }
+    public class SaveTimePeriod 
+    {
+        [XmlAttribute("OriginalImagesSaveTime")]
+        public int OriginalImagesSaveTime { get; set; }
+        [XmlElement(ElementName = "CompressionImagesSaveTime")]
+        public int CompressionImagesSaveTime { get; set; }
+    }
+
     public class TCP_data
     {
         [XmlAttribute("Cam_Number")]
@@ -183,12 +236,12 @@ namespace Camera_Capture_demo.Models
             if (omronPlcList == null)
             {
                 omronPlcList = new List<OmronFinsNet>();
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     omronPlcList.Add(null);
                 }
             }
-            OmronPlcFactory omronPlcConfig = ConfigVars.configInfo.OmronPlcs[plcNo];
+            OmronPlcFactory omronPlcConfig = ConfigVars.configInfo.OmronPlcs[0];
             if (omronPlcConfig != null && (omronPlcList[plcNo] == null || TcpParamsChanged(plcNo, omronPlcConfig)))
             {
                 lock (locker)
