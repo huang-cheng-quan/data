@@ -183,7 +183,7 @@ namespace WindowsFormsApp1
             this.hWindowControl1.BackColor = System.Drawing.Color.Black;
             this.hWindowControl1.BorderColor = System.Drawing.Color.Black;
             this.hWindowControl1.ImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
-            this.hWindowControl1.Location = new System.Drawing.Point(0, 28);
+            this.hWindowControl1.Location = new System.Drawing.Point(2, 28);
             this.hWindowControl1.Name = "hWindowControl1";
             this.hWindowControl1.Size = new System.Drawing.Size(306, 264);
             this.hWindowControl1.TabIndex = 0;
@@ -214,7 +214,7 @@ namespace WindowsFormsApp1
             // 相机设置ToolStripMenuItem
             // 
             this.相机设置ToolStripMenuItem.Name = "相机设置ToolStripMenuItem";
-            this.相机设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.相机设置ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.相机设置ToolStripMenuItem.Text = "相机设置";
             this.相机设置ToolStripMenuItem.Click += new System.EventHandler(this.相机设置ToolStripMenuItem_Click);
             // 
@@ -224,7 +224,7 @@ namespace WindowsFormsApp1
             this.plc设置上料ToolStripMenuItem,
             this.pLC设置本体定位ToolStripMenuItem});
             this.pLC设置ToolStripMenuItem.Name = "pLC设置ToolStripMenuItem";
-            this.pLC设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pLC设置ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.pLC设置ToolStripMenuItem.Text = "PLC设置";
             // 
             // plc设置上料ToolStripMenuItem
@@ -257,7 +257,7 @@ namespace WindowsFormsApp1
             this.生成标定图ToolStripMenuItem,
             this.设置补偿值ToolStripMenuItem});
             this.标定设置ToolStripMenuItem.Name = "标定设置ToolStripMenuItem";
-            this.标定设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.标定设置ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.标定设置ToolStripMenuItem.Text = "标定设置";
             this.标定设置ToolStripMenuItem.Click += new System.EventHandler(this.标定设置ToolStripMenuItem_Click);
             // 
@@ -346,7 +346,7 @@ namespace WindowsFormsApp1
             // 定时删除文件设置ToolStripMenuItem
             // 
             this.定时删除文件设置ToolStripMenuItem.Name = "定时删除文件设置ToolStripMenuItem";
-            this.定时删除文件设置ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.定时删除文件设置ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.定时删除文件设置ToolStripMenuItem.Text = "定时删除文件设置";
             // 
             // 项目ToolStripMenuItem
@@ -377,7 +377,7 @@ namespace WindowsFormsApp1
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(-1, 30);
+            this.label1.Location = new System.Drawing.Point(2, 30);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 3;
@@ -388,7 +388,7 @@ namespace WindowsFormsApp1
             this.hWindowControl2.BackColor = System.Drawing.Color.Black;
             this.hWindowControl2.BorderColor = System.Drawing.Color.Black;
             this.hWindowControl2.ImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
-            this.hWindowControl2.Location = new System.Drawing.Point(312, 28);
+            this.hWindowControl2.Location = new System.Drawing.Point(309, 28);
             this.hWindowControl2.Name = "hWindowControl2";
             this.hWindowControl2.Size = new System.Drawing.Size(306, 264);
             this.hWindowControl2.TabIndex = 4;
@@ -399,7 +399,7 @@ namespace WindowsFormsApp1
             this.hWindowControl3.BackColor = System.Drawing.Color.Black;
             this.hWindowControl3.BorderColor = System.Drawing.Color.Black;
             this.hWindowControl3.ImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
-            this.hWindowControl3.Location = new System.Drawing.Point(624, 28);
+            this.hWindowControl3.Location = new System.Drawing.Point(616, 28);
             this.hWindowControl3.Name = "hWindowControl3";
             this.hWindowControl3.Size = new System.Drawing.Size(306, 264);
             this.hWindowControl3.TabIndex = 6;
@@ -410,11 +410,11 @@ namespace WindowsFormsApp1
             this.hWindowControl4.BackColor = System.Drawing.Color.Black;
             this.hWindowControl4.BorderColor = System.Drawing.Color.Black;
             this.hWindowControl4.ImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
-            this.hWindowControl4.Location = new System.Drawing.Point(398, 15);
+            this.hWindowControl4.Location = new System.Drawing.Point(93, 179);
             this.hWindowControl4.Name = "hWindowControl4";
-            this.hWindowControl4.Size = new System.Drawing.Size(49, 48);
+            this.hWindowControl4.Size = new System.Drawing.Size(80, 79);
             this.hWindowControl4.TabIndex = 8;
-            this.hWindowControl4.WindowSize = new System.Drawing.Size(49, 48);
+            this.hWindowControl4.WindowSize = new System.Drawing.Size(80, 79);
             // 
             // label2
             // 
@@ -708,18 +708,18 @@ namespace WindowsFormsApp1
             // pic_4
             // 
             this.pic_4.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pic_4.Location = new System.Drawing.Point(174, 15);
+            this.pic_4.Location = new System.Drawing.Point(6, 97);
             this.pic_4.Name = "pic_4";
-            this.pic_4.Size = new System.Drawing.Size(49, 48);
+            this.pic_4.Size = new System.Drawing.Size(80, 79);
             this.pic_4.TabIndex = 12;
             this.pic_4.TabStop = false;
             // 
             // pic_2
             // 
             this.pic_2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pic_2.Location = new System.Drawing.Point(62, 15);
+            this.pic_2.Location = new System.Drawing.Point(93, 15);
             this.pic_2.Name = "pic_2";
-            this.pic_2.Size = new System.Drawing.Size(49, 48);
+            this.pic_2.Size = new System.Drawing.Size(80, 79);
             this.pic_2.TabIndex = 11;
             this.pic_2.TabStop = false;
             // 
@@ -728,43 +728,43 @@ namespace WindowsFormsApp1
             this.pic_1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.pic_1.Location = new System.Drawing.Point(6, 15);
             this.pic_1.Name = "pic_1";
-            this.pic_1.Size = new System.Drawing.Size(49, 48);
+            this.pic_1.Size = new System.Drawing.Size(80, 79);
             this.pic_1.TabIndex = 10;
             this.pic_1.TabStop = false;
             // 
             // pic_3
             // 
             this.pic_3.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pic_3.Location = new System.Drawing.Point(118, 15);
+            this.pic_3.Location = new System.Drawing.Point(177, 15);
             this.pic_3.Name = "pic_3";
-            this.pic_3.Size = new System.Drawing.Size(49, 48);
+            this.pic_3.Size = new System.Drawing.Size(80, 79);
             this.pic_3.TabIndex = 13;
             this.pic_3.TabStop = false;
             // 
             // pic_5
             // 
             this.pic_5.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pic_5.Location = new System.Drawing.Point(230, 15);
+            this.pic_5.Location = new System.Drawing.Point(93, 97);
             this.pic_5.Name = "pic_5";
-            this.pic_5.Size = new System.Drawing.Size(49, 48);
+            this.pic_5.Size = new System.Drawing.Size(80, 79);
             this.pic_5.TabIndex = 14;
             this.pic_5.TabStop = false;
             // 
             // pic_6
             // 
             this.pic_6.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pic_6.Location = new System.Drawing.Point(286, 15);
+            this.pic_6.Location = new System.Drawing.Point(177, 97);
             this.pic_6.Name = "pic_6";
-            this.pic_6.Size = new System.Drawing.Size(49, 48);
+            this.pic_6.Size = new System.Drawing.Size(80, 79);
             this.pic_6.TabIndex = 15;
             this.pic_6.TabStop = false;
             // 
             // pic_7
             // 
             this.pic_7.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pic_7.Location = new System.Drawing.Point(342, 15);
+            this.pic_7.Location = new System.Drawing.Point(6, 179);
             this.pic_7.Name = "pic_7";
-            this.pic_7.Size = new System.Drawing.Size(49, 48);
+            this.pic_7.Size = new System.Drawing.Size(80, 79);
             this.pic_7.TabIndex = 16;
             this.pic_7.TabStop = false;
             // 
@@ -773,7 +773,7 @@ namespace WindowsFormsApp1
             this.lbl_NGSampleNums2.AutoSize = true;
             this.lbl_NGSampleNums2.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbl_NGSampleNums2.ForeColor = System.Drawing.Color.Crimson;
-            this.lbl_NGSampleNums2.Location = new System.Drawing.Point(1719, 64);
+            this.lbl_NGSampleNums2.Location = new System.Drawing.Point(505, 70);
             this.lbl_NGSampleNums2.Name = "lbl_NGSampleNums2";
             this.lbl_NGSampleNums2.Size = new System.Drawing.Size(22, 21);
             this.lbl_NGSampleNums2.TabIndex = 34;
@@ -784,7 +784,7 @@ namespace WindowsFormsApp1
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label7.ForeColor = System.Drawing.Color.Red;
-            this.label7.Location = new System.Drawing.Point(1713, 32);
+            this.label7.Location = new System.Drawing.Point(499, 38);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(56, 21);
             this.label7.TabIndex = 33;
@@ -795,7 +795,7 @@ namespace WindowsFormsApp1
             this.lbl_OKSampleNums2.AutoSize = true;
             this.lbl_OKSampleNums2.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbl_OKSampleNums2.ForeColor = System.Drawing.Color.Lime;
-            this.lbl_OKSampleNums2.Location = new System.Drawing.Point(1620, 63);
+            this.lbl_OKSampleNums2.Location = new System.Drawing.Point(407, 69);
             this.lbl_OKSampleNums2.Name = "lbl_OKSampleNums2";
             this.lbl_OKSampleNums2.Size = new System.Drawing.Size(22, 21);
             this.lbl_OKSampleNums2.TabIndex = 32;
@@ -806,7 +806,7 @@ namespace WindowsFormsApp1
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label16.ForeColor = System.Drawing.Color.Lime;
-            this.label16.Location = new System.Drawing.Point(1614, 32);
+            this.label16.Location = new System.Drawing.Point(401, 38);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(56, 21);
             this.label16.TabIndex = 31;
@@ -817,7 +817,7 @@ namespace WindowsFormsApp1
             this.lbl_TotalSampleNums2.AutoSize = true;
             this.lbl_TotalSampleNums2.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbl_TotalSampleNums2.ForeColor = System.Drawing.Color.DarkBlue;
-            this.lbl_TotalSampleNums2.Location = new System.Drawing.Point(1505, 63);
+            this.lbl_TotalSampleNums2.Location = new System.Drawing.Point(295, 69);
             this.lbl_TotalSampleNums2.Name = "lbl_TotalSampleNums2";
             this.lbl_TotalSampleNums2.Size = new System.Drawing.Size(22, 21);
             this.lbl_TotalSampleNums2.TabIndex = 30;
@@ -828,7 +828,7 @@ namespace WindowsFormsApp1
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.ForeColor = System.Drawing.Color.DarkBlue;
-            this.label18.Location = new System.Drawing.Point(1491, 32);
+            this.label18.Location = new System.Drawing.Point(281, 38);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(76, 21);
             this.label18.TabIndex = 29;
@@ -837,17 +837,17 @@ namespace WindowsFormsApp1
             // picShow
             // 
             this.picShow.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.picShow.Location = new System.Drawing.Point(1250, 569);
+            this.picShow.Location = new System.Drawing.Point(1235, 28);
             this.picShow.Name = "picShow";
-            this.picShow.Size = new System.Drawing.Size(292, 260);
+            this.picShow.Size = new System.Drawing.Size(306, 264);
             this.picShow.TabIndex = 35;
             this.picShow.TabStop = false;
             // 
             // rtxLog
             // 
-            this.rtxLog.Location = new System.Drawing.Point(1543, 566);
+            this.rtxLog.Location = new System.Drawing.Point(1235, 601);
             this.rtxLog.Name = "rtxLog";
-            this.rtxLog.Size = new System.Drawing.Size(272, 263);
+            this.rtxLog.Size = new System.Drawing.Size(470, 221);
             this.rtxLog.TabIndex = 36;
             this.rtxLog.Text = "";
             // 
@@ -860,7 +860,7 @@ namespace WindowsFormsApp1
             this.OKorNG,
             this.Code,
             this.Score});
-            this.dataGridView2.Location = new System.Drawing.Point(1262, 298);
+            this.dataGridView2.Location = new System.Drawing.Point(15, 146);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowTemplate.Height = 23;
             this.dataGridView2.Size = new System.Drawing.Size(519, 144);
@@ -897,7 +897,7 @@ namespace WindowsFormsApp1
             // 
             // btn_Start
             // 
-            this.btn_Start.Location = new System.Drawing.Point(1250, 29);
+            this.btn_Start.Location = new System.Drawing.Point(1738, 644);
             this.btn_Start.Name = "btn_Start";
             this.btn_Start.Size = new System.Drawing.Size(63, 56);
             this.btn_Start.TabIndex = 38;
@@ -907,7 +907,7 @@ namespace WindowsFormsApp1
             // 
             // btn_Reset
             // 
-            this.btn_Reset.Location = new System.Drawing.Point(1319, 29);
+            this.btn_Reset.Location = new System.Drawing.Point(1738, 766);
             this.btn_Reset.Name = "btn_Reset";
             this.btn_Reset.Size = new System.Drawing.Size(63, 56);
             this.btn_Reset.TabIndex = 40;
@@ -918,7 +918,7 @@ namespace WindowsFormsApp1
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 565);
+            this.pictureBox1.Location = new System.Drawing.Point(2, 558);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(306, 264);
             this.pictureBox1.TabIndex = 41;
@@ -927,7 +927,7 @@ namespace WindowsFormsApp1
             // pictureBox2
             // 
             this.pictureBox2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox2.Location = new System.Drawing.Point(624, 295);
+            this.pictureBox2.Location = new System.Drawing.Point(616, 293);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(306, 264);
             this.pictureBox2.TabIndex = 42;
@@ -936,7 +936,7 @@ namespace WindowsFormsApp1
             // pictureBox3
             // 
             this.pictureBox3.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox3.Location = new System.Drawing.Point(312, 565);
+            this.pictureBox3.Location = new System.Drawing.Point(309, 558);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(306, 264);
             this.pictureBox3.TabIndex = 44;
@@ -945,7 +945,7 @@ namespace WindowsFormsApp1
             // pictureBox4
             // 
             this.pictureBox4.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox4.Location = new System.Drawing.Point(624, 565);
+            this.pictureBox4.Location = new System.Drawing.Point(616, 558);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(306, 264);
             this.pictureBox4.TabIndex = 35;
@@ -954,7 +954,7 @@ namespace WindowsFormsApp1
             // pictureBox8
             // 
             this.pictureBox8.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox8.Location = new System.Drawing.Point(0, 295);
+            this.pictureBox8.Location = new System.Drawing.Point(2, 293);
             this.pictureBox8.Name = "pictureBox8";
             this.pictureBox8.Size = new System.Drawing.Size(306, 264);
             this.pictureBox8.TabIndex = 35;
@@ -963,7 +963,7 @@ namespace WindowsFormsApp1
             // pictureBox5
             // 
             this.pictureBox5.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox5.Location = new System.Drawing.Point(312, 296);
+            this.pictureBox5.Location = new System.Drawing.Point(309, 293);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(306, 264);
             this.pictureBox5.TabIndex = 45;
@@ -974,7 +974,7 @@ namespace WindowsFormsApp1
             this.label19.AutoSize = true;
             this.label19.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label19.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label19.Location = new System.Drawing.Point(311, 31);
+            this.label19.Location = new System.Drawing.Point(312, 30);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(95, 12);
             this.label19.TabIndex = 46;
@@ -985,7 +985,7 @@ namespace WindowsFormsApp1
             this.label20.AutoSize = true;
             this.label20.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label20.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label20.Location = new System.Drawing.Point(625, 30);
+            this.label20.Location = new System.Drawing.Point(619, 30);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(95, 12);
             this.label20.TabIndex = 47;
@@ -996,7 +996,7 @@ namespace WindowsFormsApp1
             this.label21.AutoSize = true;
             this.label21.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label21.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label21.Location = new System.Drawing.Point(0, 297);
+            this.label21.Location = new System.Drawing.Point(2, 297);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(65, 12);
             this.label21.TabIndex = 48;
@@ -1018,7 +1018,7 @@ namespace WindowsFormsApp1
             this.label23.AutoSize = true;
             this.label23.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label23.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label23.Location = new System.Drawing.Point(624, 298);
+            this.label23.Location = new System.Drawing.Point(619, 298);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(53, 12);
             this.label23.TabIndex = 50;
@@ -1029,7 +1029,7 @@ namespace WindowsFormsApp1
             this.label24.AutoSize = true;
             this.label24.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label24.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label24.Location = new System.Drawing.Point(624, 568);
+            this.label24.Location = new System.Drawing.Point(619, 562);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(53, 12);
             this.label24.TabIndex = 51;
@@ -1040,7 +1040,7 @@ namespace WindowsFormsApp1
             this.label25.AutoSize = true;
             this.label25.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label25.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label25.Location = new System.Drawing.Point(0, 569);
+            this.label25.Location = new System.Drawing.Point(4, 562);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(53, 12);
             this.label25.TabIndex = 52;
@@ -1051,7 +1051,7 @@ namespace WindowsFormsApp1
             this.label26.AutoSize = true;
             this.label26.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label26.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label26.Location = new System.Drawing.Point(315, 569);
+            this.label26.Location = new System.Drawing.Point(312, 562);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(53, 12);
             this.label26.TabIndex = 53;
@@ -1062,11 +1062,11 @@ namespace WindowsFormsApp1
             this.hWindowControl5.BackColor = System.Drawing.Color.Black;
             this.hWindowControl5.BorderColor = System.Drawing.Color.Black;
             this.hWindowControl5.ImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
-            this.hWindowControl5.Location = new System.Drawing.Point(454, 15);
+            this.hWindowControl5.Location = new System.Drawing.Point(177, 179);
             this.hWindowControl5.Name = "hWindowControl5";
-            this.hWindowControl5.Size = new System.Drawing.Size(49, 48);
+            this.hWindowControl5.Size = new System.Drawing.Size(80, 79);
             this.hWindowControl5.TabIndex = 8;
-            this.hWindowControl5.WindowSize = new System.Drawing.Size(49, 48);
+            this.hWindowControl5.WindowSize = new System.Drawing.Size(80, 79);
             // 
             // groupBox1
             // 
@@ -1079,9 +1079,9 @@ namespace WindowsFormsApp1
             this.groupBox1.Controls.Add(this.pic_5);
             this.groupBox1.Controls.Add(this.pic_6);
             this.groupBox1.Controls.Add(this.pic_7);
-            this.groupBox1.Location = new System.Drawing.Point(1258, 458);
+            this.groupBox1.Location = new System.Drawing.Point(1547, 30);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(511, 85);
+            this.groupBox1.Size = new System.Drawing.Size(268, 262);
             this.groupBox1.TabIndex = 54;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "合成图";
@@ -1091,7 +1091,7 @@ namespace WindowsFormsApp1
             this.label27.AutoSize = true;
             this.label27.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label27.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label27.Location = new System.Drawing.Point(1248, 569);
+            this.label27.Location = new System.Drawing.Point(1235, 30);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(65, 12);
             this.label27.TabIndex = 55;
@@ -1109,7 +1109,7 @@ namespace WindowsFormsApp1
             // label29
             // 
             this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(23, 65);
+            this.label29.Location = new System.Drawing.Point(23, 63);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(95, 12);
             this.label29.TabIndex = 57;
@@ -1118,7 +1118,7 @@ namespace WindowsFormsApp1
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(23, 92);
+            this.label30.Location = new System.Drawing.Point(23, 88);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(95, 12);
             this.label30.TabIndex = 57;
@@ -1127,7 +1127,7 @@ namespace WindowsFormsApp1
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(166, 20);
+            this.label31.Location = new System.Drawing.Point(124, 20);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(11, 12);
             this.label31.TabIndex = 58;
@@ -1136,7 +1136,7 @@ namespace WindowsFormsApp1
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(265, 20);
+            this.label33.Location = new System.Drawing.Point(174, 20);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(11, 12);
             this.label33.TabIndex = 58;
@@ -1145,7 +1145,7 @@ namespace WindowsFormsApp1
             // label35
             // 
             this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(378, 20);
+            this.label35.Location = new System.Drawing.Point(224, 20);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(11, 12);
             this.label35.TabIndex = 58;
@@ -1154,7 +1154,7 @@ namespace WindowsFormsApp1
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(143, 38);
+            this.label41.Location = new System.Drawing.Point(124, 38);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(23, 12);
             this.label41.TabIndex = 59;
@@ -1163,7 +1163,7 @@ namespace WindowsFormsApp1
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(253, 38);
+            this.label42.Location = new System.Drawing.Point(172, 38);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(23, 12);
             this.label42.TabIndex = 59;
@@ -1172,7 +1172,7 @@ namespace WindowsFormsApp1
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(366, 38);
+            this.label43.Location = new System.Drawing.Point(224, 38);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(23, 12);
             this.label43.TabIndex = 59;
@@ -1181,7 +1181,7 @@ namespace WindowsFormsApp1
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(143, 65);
+            this.label44.Location = new System.Drawing.Point(124, 65);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(23, 12);
             this.label44.TabIndex = 59;
@@ -1190,7 +1190,7 @@ namespace WindowsFormsApp1
             // label45
             // 
             this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(253, 65);
+            this.label45.Location = new System.Drawing.Point(172, 65);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(23, 12);
             this.label45.TabIndex = 59;
@@ -1199,7 +1199,7 @@ namespace WindowsFormsApp1
             // label46
             // 
             this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(366, 65);
+            this.label46.Location = new System.Drawing.Point(224, 65);
             this.label46.Name = "label46";
             this.label46.Size = new System.Drawing.Size(23, 12);
             this.label46.TabIndex = 59;
@@ -1208,7 +1208,7 @@ namespace WindowsFormsApp1
             // label47
             // 
             this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(143, 92);
+            this.label47.Location = new System.Drawing.Point(124, 92);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(23, 12);
             this.label47.TabIndex = 59;
@@ -1217,7 +1217,7 @@ namespace WindowsFormsApp1
             // label48
             // 
             this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(253, 92);
+            this.label48.Location = new System.Drawing.Point(172, 92);
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(23, 12);
             this.label48.TabIndex = 59;
@@ -1226,7 +1226,7 @@ namespace WindowsFormsApp1
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(366, 92);
+            this.label49.Location = new System.Drawing.Point(224, 92);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(23, 12);
             this.label49.TabIndex = 59;
@@ -1235,7 +1235,7 @@ namespace WindowsFormsApp1
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(21, 140);
+            this.label37.Location = new System.Drawing.Point(31, 113);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(53, 12);
             this.label37.TabIndex = 60;
@@ -1245,7 +1245,7 @@ namespace WindowsFormsApp1
             // 
             this.label38.AutoSize = true;
             this.label38.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.label38.Location = new System.Drawing.Point(65, 140);
+            this.label38.Location = new System.Drawing.Point(75, 114);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(11, 12);
             this.label38.TabIndex = 61;
@@ -1276,7 +1276,7 @@ namespace WindowsFormsApp1
             this.hWindowControl6.BackColor = System.Drawing.Color.Black;
             this.hWindowControl6.BorderColor = System.Drawing.Color.Black;
             this.hWindowControl6.ImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
-            this.hWindowControl6.Location = new System.Drawing.Point(936, 28);
+            this.hWindowControl6.Location = new System.Drawing.Point(923, 28);
             this.hWindowControl6.Name = "hWindowControl6";
             this.hWindowControl6.Size = new System.Drawing.Size(306, 264);
             this.hWindowControl6.TabIndex = 64;
@@ -1287,7 +1287,7 @@ namespace WindowsFormsApp1
             this.hWindowControl7.BackColor = System.Drawing.Color.Black;
             this.hWindowControl7.BorderColor = System.Drawing.Color.Black;
             this.hWindowControl7.ImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
-            this.hWindowControl7.Location = new System.Drawing.Point(936, 296);
+            this.hWindowControl7.Location = new System.Drawing.Point(923, 293);
             this.hWindowControl7.Name = "hWindowControl7";
             this.hWindowControl7.Size = new System.Drawing.Size(306, 264);
             this.hWindowControl7.TabIndex = 65;
@@ -1298,7 +1298,7 @@ namespace WindowsFormsApp1
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label6.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label6.Location = new System.Drawing.Point(934, 32);
+            this.label6.Location = new System.Drawing.Point(926, 30);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 12);
             this.label6.TabIndex = 66;
@@ -1309,7 +1309,7 @@ namespace WindowsFormsApp1
             this.label15.AutoSize = true;
             this.label15.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label15.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label15.Location = new System.Drawing.Point(936, 298);
+            this.label15.Location = new System.Drawing.Point(926, 298);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(59, 12);
             this.label15.TabIndex = 67;
@@ -1334,9 +1334,16 @@ namespace WindowsFormsApp1
             this.groupBox2.Controls.Add(this.label43);
             this.groupBox2.Controls.Add(this.label48);
             this.groupBox2.Controls.Add(this.label45);
-            this.groupBox2.Location = new System.Drawing.Point(1269, 102);
+            this.groupBox2.Controls.Add(this.label18);
+            this.groupBox2.Controls.Add(this.lbl_TotalSampleNums2);
+            this.groupBox2.Controls.Add(this.label16);
+            this.groupBox2.Controls.Add(this.lbl_OKSampleNums2);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.lbl_NGSampleNums2);
+            this.groupBox2.Controls.Add(this.dataGridView2);
+            this.groupBox2.Location = new System.Drawing.Point(1235, 295);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(484, 189);
+            this.groupBox2.Size = new System.Drawing.Size(580, 298);
             this.groupBox2.TabIndex = 68;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "显示区域";
@@ -1344,7 +1351,7 @@ namespace WindowsFormsApp1
             // pictureBox9
             // 
             this.pictureBox9.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox9.Location = new System.Drawing.Point(936, 565);
+            this.pictureBox9.Location = new System.Drawing.Point(923, 558);
             this.pictureBox9.Name = "pictureBox9";
             this.pictureBox9.Size = new System.Drawing.Size(306, 264);
             this.pictureBox9.TabIndex = 69;
@@ -1355,7 +1362,7 @@ namespace WindowsFormsApp1
             this.label17.AutoSize = true;
             this.label17.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label17.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label17.Location = new System.Drawing.Point(942, 569);
+            this.label17.Location = new System.Drawing.Point(926, 562);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(47, 12);
             this.label17.TabIndex = 70;
@@ -1365,7 +1372,7 @@ namespace WindowsFormsApp1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1815, 875);
+            this.ClientSize = new System.Drawing.Size(1815, 831);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.pictureBox9);
             this.Controls.Add(this.groupBox2);
@@ -1391,17 +1398,10 @@ namespace WindowsFormsApp1
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btn_Reset);
             this.Controls.Add(this.btn_Start);
-            this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.rtxLog);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.pictureBox8);
             this.Controls.Add(this.picShow);
-            this.Controls.Add(this.lbl_NGSampleNums2);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.lbl_OKSampleNums2);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.lbl_TotalSampleNums2);
-            this.Controls.Add(this.label18);
             this.Controls.Add(this.hWindowControl3);
             this.Controls.Add(this.hWindowControl2);
             this.Controls.Add(this.label1);
@@ -1409,7 +1409,7 @@ namespace WindowsFormsApp1
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "上料机";
+            this.Text = "苹果电芯检测";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
