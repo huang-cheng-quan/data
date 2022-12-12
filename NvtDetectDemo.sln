@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31605.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchDetect", "WindowsFormsApp1\WatchDetect.csproj", "{726B3DEF-F09C-4A97-B2BC-F1CBFEF7FA23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NvtDetect", "WindowsFormsApp1\NvtDetect.csproj", "{726B3DEF-F09C-4A97-B2BC-F1CBFEF7FA23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestClientLib", "RestClientLib\RestClientLib.csproj", "{CC156A7B-D974-4931-837B-D9B716487675}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{726B3DEF-F09C-4A97-B2BC-F1CBFEF7FA23}.Release|Any CPU.Build.0 = Release|Any CPU
 		{726B3DEF-F09C-4A97-B2BC-F1CBFEF7FA23}.Release|x64.ActiveCfg = Release|x64
 		{726B3DEF-F09C-4A97-B2BC-F1CBFEF7FA23}.Release|x64.Build.0 = Release|x64
+		{CC156A7B-D974-4931-837B-D9B716487675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC156A7B-D974-4931-837B-D9B716487675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC156A7B-D974-4931-837B-D9B716487675}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CC156A7B-D974-4931-837B-D9B716487675}.Debug|x64.Build.0 = Debug|Any CPU
+		{CC156A7B-D974-4931-837B-D9B716487675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC156A7B-D974-4931-837B-D9B716487675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC156A7B-D974-4931-837B-D9B716487675}.Release|x64.ActiveCfg = Release|Any CPU
+		{CC156A7B-D974-4931-837B-D9B716487675}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

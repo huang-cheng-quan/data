@@ -47,7 +47,7 @@ namespace WindowsFormsApp1.VisionFrms
 
         private void btn_SetPixelCoordinates_Click(object sender, EventArgs e)
         {
-            halconOperator.OnlyFindShapModel(hWindowControl1.HalconWindow, ho_Image, out PixelPointResult);
+            halconOperator.OnlyFindShapModel(hWindowControl1.HalconWindow, ho_Image,6, out PixelPointResult);
             UpdateDataGridViewData(dataGridView1, PixelPointResult);
 
 
@@ -103,7 +103,7 @@ namespace WindowsFormsApp1.VisionFrms
                             {
                                 if (MotorsClass.omronInstance.ReadFloat(MotorsClass.plc_cam_status4).Content == 1)
                                 {
-                                    halconOperator.OnlyFindShapModel(hWindowControl1.HalconWindow, ho_Image, out PixelPointResult);
+                                    halconOperator.OnlyFindShapModel(hWindowControl1.HalconWindow, ho_Image, step, out PixelPointResult);
                                     HOperatorSet.GenCrossContourXld(out HObject cross, PixelPointResult.Row, PixelPointResult.Column, 36, 0);
                                     ModelRows.TupleConcat(PixelPointResult.Row);
                                     ModelCols.TupleConcat(PixelPointResult.Column);

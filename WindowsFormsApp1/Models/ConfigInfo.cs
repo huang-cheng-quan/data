@@ -42,6 +42,9 @@ namespace Camera_Capture_demo.Models
         [XmlElement(ElementName = "Camera_information")]
         public Mv_Camera_parameter Camera_information { get; set; }
 
+        [XmlElement(ElementName = "SqlServerData")]
+        public SqlServerData sqldata { get; set; }
+
         [XmlElement(ElementName = "ProductInfos")]
         public ProductInfos ProductInfos { get; set; }
         [XmlArray("Cameras")]
@@ -57,6 +60,9 @@ namespace Camera_Capture_demo.Models
 
         [XmlElement(ElementName = "ToolInfos")]
         public ToolInfos ToolInfos { get; set; }
+
+        [XmlElement(ElementName = "sampleId")]
+        public int[] sampleId { get; set; }
     }
     public class JobName
     {
@@ -152,6 +158,18 @@ namespace Camera_Capture_demo.Models
         public int Port_Socket { get; set; }
 
     }
+    public class SqlServerData 
+    {
+        [XmlAttribute("server")]
+        public string server { get; set; }
+        [XmlElement("database")]
+        public string database { get; set; }
+        [XmlElement("user id")]
+        public string UserId { get; set; }
+        [XmlElement("password")]
+        public string password { get; set; }
+    }
+
     public class DefectTypes
     {
         [XmlAttribute("DefectTypesNo")]
@@ -238,7 +256,8 @@ namespace Camera_Capture_demo.Models
                 omronPlcList = new List<OmronFinsNet>();
                 for (int i = 0; i < 3; i++)
                 {
-                    omronPlcList.Add(null);
+                     omronPlcList.Add(null);
+                    
                 }
             }
             OmronPlcFactory omronPlcConfig = ConfigVars.configInfo.OmronPlcs[0];

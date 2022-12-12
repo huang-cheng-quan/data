@@ -36,7 +36,7 @@ namespace Camera_Capture_demo.Helpers
 
         public static void LogInfo(string msg)
         {
-            string formatStr = string.Format("{0} {1} {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:sss"), "<Info>", msg);
+            string formatStr = string.Format("{0} {1} {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:sss.fff"), "<Info>", msg);
             OnLogDisp(formatStr, "Info");
             Monitor.Enter(MsgQueue);
             MsgQueue.Enqueue(formatStr);
@@ -48,7 +48,7 @@ namespace Camera_Capture_demo.Helpers
         }
         public static void LogError(string msg)
         {
-            string formatStr = string.Format("{0} {1} {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:sss"), "<Error>", msg);
+            string formatStr = string.Format("{0} {1} {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:sss.fff"), "<Error>", msg);
             OnLogDisp(formatStr, "Error");
             Monitor.Enter(MsgQueue);
             MsgQueue.Enqueue(formatStr);
@@ -60,7 +60,7 @@ namespace Camera_Capture_demo.Helpers
         }
         public static void LogWarn(string msg)
         {
-            string formatStr = string.Format("{0} {1} {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:sss"), "<Warn>", msg);
+            string formatStr = string.Format("{0} {1} {2}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:sss.fff"), "<Warn>", msg);
             OnLogDisp(formatStr, "Warn");
             Monitor.Enter(MsgQueue);
             MsgQueue.Enqueue(formatStr);

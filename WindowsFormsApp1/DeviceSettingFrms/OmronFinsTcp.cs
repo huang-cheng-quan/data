@@ -144,5 +144,10 @@ namespace Dyestripping.DeviceSettingFrms
         {
             rtxResultMsg.Text = string.Empty;
         }
+
+        private void btnConn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

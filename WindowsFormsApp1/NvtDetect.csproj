@@ -7,11 +7,26 @@
     <ProjectGuid>{726B3DEF-F09C-4A97-B2BC-F1CBFEF7FA23}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>WindowsFormsApp1</RootNamespace>
-    <AssemblyName>WindowsFormsApp1</AssemblyName>
+    <AssemblyName>nvtDetect</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,6 +56,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -51,6 +67,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>bitbug_favicon.ico</ApplicationIcon>
@@ -60,16 +77,41 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\x64\Debug\BaseForm.dll</HintPath>
     </Reference>
-    <Reference Include="halcondotnet, Version=19.11.0.0, Culture=neutral, PublicKeyToken=4973bed59ddbf2b8, processorArchitecture=MSIL">
+    <Reference Include="BIS.Communication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\MVTec\HALCON-20.11-Steady\bin\dotnet35\halcondotnet.dll</HintPath>
+      <HintPath>Dll\BIS.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="HslCommunication">
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML">
+      <HintPath>Dll\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.14.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.14.0\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="halcondotnet">
+      <HintPath>Dll\halcondotnet.dll</HintPath>
+    </Reference>
+    <Reference Include="HslCommunication, Version=7.0.1.0, Culture=neutral, PublicKeyToken=cdb2261fa039ed67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\HslCommunication.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4, Version=1.2.6.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.1.2.6\lib\net46\K4os.Compression.LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4.Streams, Version=1.2.6.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.Streams.1.2.6\lib\net46\K4os.Compression.LZ4.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Hash.xxHash, Version=1.0.6.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Hash.xxHash.1.0.6\lib\net46\K4os.Hash.xxHash.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MvCameraControl.Net">
       <HintPath>MV\MvCameraControl.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.28.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.28\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -77,11 +119,45 @@
     <Reference Include="Ookii.Dialogs.WinForms">
       <HintPath>Dll\Ookii.Dialogs.WinForms.1.2.0\lib\net45\Ookii.Dialogs.WinForms.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="OracleHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dll\OracleHelper.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
+    <Reference Include="RestClientLib">
+      <HintPath>Dll\RestClientLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\NvtDetectDemo -Watch -AB点检加复位报警加通讯函数分开hsl7.0 - 副本-上料定位分开20221022\NvtDetectDemo -Watch -AB点检加复位报警加通讯函数分开hsl7.0 - 副本 -202210191500-上料定位分开\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -91,10 +167,28 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.28\lib\net452\Ubiety.Dns.Core.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="ZstdNet, Version=1.4.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.28\lib\net452\ZstdNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccuracyCheckFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AccuracyCheckFrm.Designer.cs">
+      <DependentUpon>AccuracyCheckFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConnectorDetection\Connector.cs" />
+    <Compile Include="CreateEXl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateEXl.Designer.cs">
+      <DependentUpon>CreateEXl.cs</DependentUpon>
+    </Compile>
     <Compile Include="DeviceSettingFrms\OmronFinsTcp.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -120,7 +214,10 @@
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\TransExpV2.cs" />
     <Compile Include="Helpers\WindowHelper.cs" />
+    <Compile Include="Helpers\XmlHelper02.cs" />
+    <Compile Include="Helpers\XmlHelper01.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
+    <Compile Include="InferData\CysInterfaceData.cs" />
     <Compile Include="InferData\HttpQuery.cs" />
     <Compile Include="InferData\InferServerData.cs" />
     <Compile Include="InferData\Utils.cs" />
@@ -143,10 +240,15 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ConfigInfo.cs" />
+    <Compile Include="Models\DayCountDataToXmlExcel.cs" />
+    <Compile Include="Models\CreateExl.cs" />
+    <Compile Include="Models\InferResultData.cs" />
     <Compile Include="Models\MotorsClass.cs" />
     <Compile Include="Models\MvClass.cs" />
     <Compile Include="Models\PointXYU.cs" />
+    <Compile Include="Models\ReCheckId.cs" />
     <Compile Include="Models\RobotInfo.cs" />
+    <Compile Include="Models\SnNumberInfo.cs" />
     <Compile Include="MotionProcess.cs" />
     <Compile Include="MV\BasicDemo\BasicDemo.cs">
       <SubType>Form</SubType>
@@ -156,6 +258,26 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServer\FormInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SqlServer\FormInput.Designer.cs">
+      <DependentUpon>FormInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SqlServer\InputDialog.cs" />
+    <Compile Include="SqlServer\SqlConnectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SqlServer\SqlConnectionForm.Designer.cs">
+      <DependentUpon>SqlConnectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SqlServer\sqlhelper.cs" />
+    <Compile Include="StartLoadFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartLoadFrm.Designer.cs">
+      <DependentUpon>StartLoadFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TcpTest\PlcConnection.cs" />
     <Compile Include="TcpTest\ProcessPlcData.cs" />
     <Compile Include="TcpTest\TcpSocket.cs">
@@ -202,6 +324,12 @@
     <Compile Include="VisionFrms\ToolOffsetSettingFrm.Designer.cs">
       <DependentUpon>ToolOffsetSettingFrm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AccuracyCheckFrm.resx">
+      <DependentUpon>AccuracyCheckFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateEXl.resx">
+      <DependentUpon>CreateEXl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DeviceSettingFrms\OmronFinsTcp.resx">
       <DependentUpon>OmronFinsTcp.cs</DependentUpon>
     </EmbeddedResource>
@@ -239,6 +367,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SqlServer\FormInput.resx">
+      <DependentUpon>FormInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlServer\SqlConnectionForm.resx">
+      <DependentUpon>SqlConnectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StartLoadFrm.resx">
+      <DependentUpon>StartLoadFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TcpTest\TcpSocket.resx">
       <DependentUpon>TcpSocket.cs</DependentUpon>
     </EmbeddedResource>
@@ -281,11 +418,30 @@
   <ItemGroup>
     <Content Include="bitbug_favicon.ico" />
     <Content Include="MV\BasicDemo\obj\Debug\TempPE\Properties.Resources.Designer.cs.dll" />
+    <Content Include="SqlServer\nvtDataBase.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServer\nvtDataBase_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>nvtDataBase.mdf</DependentUpon>
+    </Content>
     <None Include="Resources\robot_24px_1172732_easyicon.net.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ROI\" />
     <Folder Include="MV\BasicDemo\bin\Debug\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

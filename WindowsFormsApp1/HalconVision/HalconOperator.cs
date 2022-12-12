@@ -20,14 +20,14 @@ namespace Camera_Capture_demo.HalconVision
     {
         HObject hImage;
         static int m_iRoiNumber = 1;
-        public HTuple hv_ModelID, hv_homMat2D;
+        public HTuple hv_ModelID, hv_ModelID1, hv_homMat2D;
         public HTuple hv_ModelParams;
         string modelID_Path, modelParams_Path/*, calibration_Path*/;
         string[] modelROI_Path = new string[m_iRoiNumber];
         public static int m_ihalonProcessNum = 9;
         int camNo;
         int MotorNumber;
-        private static List<HalconOperator> halconOperatorList;
+        public  static List<HalconOperator> halconOperatorList;
         private static readonly object locker = new object();
         public HalconOperator(int camNo, int MotorNum)
 
@@ -88,7 +88,15 @@ namespace Camera_Capture_demo.HalconVision
 #else
                 if (hv_ModelID != null)
                     HOperatorSet.ClearShapeModel(hv_ModelID);
-                HOperatorSet.ReadShapeModel(modelID_Path, out hv_ModelID);
+                if (camNo==6)
+                {
+                    HOperatorSet.ReadShapeModel(modelID_Path, out hv_ModelID);
+                }
+                if (camNo == 8)
+                {
+                    HOperatorSet.ReadShapeModel(modelID_Path, out hv_ModelID1);
+                }
+
 #endif
             }
             modelParams_Path = parent + $"\\Model{camNo}\\model_cell.tup";
@@ -445,25 +453,27 @@ namespace Camera_Capture_demo.HalconVision
             public double Angle { get; set; }
             public double Score { get; set; }
         }
-        public void OnlyFindShapModel(HWindow hWindow,HObject ho_Image, out ModelResult pixelPoint) 
+        public void OnlyFindShapModel(HWindow hWindow,HObject ho_Image, int CamerNum, out ModelResult pixelPoint) 
         {
             HTuple hv_Row = new HTuple(), hv_Column = new HTuple(), hv_Angle = new HTuple(), hv_Score = new HTuple();
             HTuple hv_I = new HTuple();
             HTuple hv_HomMat2D = new HTuple();
             pixelPoint=new ModelResult ();
-            HObject ho_region = new HObject();
+            HObject ho_region;
+           // HObject ho_region = new HObject();
             HObject ho_ModelContours, ho_TransContours;
             HOperatorSet.GenEmptyObj(out ho_ModelContours);
             HOperatorSet.GenEmptyObj(out ho_TransContours);
+            HOperatorSet.GenEmptyObj(out ho_region);
             HTuple hv_text = new HTuple();
-            /*if (camNo==6)
-            {
-                HOperatorSet.ReadShapeModel("E:\\watch整机软件\\WatchDetectDemo20220125\\WindowsFormsApp1\\bin\\x64\\Debug\\Project\\WatchDetect\\Model6\\model_cell.shm", out hv_ModelID);
-            }
-            else if (camNo == 8)
-            {
-                HOperatorSet.ReadShapeModel("E:\\watch整机软件\\WatchDetectDemo20220125\\WindowsFormsApp1\\bin\\x64\\Debug\\Project\\WatchDetect\\Model8\\model_cell.shm", out hv_ModelID);
-            }*/
+            //if (camNo == 6)
+            //{
+            //    HOperatorSet.ReadShapeModel("E:\\watch整机软件\\NvtDetectDemo -Watch -AB点检加复位报警加通讯函数分开hsl7.0 - 副本 -202210141700加hsl锁 - 副本\\WindowsFormsApp1\\bin\\x64\\Debug\\Project\\WatchDetect\\Model6\\model_cell.shm", out hv_ModelID);
+            //}
+            //else if (camNo == 8)
+            //{
+            //    HOperatorSet.ReadShapeModel("E:\\watch整机软件\\NvtDetectDemo -Watch -AB点检加复位报警加通讯函数分开hsl7.0 - 副本 -202210141700加hsl锁 - 副本\\WindowsFormsApp1\\bin\\x64\\Debug\\Project\\WatchDetect\\Model8\\model_cell.shm", out hv_ModelID);
+            //}
 
 
             for (int index = 0; index < modelROI_Path.Length; index++)
@@ -472,17 +482,44 @@ namespace Camera_Capture_demo.HalconVision
                 if (File.Exists(modelROI_Path[index]))
                 {
                     HObject ho_imgeTest = new HObject();
-                    HOperatorSet.ReadImage(out ho_imgeTest, Application.StartupPath + "/test.png");
+                    HOperatorSet.ReadImage(out ho_imgeTest, Application.StartupPath + "/test1.bmp");
+                    // HOperatorSet.ReadImage(out ho_imgeTest, Application.StartupPath + "/test1.bmp");
                     HOperatorSet.ReadObject(out ho_region, modelROI_Path[index]);
                     hWindow.SetDraw("margin");
                     hWindow.SetLineWidth(1);
                     hWindow.SetColor("yellow");
-                    
+                   
                     HOperatorSet.ReduceDomain(ho_Image, ho_region, out HObject ho_reduced);
                     HOperatorSet.GenRectangle2ContourXld(out HObject ho_Rect, hv_ModelParams[4], hv_ModelParams[5], 0, hv_ModelParams[0].F / 2, hv_ModelParams[1].F / 2);
-                    HOperatorSet.FindShapeModel(ho_reduced, hv_ModelID, -0.39, 0.79, 0.3, 1, 0.5,
-                        "least_squares", 3, 0.9, out hv_Row, out hv_Column,
-             out hv_Angle, out hv_Score);
+                    if (camNo==6)
+                    {
+                        HOperatorSet.FindShapeModel(ho_reduced, hv_ModelID, -0.39, 0.79, 0.35, 1, 0.5,
+                       "least_squares", (new HTuple(5)).TupleConcat(-1), 0.7, out hv_Row, out hv_Column,
+            out hv_Angle, out hv_Score);
+                       // LogHelper.LogInfo(hv_Score.ToString()); 
+                        if ((int)(new HTuple((new HTuple(hv_Score.TupleLength())).TupleGreater(0))) == 0)
+                        {
+                            HOperatorSet.FindShapeModel(ho_reduced, hv_ModelID, -0.39, 0.79, 0.2, 1, 0.5,
+                      "least_squares", (new HTuple(5)).TupleConcat(-1), 0.7, out hv_Row, out hv_Column,
+           out hv_Angle, out hv_Score);
+                            LogHelper.LogInfo("视觉定位二次找模板");
+                        }
+                    }
+                    if (camNo == 8)
+                    {
+                        HOperatorSet.FindShapeModel(ho_reduced, hv_ModelID1, -0.39, 0.79, 0.35, 1, 0.5,
+                       "least_squares", (new HTuple(5)).TupleConcat(-1), 0.7, out hv_Row, out hv_Column,
+            out hv_Angle, out hv_Score);
+                      //  LogHelper.LogInfo(hv_Score.ToString());
+                        if ((int)(new HTuple((new HTuple(hv_Score.TupleLength())).TupleGreater(0))) == 0)
+                        {
+                            HOperatorSet.FindShapeModel(ho_reduced, hv_ModelID1, -0.39, 0.79, 0.2, 1, 0.5,
+                      "least_squares", (new HTuple(5)).TupleConcat(-1), 0.7, out hv_Row, out hv_Column,
+           out hv_Angle, out hv_Score);
+                            LogHelper.LogInfo("视觉定位二次找模板");
+                        }
+                    }
+
                     if (hv_Score > 0)
                     {
                         pixelPoint.Row = hv_Row;

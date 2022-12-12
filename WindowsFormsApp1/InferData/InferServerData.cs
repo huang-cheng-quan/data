@@ -11,14 +11,16 @@ namespace WindowsFormsApp1.InferData
         public class AlgoSampleCommitRequest_NVT
         {
             /// <summary>
+            /// 相对路径
+            /// </summary>
+            public string relative_dir; // 相对路径
+            /// <summary>
             /// 文件名列表
             /// </summary>
             public List<string> file_names;
 
-            /// <summary>
-            /// 相对路径
-            /// </summary>
-            public string relative_dir; // 相对路径
+          
+           // public string s;//测试
 
         }
         /// <summary>
@@ -50,10 +52,14 @@ namespace WindowsFormsApp1.InferData
             /// 发送的图片路径
             /// </summary>
             public string file_path;
+
+            public string image_path;
             /// <summary>
             /// 结果图像路径
             /// </summary>
             public string result_path;
+
+            public string result_normal_path;
             /// <summary>
             /// 图片的宽度
             /// </summary>
@@ -87,7 +93,7 @@ namespace WindowsFormsApp1.InferData
         {
             public string sample_id;
 
-            public List<Data_NVT_Defect_Message> pose_result;
+            public List<Data_NVT_Defect_Message> pose_result=new List<Data_NVT_Defect_Message> ();
         }
         public class SampleResultData2_NVT
         {
@@ -96,7 +102,7 @@ namespace WindowsFormsApp1.InferData
             /// </summary>
             public string request_id;
             /// <summary>
-            /// 返回的响应码
+            /// 返回的响应码判断是否接口是否连接
             /// </summary>
             public int code;
             /// <summary>

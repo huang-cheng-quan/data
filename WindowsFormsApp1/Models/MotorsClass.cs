@@ -9,7 +9,7 @@ using Camera_Capture_demo.GlobalVariable;
 using Camera_Capture_demo.HalconVision;
 using Camera_Capture_demo.Helpers;
 using Camera_Capture_demo.Models;
-
+using BatteryFeederDemo;
 using HslCommunication.Profinet.Omron;
 
 namespace Dyestripping.Models
@@ -60,14 +60,18 @@ namespace Dyestripping.Models
         public static string plc_Upload_Write_motor_ua = "D1204";//电机U位置
        
         //二维码读取地址
-        //上料
+        //上料（watch）
         public static string plc_Qrcode_motor_FeldBelt = "D1020";
         //连接器反面
         public static string plc_Qrcode_motor_ConnectorNegative = "D1120";
+        //连接器反面二维码到位信号
+        public static string plc_Qrcode_motor_ConnectorNegativeGet = "D1112";
         //本体上料B
         public static string plc_Qrcode_motor_FeedPositive1 = "D1320";
         //连接器正面检测
         public static string plc_Qrcode_motor_ConnectorPositive = "D1420";
+        //连接器正面二维码到位信号
+        public static string plc_Qrcode_motor_ConnectorPositiveGet = "D1412";
         //本体上料A
         public static string plc_Qrcode_motor_FeedPositive2 = "D1220";
         //侧面短边
@@ -78,8 +82,37 @@ namespace Dyestripping.Models
         public static string plc_Qrcode_motor_LongSide = "D1720";
         //正面检测
         public static string plc_Qrcode_motor_Positive = "D1820";
+        //上料中转扫码地址（iPhone）
+        public static string plc_Qrcode_motor_startread = "D1920";
+        //上料中转扫码地址（iPhone)到位信号
+        public static string plc_Qrcode_motor_startreadGet = "D1912";
+        //下料二维码校验A
+        public static string plc_Qrcode_motor_checkA = "D2220";
+        //下料二维码校验B
+        public static string plc_Qrcode_motor_checkB = "D2320";
+        //下料结果返回A
+        public static string plc_motor_resultA = "D2206";
+        //下料结果返回B
+        public static string plc_motor_resultB = "D2306";
+        //侧面短边收到信号标志
+        public static string plc_Qrcode_motor_ShortSide_Flag = "D1590";
+        //public  string plc_Result_motor = "D2006";
+        //治具二维码
+        public static string plc_motor_FixtureA = "D4520";
+        //治具二维码收到信号标志
+        public static string plc_Qrcode_motor_Fixture_Flag = "D1592";
+        //奇数清料，清除连接器结果
+        public static string plc_motor_ClearConnectInfo = "D4002";
+        //复检产品判断
+        public static string plc_motor_RecheckIDA = "D4004";
+        public static string plc_motor_RecheckIDB = "D4006";
+        //正面检测
+        public static string plc_DiskCheck = "D1810";
 
-        public  string plc_Result_motor = "D2006";
+        //设备点检
+        public static string plc_MachineCheckState = "D4014";
+        public static string plc_MachineCheck = "D4010";
+        public static string plc_MachineCheck1 = "D4012";
 
         string plc_w_pick_x = "D1000";//电机X位置
         string plc_w_pick_y = "D1002";//电机Y位置
@@ -94,6 +127,14 @@ namespace Dyestripping.Models
         public MotorsClass(int plcNo)
         {
             omronInstance = OmronPlcFactory.GetInstance(plcNo);
+            omronInstance.ConnectServer();
+            if (!omronInstance.ConnectServer().IsSuccess)
+            {
+                //omronInstance.ConnectClose();
+                //omronInstance.Dispose();
+                //omronInstance = OmronPlcFactory.GetInstance(plcNo);
+                omronInstance.ConnectServer();
+            }
         }
         /// <summary>
         /// 获取模组当前的点位
@@ -133,17 +174,21 @@ namespace Dyestripping.Models
                     break;
             }
             PointXYU point = new PointXYU();
-            HslCommunication.OperateResult<float[]> resultx = omronInstance.ReadFloat(plc_r_motor_x_Tmp, 1);
-            HslCommunication.OperateResult<float[]> resulty = omronInstance.ReadFloat(plc_r_motor_y_Tmp, 1);
+            //lock (MotionProcess.HslCommunicationlock)
+            //{
+                HslCommunication.OperateResult<float[]> resultx = omronInstance.ReadFloat(plc_r_motor_x_Tmp, 1);
+                HslCommunication.OperateResult<float[]> resulty = omronInstance.ReadFloat(plc_r_motor_y_Tmp, 1);
 
-            if (!resultx.IsSuccess)
-            {
-                MessageBox.Show("PLC通讯失败:" + resultx.Message);
-                return null;
-            }
-            point.X = resultx.Content[0];
-            point.Y = resulty.Content[0];
-            point.U = 0;
+                if (!resultx.IsSuccess)
+                {
+                    MessageBox.Show("PLC通讯失败:" + resultx.Message);
+                    return null;
+                }
+                point.X = resultx.Content[0];
+                point.Y = resulty.Content[0];
+                point.U = 0;
+            //}
+           
             return point;
         }
         /// <summary>
@@ -187,9 +232,13 @@ namespace Dyestripping.Models
             if (channel != 0)
             {
                 int address = channel * 16 + bit;
-                omronInstance.Write($"M{address}", true);
-                Thread.Sleep(50);
-                omronInstance.Write($"M{address}", false);
+                //lock (MotionProcess.HslCommunicationlock)
+                //{
+                    omronInstance.Write($"M{address}", true);
+                    Thread.Sleep(50);
+                    omronInstance.Write($"M{address}", false);
+                //}
+               
             }
         } 
         /// <summary>
@@ -208,11 +257,13 @@ namespace Dyestripping.Models
                     plc_r_motor_y_Tmp = plc_w_pick_y;
                     plc_r_motor_u_Tmp = plc_w_pick_u;
                     break;
+                    //B
                 case 6:
                     plc_r_motor_x_Tmp = plc_Upload_Write_motor_xb;
                     plc_r_motor_y_Tmp = plc_Upload_Write_motor_yb;
                     plc_r_motor_u_Tmp = plc_Upload_Write_motor_ub;
                     break;
+                    //A
                 case 8:
                     plc_r_motor_x_Tmp = plc_Upload_Write_motor_xa;
                     plc_r_motor_y_Tmp = plc_Upload_Write_motor_ya;
@@ -231,9 +282,42 @@ namespace Dyestripping.Models
                 default:
                     break;
             }
-            omronInstance.Write(plc_r_motor_x_Tmp, points[0].X);
-            omronInstance.Write(plc_r_motor_y_Tmp, points[0].Y);
-            omronInstance.Write(plc_r_motor_u_Tmp, points[0].U);
+           
+                if (!omronInstance.Write(plc_r_motor_x_Tmp, points[0].X).IsSuccess)
+                {
+                    MessageBox.Show("PLC通讯失败");
+
+                }
+
+                omronInstance.Write(plc_r_motor_x_Tmp, points[0].X);
+                omronInstance.Write(plc_r_motor_y_Tmp, points[0].Y);
+                omronInstance.Write(plc_r_motor_u_Tmp, points[0].U);
+            if (!omronInstance.Write(plc_r_motor_x_Tmp, points[0].X).IsSuccess)
+            {
+                omronInstance.Write(plc_r_motor_x_Tmp, points[0].X);
+                LogHelper.LogError("视觉定位二次写入");
+            }
+            //else
+            //{
+            //    LogHelper.LogError(Num+"视觉定位写入X" + points[0].X.ToString());
+            //}
+            if (!omronInstance.Write(plc_r_motor_y_Tmp, points[0].Y).IsSuccess)
+            {
+                omronInstance.Write(plc_r_motor_y_Tmp, points[0].Y);
+            }
+            //else
+            //{
+            //    LogHelper.LogError(Num+"视觉定位写入Y" + points[0].Y.ToString());
+            //}
+            if (!omronInstance.Write(plc_r_motor_u_Tmp, points[0].U).IsSuccess)
+            {
+                omronInstance.Write(plc_r_motor_u_Tmp, points[0].U);
+            }
+            //else
+            //{
+            //    LogHelper.LogError(Num+"视觉定位写入U" + points[0].U.ToString());
+            //}
+           
         }
        
         /// <summary>

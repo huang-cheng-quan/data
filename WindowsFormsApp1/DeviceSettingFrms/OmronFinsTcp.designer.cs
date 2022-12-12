@@ -44,6 +44,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.btnClear = new System.Windows.Forms.Button();
             this.btnWordWrite = new System.Windows.Forms.Button();
             this.btnBoolWrite = new System.Windows.Forms.Button();
             this.btnWordRead = new System.Windows.Forms.Button();
@@ -52,7 +53,6 @@
             this.txtAddress = new System.Windows.Forms.TextBox();
             this.txtLength = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -133,6 +133,7 @@
             this.btnConn.Text = "连接";
             this.btnConn.UseVisualStyleBackColor = true;
             this.btnConn.Visible = false;
+            this.btnConn.Click += new System.EventHandler(this.btnConn_Click);
             // 
             // btnDisConn
             // 
@@ -210,6 +211,16 @@
             this.label5.TabIndex = 0;
             this.label5.Text = "地址：";
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(300, 213);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 2;
+            this.btnClear.Text = "清空结果";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // btnWordWrite
             // 
             this.btnWordWrite.Location = new System.Drawing.Point(300, 117);
@@ -283,16 +294,6 @@
             this.btnSave.Text = "保存";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Location = new System.Drawing.Point(300, 213);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 2;
-            this.btnClear.Text = "清空结果";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // OmronFinsTcp
             // 

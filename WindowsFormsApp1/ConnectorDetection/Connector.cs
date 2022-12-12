@@ -1794,7 +1794,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                 //
                 //** Choose random samples and augmentation methods: ***
                 //
-                //Number of samples to be augmented.
+                //SerialNumber of samples to be augmented.
                 hv_NumSamples.Dispose();
                 using (HDevDisposeHelper dh = new HDevDisposeHelper())
                 {
@@ -8222,7 +8222,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                 }
                 if ((int)(new HTuple(hv_NumTrainSamples.TupleLess(hv_BatchSize))) != 0)
                 {
-                    throw new HalconException("Error: Number of training samples is smaller than the batch size.");
+                    throw new HalconException("Error: SerialNumber of training samples is smaller than the batch size.");
                 }
                 //
                 //Check that all model class IDs are a part of the DLDataset class IDs.
@@ -23197,7 +23197,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                 if ((int)(new HTuple((new HTuple(hv_GroundTruthLabels.TupleLength())).TupleNotEqual(
                     new HTuple(hv_PredictedClasses.TupleLength())))) != 0)
                 {
-                    throw new HalconException("Number of ground truth labels and predicted classes must be equal.");
+                    throw new HalconException("SerialNumber of ground truth labels and predicted classes must be equal.");
                 }
                 //
                 //Set generic parameter defaults.
@@ -27388,7 +27388,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                     //   -- confidence:     Confidence (score) of each result.
                     //   -- num_gt:         Total number of ground truth instances per class.
                     //   -- num_pred:       Total number of predictions per class.
-                    //   -- num_gt_ignore:  Number of ignored ground truth instances per class.
+                    //   -- num_gt_ignore:  SerialNumber of ignored ground truth instances per class.
                     //   -- for each IoU-threshold:
                     //      --- For each class:
                     //          ---- is_tp:                  TP/FP assignment of result.
@@ -28107,7 +28107,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                         hv_Colors = HTuple.TupleGenConst(
                             hv_NumColors, -1);
                     }
-                    //Check if the Number of Colors is dividable by NumChunks.
+                    //Check if the SerialNumber of Colors is dividable by NumChunks.
                     hv_NumLeftOver.Dispose();
                     using (HDevDisposeHelper dh = new HDevDisposeHelper())
                     {
@@ -28902,8 +28902,8 @@ namespace WindowsFormsApp1.ConnectorDetection
                         )) % (new HTuple(hv_XValues_COPY_INP_TMP.TupleLength())))).TupleNotEqual(
                         0))) != 0)
                     {
-                        //Number of YValues does not match number of XValues.
-                        throw new HalconException("Number of YValues is no multiple of the number of XValues.");
+                        //SerialNumber of YValues does not match number of XValues.
+                        throw new HalconException("SerialNumber of YValues is no multiple of the number of XValues.");
                         ho_ContourXGrid.Dispose();
                         ho_ContourYGrid.Dispose();
                         ho_XArrow.Dispose();
@@ -29198,7 +29198,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                 }
                 if ((int)(new HTuple(hv_NumGenParamNames.TupleNotEqual(hv_NumGenParamValues))) != 0)
                 {
-                    throw new HalconException("Number of generic parameter names does not match generic parameter values.");
+                    throw new HalconException("SerialNumber of generic parameter names does not match generic parameter values.");
                     ho_ContourXGrid.Dispose();
                     ho_ContourYGrid.Dispose();
                     ho_XArrow.Dispose();
@@ -31306,7 +31306,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                 //Only single channel images are accepted.
                 if ((int)(new HTuple(hv_IndicesWrongChannels.TupleNotEqual(-1))) != 0)
                 {
-                    throw new HalconException("Number of channels in anomaly image is not supported. Please check for anomaly images with a number of channels different from 1.");
+                    throw new HalconException("SerialNumber of channels in anomaly image is not supported. Please check for anomaly images with a number of channels different from 1.");
                 }
                 //
                 //Write preprocessed image to output variable.
@@ -37236,7 +37236,7 @@ namespace WindowsFormsApp1.ConnectorDetection
                                     }
                                 }
                                 //
-                                //Number of gt for this class and without ignore.
+                                //SerialNumber of gt for this class and without ignore.
                                 hv_CurrentNumGtNoIgnore.Dispose();
                                 using (HDevDisposeHelper dh = new HDevDisposeHelper())
                                 {

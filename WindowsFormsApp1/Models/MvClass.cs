@@ -1,5 +1,6 @@
 ﻿using BatteryFeederDemo;
 using Camera_Capture_demo.GlobalVariable;
+using Camera_Capture_demo.Helpers;
 using Dyestripping.Models;
 using HalconDotNet;
 using HslCommunication;
@@ -34,6 +35,7 @@ namespace WindowsFormsApp1.Models
         private static readonly object locker = new object();
         public MyCamera m_MyCamera = null;
         private string strUserID = null;
+        public static bool IsStartReadCode=false;
        
         [XmlIgnore]
         public long imageWidth = 0;         // 图像宽
@@ -60,10 +62,10 @@ namespace WindowsFormsApp1.Models
         private static Object BufForDriverLock = new Object();
         MyCamera.MV_FRAME_OUT_INFO_EX m_stFrameInfo = new MyCamera.MV_FRAME_OUT_INFO_EX();
         IntPtr pTemp = IntPtr.Zero;
-        
-       
-        int[] m_nFrames;      // ch:帧数 | en:Frame Number
 
+
+         int[] m_nFrames;      // ch:帧数 | en:Frame SerialNumber
+        public static Object[] m_BufFerSaveImageLock;
 
         private static Dictionary<int, List<int>> m_dictImageIndex1 = new Dictionary<int, List<int>>();
 
@@ -71,12 +73,13 @@ namespace WindowsFormsApp1.Models
         MyCamera.cbOutputExdelegate cbImage;
         //内存相关变量
         /*MotionProcess motionProcess;*/
-        private Object m_BufFerSaveImageLock = new Object();
+       // private Object m_BufFerSaveImageLock = new Object();
 
         int CamerNum = 4;
-        private int[] m_nImage_In = new int[MotionProcess.m_nCameraSaveNum];
+        public static int[] m_nImage_In = new int[MotionProcess.m_nCameraSaveNum];
         private int[] m_nImageConnection_In = new int[MotionProcess.m_nCameraSaveConnectionNum];
         IntPtr[] m_hDisplayHandle = new  IntPtr[MotionProcess.m_nCameraTotalNum];
+        List<IntPtr> Linprt = new List<IntPtr>();
 
         /// <summary>
         /// 图像处理自定义委托
@@ -91,34 +94,44 @@ namespace WindowsFormsApp1.Models
  
         public delegate void delegateProcessData(int camNum,MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo,IntPtr Image);
         public static event delegateProcessData eventProcessData;
-
+        public static int[] numFlag=new int[4];
 
         private void ImageCallBack(IntPtr pData, ref MyCamera.MV_FRAME_OUT_INFO_EX pFrameInfo, IntPtr pUser)
         {
 
             try
             {
+              
                 int nCamIndex = (int)pUser;
-                // ch:抓取的帧数 | en:Aquired Frame Number
+                // ch:抓取的帧数 | en:Aquired Frame SerialNumber
                 ++m_nFrames[nCamIndex];
-                //定位部分
+                
+                //定位部分 8--》定位A    6--》定位B
                 if (/*nCamIndex == 4 ||*/ nCamIndex == 6 || nCamIndex == 8)
                 {
 
                     HOperatorSet.GenImage1Extern(out hMvImage, "byte", (HTuple)pFrameInfo.nWidth, (HTuple)pFrameInfo.nHeight, pData, IntPtr.Zero);
-                    //HOperatorSet.WriteImage(hImage, "jpg", 0, "D:/1.jpg");
-                    // 抛出图像处理事件
-                    eventProcessImage(hMvImage,0);
+                   // HOperatorSet.WriteImage(hImage, "jpg", 0, "D:/1.jpg");
+                    //抛出图像处理事件
+                    eventProcessImage(hMvImage, 0);
                     switch (nCamIndex)
                     {
                         case 4:
-                            MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status4, (float)0);
+                           
+                                MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status4, (float)0);
+                           
+                            
                             break;
                         case 8:
-                            MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status8, (float)0);
+                          
+                                MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status8, (float)0);
+                           
+                          
                             break;
                         case 6:
-                            MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status6, (float)0);
+                           
+                                MotorsClass.omronInstance.Write(MotorsClass.plc_cam_status6, (float)0);
+                          
                             break;
                         default:
                             break;
@@ -129,21 +142,95 @@ namespace WindowsFormsApp1.Models
                 else if (nCamIndex == 0 || nCamIndex == 1 || nCamIndex == 2 || nCamIndex == 3)
 
                 {
-                    lock (m_BufFerSaveImageLock)
+                    if (pFrameInfo.nFrameNum - m_nFrames[nCamIndex]>=1)
                     {
-                        CopyMemory(MotionProcess.m_pSaveImageBuf_N[nCamIndex, m_nImage_In[nCamIndex]], pData, pFrameInfo.nFrameLen);
-                        MotionProcess.m_dictImageIndex[nCamIndex].Add(m_nImage_In[nCamIndex]);
+                        MotionProcess.Loseimage = true;
+                        MotionProcess.m_bWhileEnd = true;
+                        MotionProcess.m_bWhileStatus_SaveConnectionImage = true;
+                        MotionProcess.IsSaveQrcode = false;
+                        MotionProcess.IsSaveQrcode2 = false;
+                        LogHelper.LogError("丢帧报警停机" );
+                        switch (nCamIndex)
+                        {
+                            case 0:
+                               
+                                LogHelper.LogError("00J26664742丢帧" + DateTime.Now.ToString("yyyyMMddHHmmssff"));
+                                break;
+                            case 1:
+                               
+                                LogHelper.LogError("00J27960925丢帧" + DateTime.Now.ToString("yyyyMMddHHmmssff"));
+                                break;
+                            case 2:
+                             
+                                LogHelper.LogError("00J27960926丢帧" + DateTime.Now.ToString("yyyyMMddHHmmssff"));
+                                break;
+                            case 3:
+                              
+                                LogHelper.LogError("00J26664733丢帧" + DateTime.Now.ToString("yyyyMMddHHmmssff"));
+                                break;
+                        }
+                       
+                    }                
+
+                    lock (m_BufFerSaveImageLock[nCamIndex])
+                    {
+                        MotionProcess.Linprt[nCamIndex].Add(pData);
+                        if (numFlag[nCamIndex] >= 10)
+                        {
+                            numFlag[nCamIndex] = 0;
+
+                        }
+                        switch (nCamIndex)
+                        {
+                            case 0:
+                                MotionProcess.ListNumflag1.Add(numFlag[nCamIndex]);
+                                break;
+                            case 1:
+                                MotionProcess.ListNumflag2.Add(numFlag[nCamIndex]);
+                                break;
+                            case 2:
+                                MotionProcess.ListNumflag3.Add(numFlag[nCamIndex]);
+                                break;
+                            case 3:
+                                MotionProcess.ListNumflag4.Add(numFlag[nCamIndex]);
+                                break;
+                            default:
+                                break;
+                        }
+                        MotionProcess.ListNumflag[nCamIndex].Add(numFlag[nCamIndex]);
+                         numFlag[nCamIndex]++;
+                       
+                        
+                       // CopyMemory(MotionProcess.m_pSaveImageBuf_N[nCamIndex, m_nImage_In[nCamIndex]], pData, pFrameInfo.nFrameLen);
+
+                        //switch (nCamIndex)
+                        //{
+                        //    case 0:
+                        //        LogHelper.LogInfo("00J26664742-AddList" + m_nFrames[nCamIndex].ToString());
+                        //        break;
+                        //    case 1:
+                        //        LogHelper.LogInfo("00J27960925-AddList" + m_nFrames[nCamIndex].ToString());
+                        //        break;
+                        //    case 2:
+                        //        LogHelper.LogInfo("00J27960926-AddList" + m_nFrames[nCamIndex].ToString());
+                        //        break;
+                        //    case 3:
+                        //        LogHelper.LogInfo("00J26664733-AddList" + m_nFrames[nCamIndex].ToString());
+                        //        break;
+                        //}
+
                     }
+
                     ++m_nImage_In[nCamIndex];
                     if (m_nImage_In[nCamIndex] >= 10)
                     {
                         m_nImage_In[nCamIndex] = 0;
                     }
 
-                    MotionProcess.m_stSaveParamInfer.enPixelType = pFrameInfo.enPixelType;
-                    MotionProcess.m_stSaveParamInfer.nDataLen = pFrameInfo.nFrameLen;
-                    MotionProcess.m_stSaveParamInfer.nHeight = pFrameInfo.nHeight;
-                    MotionProcess.m_stSaveParamInfer.nWidth = pFrameInfo.nWidth;
+                    MotionProcess.m_stSaveParamInfer[nCamIndex].enPixelType = pFrameInfo.enPixelType;
+                    MotionProcess.m_stSaveParamInfer[nCamIndex].nDataLen = pFrameInfo.nFrameLen;
+                    MotionProcess.m_stSaveParamInfer[nCamIndex].nHeight = pFrameInfo.nHeight;
+                    MotionProcess.m_stSaveParamInfer[nCamIndex].nWidth = pFrameInfo.nWidth;
 
                     MotionProcess.m_stSaveParam_N[nCamIndex].nDataLen = pFrameInfo.nFrameLen;
 
@@ -154,11 +241,31 @@ namespace WindowsFormsApp1.Models
                     stDisplayInfo.enPixelType = pFrameInfo.enPixelType;
                     stDisplayInfo.hWnd = m_hDisplayHandle[nCamIndex];
                     stDisplayInfo.pData = pData;
-                    eventProcessData(nCamIndex, stDisplayInfo, pData);
-                    
+                    if (numFlag[nCamIndex] == 1)
+                    {
+                        eventProcessData(nCamIndex, stDisplayInfo, pData);// 20221025屏蔽显示测试
+                    }
+
+                    // LogHelper.LogInfo("outcallback" + DateTime.Now.ToString("yyyyMMddHHmmssff"));
+                    //switch (nCamIndex)
+                    //{
+                    //    case 0:
+                    //        LogHelper.LogInfo("00J26664742-outcallback" + m_nFrames[nCamIndex].ToString());
+                    //        break;
+                    //    case 1:
+                    //        LogHelper.LogInfo("00J27960925-outcallback" + m_nFrames[nCamIndex].ToString());
+                    //        break;
+                    //    case 2:
+                    //        LogHelper.LogInfo("00J27960926-outcallback" + m_nFrames[nCamIndex].ToString());
+                    //        break;
+                    //    case 3:
+                    //        LogHelper.LogInfo("00J26664733-outcallback" + m_nFrames[nCamIndex].ToString());
+                    //        break;
+                    //}
+
                 }
                 //连接器部分
-                else if (nCamIndex == 7 || nCamIndex == 9)
+                else if (nCamIndex == 7 || nCamIndex == 5)//5 连接器反面
                 {
                     MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo = new MyCamera.MV_DISPLAY_FRAME_INFO();
                     stDisplayInfo.nDataLen = pFrameInfo.nFrameLen;
@@ -170,9 +277,10 @@ namespace WindowsFormsApp1.Models
                     //抛出图像显示事件
                     eventProcessData(nCamIndex, stDisplayInfo, pData);
 
-                    if (nCamIndex == 7)
+                    if (nCamIndex == 5)
                     {
                         nCamIndex = 1;
+                        IsStartReadCode = true;
                     }
                     else
                     {
@@ -185,7 +293,7 @@ namespace WindowsFormsApp1.Models
                     MotionProcess.m_stSaveParamConnection[nCamIndex].nHeight = pFrameInfo.nHeight;
                     MotionProcess.m_stSaveParamConnection[nCamIndex].nWidth = pFrameInfo.nWidth;
                    
-                    lock (m_BufFerSaveImageLock)
+                    lock (m_BufFerSaveImageLock[nCamIndex])
                     {
                         CopyMemory(MotionProcess.m_pSaveImageBuf_Connection[nCamIndex, m_nImageConnection_In[nCamIndex]], pData, pFrameInfo.nFrameLen);
                         MotionProcess.m_dictImageConnectionIndex[nCamIndex].Add(m_nImageConnection_In[nCamIndex]);
@@ -197,7 +305,7 @@ namespace WindowsFormsApp1.Models
                     }
                 }
                 //连接器钢片检测
-                else if (nCamIndex == 5)
+                else if (nCamIndex == 9)
                 {
                     /*HOperatorSet.GenImage1Extern(out hMvImage, "byte", (HTuple)pFrameInfo.nWidth, (HTuple)pFrameInfo.nHeight, pData, IntPtr.Zero);
                     //HOperatorSet.WriteImage(hImage, "jpg", 0, "D:/1.jpg");
@@ -222,22 +330,22 @@ namespace WindowsFormsApp1.Models
                     stDisplayInfo.hWnd = m_hDisplayHandle[nCamIndex];
                     stDisplayInfo.pData = pData;
                     //抛出图像显示事件
-                    eventProcessData(nCamIndex, stDisplayInfo, pData);
-                    nCamIndex = 0;
-                    MotionProcess.m_stSaveParamConnection[nCamIndex].enPixelType = pFrameInfo.enPixelType;
-                    MotionProcess.m_stSaveParamConnection[nCamIndex].nDataLen = pFrameInfo.nFrameLen;
-                    MotionProcess.m_stSaveParamConnection[nCamIndex].nHeight = pFrameInfo.nHeight;
-                    MotionProcess.m_stSaveParamConnection[nCamIndex].nWidth = pFrameInfo.nWidth;
+                   eventProcessData(nCamIndex, stDisplayInfo, pData);
+                   // nCamIndex = 0;
+                    MotionProcess.m_stSaveParamConnection[0].enPixelType = pFrameInfo.enPixelType;
+                    MotionProcess.m_stSaveParamConnection[0].nDataLen = pFrameInfo.nFrameLen;
+                    MotionProcess.m_stSaveParamConnection[0].nHeight = pFrameInfo.nHeight;
+                    MotionProcess.m_stSaveParamConnection[0].nWidth = pFrameInfo.nWidth;
 
-                    lock (m_BufFerSaveImageLock)
+                    lock (m_BufFerSaveImageLock[0])
                     {
-                        CopyMemory(MotionProcess.m_pSaveImageBuf_Connection[nCamIndex, m_nImageConnection_In[nCamIndex]], pData, pFrameInfo.nFrameLen);
-                        MotionProcess.m_dictImageConnectionIndex[nCamIndex].Add(m_nImageConnection_In[nCamIndex]);
+                        CopyMemory(MotionProcess.m_pSaveImageBuf_Connection[0, m_nImageConnection_In[0]], pData, pFrameInfo.nFrameLen);
+                        MotionProcess.m_dictImageConnectionIndex[0].Add(m_nImageConnection_In[0]);
                     }
-                    ++m_nImageConnection_In[nCamIndex];
-                    if (m_nImageConnection_In[nCamIndex] >= 6)
+                    ++m_nImageConnection_In[0];
+                    if (m_nImageConnection_In[0] >= 6)
                     {
-                        m_nImageConnection_In[nCamIndex] = 0;
+                        m_nImageConnection_In[0] = 0;
                     }
                 }
 
@@ -261,6 +369,14 @@ namespace WindowsFormsApp1.Models
                
 
                 m_nFrames = new int[MotionProcess.m_nCameraTotalNum];
+              
+                m_BufFerSaveImageLock = new object[MotionProcess.m_nCameraTotalNum];
+                for(int i = 0; i < MotionProcess.m_nCameraTotalNum; i++)
+                {
+                    m_BufFerSaveImageLock[i] = new object();
+                }
+
+
                 //相机相关变量
                 MyCamera.MV_CC_DEVICE_INFO_LIST m_stDeviceList = new MyCamera.MV_CC_DEVICE_INFO_LIST();
                 CameraNo = Number;
@@ -403,7 +519,11 @@ namespace WindowsFormsApp1.Models
             {
                 return false;
             }
-
+            if (iCamNum==0|| iCamNum == 1 || iCamNum == 2 || iCamNum == 3)
+            {
+                nRet = m_MyCamera.MV_CC_SetImageNodeNum_NET(60);//设置缓存节点数
+            }
+            nRet = m_MyCamera.MV_CC_SetImageNodeNum_NET(35);//设置缓存节点数
            /* m_MyCamera.MV_CC_SetEnumValue_NET("GainAuto", 0);
             nRet = m_MyCamera.MV_CC_SetFloatValue_NET("Gain", currentGain);
             if (nRet != MyCamera.MV_OK)

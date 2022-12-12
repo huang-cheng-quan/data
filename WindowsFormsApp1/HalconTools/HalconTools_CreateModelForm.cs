@@ -362,7 +362,7 @@ namespace WindowsFormsApp1.HalconTools
             {
                 HObject hImage = ho_Image.Clone();
                 HalconOperator.ShowImage(hWindowControl1, hImage);
-                halconOperator.OnlyFindShapModel(hWindow, hImage, out _);
+                halconOperator.OnlyFindShapModel(hWindow, hImage,6, out _);
             }
         }
 
